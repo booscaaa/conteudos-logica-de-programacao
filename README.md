@@ -1,21 +1,21 @@
-# Logica de Programacao com Portugol Studio
+# Lógica de Programação com Portugol Studio
 
-Hub de conteudos sobre **Logica de Programacao** com Portugol Studio.
+Hub de conteúdos sobre **Lógica de Programação** com Portugol Studio.
 
-Aqui voce encontra explicacoes, exemplos de codigo e exercicios organizados por topico. Todo o material e escrito em Portugol — uma linguagem pensada para quem esta aprendendo a programar em portugues.
+Aqui você encontra explicações, exemplos de código e exercícios organizados por tópico. Todo o material é escrito em Portugol — uma linguagem pensada para quem está aprendendo a programar em português.
 
 ---
 
-## O que e Portugol Studio?
+## O que é Portugol Studio?
 
-O **Portugol Studio** e uma ferramenta gratuita e open source criada para o ensino de logica de programacao em lingua portuguesa. Com ele, voce escreve codigo em "Portugol" — uma linguagem de programacao baseada em portugues — e pode executar, depurar e visualizar o fluxo do seu programa de forma visual.
+O **Portugol Studio** é uma ferramenta gratuita e open source criada para o ensino de lógica de programação em língua portuguesa. Com ele, você escreve código em "Portugol" — uma linguagem de programação baseada em português — e pode executar, depurar e visualizar o fluxo do seu programa de forma visual.
 
 ### Por que usar Portugol Studio?
 
-- Codigo escrito em **portugues**, eliminando a barreira do ingles para iniciantes
-- Ambiente visual com **fluxograma automatico** do seu algoritmo
-- **Depurador passo a passo** para acompanhar a execucao linha por linha
-- Totalmente gratuito e disponivel para Windows, Linux e macOS
+- Código escrito em **português**, eliminando a barreira do inglês para iniciantes
+- Ambiente visual com **fluxograma automático** do seu algoritmo
+- **Depurador passo a passo** para acompanhar a execução linha por linha
+- Totalmente gratuito e disponível para Windows, Linux e macOS
 
 ### Download
 
@@ -23,16 +23,16 @@ Acesse o site oficial: [https://univali-lite.github.io/Portugol-Studio/](https:/
 
 ---
 
-## Estrutura do Repositorio
+## Estrutura do Repositório
 
 ```
 conteudos-logica-de-programacao/
-├── README.md                          <- Voce esta aqui
+├── README.md                          <- Você está aqui
 └── aulas/
     ├── aula-01-introducao-logica/
-    │   └── README.md                  <- Historia da logica, Socrates, Turing
+    │   └── README.md                  <- História da lógica, Sócrates, Turing
     └── aula-02-variaveis-tipos-dados/
-        ├── README.md                  <- Variaveis e tipos de dados
+        ├── README.md                  <- Variáveis e tipos de dados
         └── exemplos/
             ├── 01_tipos_basicos.por
             ├── 02_operacoes_matematicas.por
@@ -42,12 +42,12 @@ conteudos-logica-de-programacao/
 
 ---
 
-## Conteudos
+## Conteúdos
 
-| # | Topico | Assuntos |
+| # | Tópico | Assuntos |
 |---|--------|---------|
-| 01 | [Introducao a Logica](./aulas/aula-01-introducao-logica/README.md) | Historia da logica, Socrates, Alan Turing, Maquina de Turing |
-| 02 | [Variaveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md) | Tipos de dados, declaracao, operacoes matematicas |
+| 01 | [Introdução à Lógica](./aulas/aula-01-introducao-logica/README.md) | História da lógica, Sócrates, Alan Turing, Máquina de Turing |
+| 02 | [Variáveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md) | Tipos de dados, declaração, operações matemáticas |
 
 ---
 
@@ -55,21 +55,21 @@ conteudos-logica-de-programacao/
 
 1. Instale o **Portugol Studio**
 2. Abra o programa
-3. Va em `Arquivo > Abrir` e selecione o arquivo `.por` desejado
-4. Clique em **Executar** (F6) ou use o botao de play
+3. Vá em `Arquivo > Abrir` e selecione o arquivo `.por` desejado
+4. Clique em **Executar** (F6) ou use o botão de play
 
 ---
 
 ## Dicas
 
-> **Leia o erro com calma.** O Portugol Studio mostra exatamente onde esta o problema. Nao entre em panico!
+> **Leia o erro com calma.** O Portugol Studio mostra exatamente onde está o problema. Não entre em pânico!
 
-> **Execute passo a passo.** Use o depurador (F7) para ver o valor de cada variavel durante a execucao.
+> **Execute passo a passo.** Use o depurador (F7) para ver o valor de cada variável durante a execução.
 
-> **Pratique todo dia.** Logica de programacao e como musculo — quanto mais voce treina, mais forte fica.
+> **Pratique todo dia.** Lógica de programação é como músculo — quanto mais você treina, mais forte fica.
 
 ---
 
-## Contribuicoes
+## Contribuições
 
-Sugestoes e correcoes sao bem-vindas!
+Sugestões e correções são bem-vindas!
