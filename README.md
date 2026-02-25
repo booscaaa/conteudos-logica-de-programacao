@@ -10,12 +10,6 @@ Aqui voce encontra explicacoes, exemplos de codigo e exercicios organizados por 
 
 O **Portugol Studio** e uma ferramenta gratuita e open source criada para o ensino de logica de programacao em lingua portuguesa. Com ele, voce escreve codigo em "Portugol" — uma linguagem de programacao baseada em portugues — e pode executar, depurar e visualizar o fluxo do seu programa de forma visual.
 
-### Por que usar Portugol Studio?
-
-- Codigo escrito em **portugues**, eliminando a barreira do ingles para iniciantes
-- Ambiente visual com **fluxograma automatico** do seu algoritmo
-- **Depurador passo a passo** para acompanhar a execucao linha por linha
-- Totalmente gratuito e disponivel para Windows, Linux e macOS
 
 ### Download
 
