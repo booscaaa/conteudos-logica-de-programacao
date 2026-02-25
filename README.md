@@ -10,13 +10,6 @@ Aqui você encontra explicações, exemplos de código e exercícios organizados
 
 O **Portugol Studio** é uma ferramenta gratuita e open source criada para o ensino de lógica de programação em língua portuguesa. Com ele, você escreve código em "Portugol" — uma linguagem de programação baseada em português — e pode executar, depurar e visualizar o fluxo do seu programa de forma visual.
 
-### Por que usar Portugol Studio?
-
-- Código escrito em **português**, eliminando a barreira do inglês para iniciantes
-- Ambiente visual com **fluxograma automático** do seu algoritmo
-- **Depurador passo a passo** para acompanhar a execução linha por linha
-- Totalmente gratuito e disponível para Windows, Linux e macOS
-
 ### Download
 
 Acesse o site oficial: [https://univali-lite.github.io/Portugol-Studio/](https://univali-lite.github.io/Portugol-Studio/)
@@ -44,10 +37,10 @@ conteudos-logica-de-programacao/
 
 ## Conteúdos
 
-| # | Tópico | Assuntos |
-|---|--------|---------|
-| 01 | [Introdução à Lógica](./aulas/aula-01-introducao-logica/README.md) | História da lógica, Sócrates, Alan Turing, Máquina de Turing |
-| 02 | [Variáveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md) | Tipos de dados, declaração, operações matemáticas |
+| #   | Tópico                                                                        | Assuntos                                                     |
+| --- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 01  | [Introdução à Lógica](./aulas/aula-01-introducao-logica/README.md)            | História da lógica, Sócrates, Alan Turing, Máquina de Turing |
+| 02  | [Variáveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md) | Tipos de dados, declaração, operações matemáticas            |
 
 ---
 
