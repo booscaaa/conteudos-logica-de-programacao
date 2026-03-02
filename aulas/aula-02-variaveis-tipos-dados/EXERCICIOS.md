@@ -17,7 +17,7 @@
 
 **4.** Declare duas variáveis `cadeia`: uma com seu primeiro nome e outra com seu sobrenome. Exiba as duas juntas na mesma linha.
 
-**5.** Crie uma variável `real` com o valor `10` e uma variável `inteiro` com o valor `3`. Use casting para dividir os dois e exibir o resultado com casas decimais.
+**5.** Crie uma variável `real` com o valor `10` e uma variável `inteiro` com o valor `3`. Divida os dois e exiba o resultado com casas decimais.
 
 **6.** Declare duas variáveis `inteiro` com valores distintos. Troque os valores entre elas usando uma terceira variável auxiliar e exiba o resultado antes e depois da troca.
 
