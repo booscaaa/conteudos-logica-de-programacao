@@ -24,23 +24,32 @@ conteudos-logica-de-programacao/
 └── aulas/
     ├── aula-01-introducao-logica/
     │   └── README.md                  <- História da lógica, Sócrates, Turing
-    └── aula-02-variaveis-tipos-dados/
-        ├── README.md                  <- Variáveis e tipos de dados
+    ├── aula-02-variaveis-tipos-dados/
+    │   ├── README.md                  <- Variáveis e tipos de dados
+    │   └── exemplos/
+    │       ├── 01_tipos_basicos.por
+    │       ├── 02_operacoes_matematicas.por
+    │       ├── 03_operacoes_avancadas.por
+    │       └── 04_entrada_saida.por
+    └── aula-03-estruturas-condicionais/
+        ├── README.md                  <- Fluxo de controle e condicionais
+        ├── EXERCICIOS.md
         └── exemplos/
-            ├── 01_tipos_basicos.por
-            ├── 02_operacoes_matematicas.por
-            ├── 03_operacoes_avancadas.por
-            └── 04_entrada_saida.por
+            ├── 01_se_senao.por
+            ├── 02_se_senao_se.por
+            ├── 03_escolha_caso.por
+            └── 04_condicionais_avancadas.por
 ```
 
 ---
 
 ## Conteúdos
 
-| #   | Tópico                                                                        | Assuntos                                                     |
-| --- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 01  | [Introdução à Lógica](./aulas/aula-01-introducao-logica/README.md)            | História da lógica, Sócrates, Alan Turing, Máquina de Turing |
-| 02  | [Variáveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md) | Tipos de dados, declaração, operações matemáticas            |
+| #   | Tópico                                                                                        | Assuntos                                                          |
+| --- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 01  | [Introdução à Lógica](./aulas/aula-01-introducao-logica/README.md)                            | História da lógica, Sócrates, Alan Turing, Máquina de Turing      |
+| 02  | [Variáveis e Tipos de Dados](./aulas/aula-02-variaveis-tipos-dados/README.md)                 | Tipos de dados, declaração, operações matemáticas                 |
+| 03  | [Estruturas de Fluxo de Controle](./aulas/aula-03-estruturas-condicionais/README.md)          | se, senao, senao se, escolha/caso, operadores lógicos             |
 
 ---
 
