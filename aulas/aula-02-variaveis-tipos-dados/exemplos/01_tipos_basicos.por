@@ -21,12 +21,12 @@ programa {
         inteiro temperatura_negativa = -5
         inteiro populacao = 215000000
 
-        escreval("=== TIPO: inteiro ===")
-        escreval("Idade: ", idade)
-        escreval("Ano de nascimento: ", ano_nascimento)
-        escreval("Temperatura negativa: ", temperatura_negativa)
-        escreval("Populacao do Brasil: ", populacao)
-        escreval()
+        escreva("=== TIPO: inteiro ===")
+        escreva("Idade: ", idade)
+        escreva("Ano de nascimento: ", ano_nascimento)
+        escreva("Temperatura negativa: ", temperatura_negativa)
+        escreva("Populacao do Brasil: ", populacao)
+        escreva()
 
         // ─────────────────────────────────────────────
         // TIPO: real
@@ -39,13 +39,13 @@ programa {
         real pi = 3.14159
         real temperatura_real = -2.8
 
-        escreval("=== TIPO: real ===")
-        escreval("Altura: ", altura, " metros")
-        escreval("Peso: ", peso, " kg")
-        escreval("Preco: R$ ", preco)
-        escreval("Pi: ", pi)
-        escreval("Temperatura: ", temperatura_real, " graus")
-        escreval()
+        escreva("=== TIPO: real ===")
+        escreva("Altura: ", altura, " metros")
+        escreva("Peso: ", peso, " kg")
+        escreva("Preco: R$ ", preco)
+        escreva("Pi: ", pi)
+        escreva("Temperatura: ", temperatura_real, " graus")
+        escreva()
 
         // ─────────────────────────────────────────────
         // TIPO: caracter
@@ -56,11 +56,11 @@ programa {
         caracter espaco = ' '
         caracter simbolo = '!'
 
-        escreval("=== TIPO: caracter ===")
-        escreval("Inicial do nome: ", inicial)
-        escreval("Digito: ", digito)
-        escreval("Simbolo: ", simbolo)
-        escreval()
+        escreva("=== TIPO: caracter ===")
+        escreva("Inicial do nome: ", inicial)
+        escreva("Digito: ", digito)
+        escreva("Simbolo: ", simbolo)
+        escreva()
 
         // ─────────────────────────────────────────────
         // TIPO: cadeia
@@ -73,13 +73,13 @@ programa {
         cadeia frase = "Ola, mundo!"
         cadeia texto_vazio = ""
 
-        escreval("=== TIPO: cadeia ===")
-        escreval("Nome: ", nome)
-        escreval("Cidade: ", cidade)
-        escreval("Linguagem: ", linguagem)
-        escreval("Frase: ", frase)
-        escreval("Texto vazio: '", texto_vazio, "'")
-        escreval()
+        escreva("=== TIPO: cadeia ===")
+        escreva("Nome: ", nome)
+        escreva("Cidade: ", cidade)
+        escreva("Linguagem: ", linguagem)
+        escreva("Frase: ", frase)
+        escreva("Texto vazio: '", texto_vazio, "'")
+        escreva()
 
         // ─────────────────────────────────────────────
         // TIPO: logico
@@ -91,12 +91,12 @@ programa {
         logico maior_de_idade = verdadeiro
         logico tem_desconto = falso
 
-        escreval("=== TIPO: logico ===")
-        escreval("Aprovado: ", aprovado)
-        escreval("Reprovado: ", reprovado)
-        escreval("Maior de idade: ", maior_de_idade)
-        escreval("Tem desconto: ", tem_desconto)
-        escreval()
+        escreva("=== TIPO: logico ===")
+        escreva("Aprovado: ", aprovado)
+        escreva("Reprovado: ", reprovado)
+        escreva("Maior de idade: ", maior_de_idade)
+        escreva("Tem desconto: ", tem_desconto)
+        escreva()
 
         // ─────────────────────────────────────────────
         // VARIAVEIS SEM VALOR INICIAL
@@ -108,17 +108,17 @@ programa {
         numero = 42
         palavra = "Portugol"
 
-        escreval("=== ATRIBUICAO POSTERIOR ===")
-        escreval("Numero: ", numero)
-        escreval("Palavra: ", palavra)
-        escreval()
+        escreva("=== ATRIBUICAO POSTERIOR ===")
+        escreva("Numero: ", numero)
+        escreva("Palavra: ", palavra)
+        escreva()
 
         // ─────────────────────────────────────────────
         // MULTIPLAS VARIAVEIS NA MESMA LINHA
         // ─────────────────────────────────────────────
         inteiro x = 1, y = 2, z = 3
 
-        escreval("=== MULTIPLAS VARIAVEIS ===")
-        escreval("x = ", x, ", y = ", y, ", z = ", z)
+        escreva("=== MULTIPLAS VARIAVEIS ===")
+        escreva("x = ", x, ", y = ", y, ", z = ", z)
     }
 }
