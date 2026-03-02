@@ -20,64 +20,64 @@ programa {
         // EXEMPLO 1: Classificacao de notas por conceito
         // A ordem importa: do mais restritivo ao menos restritivo
         // ─────────────────────────────────────────────
-        escreval("╔══════════════════════════════════╗")
-        escreval("║  CLASSIFICADOR DE NOTAS           ║")
-        escreval("╚══════════════════════════════════╝")
+        escreva("╔══════════════════════════════════╗")
+        escreva("║  CLASSIFICADOR DE NOTAS           ║")
+        escreva("╚══════════════════════════════════╝")
 
         inteiro nota
         escreva("Digite a nota (0 a 100): ")
         leia(nota)
 
         se (nota >= 90) {
-            escreval("Conceito: A — Excelente!")
+            escreva("Conceito: A — Excelente!")
         } senao se (nota >= 75) {
-            escreval("Conceito: B — Muito bom!")
+            escreva("Conceito: B — Muito bom!")
         } senao se (nota >= 60) {
-            escreval("Conceito: C — Bom.")
+            escreva("Conceito: C — Bom.")
         } senao se (nota >= 50) {
-            escreval("Conceito: D — Regular.")
+            escreva("Conceito: D — Regular.")
         } senao se (nota >= 0) {
-            escreval("Conceito: F — Reprovado.")
+            escreva("Conceito: F — Reprovado.")
         } senao {
-            escreval("Nota invalida! Informe um valor entre 0 e 100.")
+            escreva("Nota invalida! Informe um valor entre 0 e 100.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 2: Faixa etaria
         // ─────────────────────────────────────────────
-        escreval("=== FAIXA ETARIA ===")
+        escreva("=== FAIXA ETARIA ===")
 
         inteiro idade
         escreva("Digite a idade: ")
         leia(idade)
 
         se (idade < 0) {
-            escreval("Idade invalida!")
+            escreva("Idade invalida!")
         } senao se (idade <= 11) {
-            escreval("Classificacao: Crianca")
-            escreval("Dica: Cuide bem da sua infancia!")
+            escreva("Classificacao: Crianca")
+            escreva("Dica: Cuide bem da sua infancia!")
         } senao se (idade <= 17) {
-            escreval("Classificacao: Adolescente")
-            escreval("Dica: Estude muito!")
+            escreva("Classificacao: Adolescente")
+            escreva("Dica: Estude muito!")
         } senao se (idade <= 59) {
-            escreval("Classificacao: Adulto")
-            escreval("Informacao: Voto obrigatorio a partir dos 18 anos.")
+            escreva("Classificacao: Adulto")
+            escreva("Informacao: Voto obrigatorio a partir dos 18 anos.")
         } senao {
-            escreval("Classificacao: Idoso")
-            escreval("Dica: Voce tem direito a prioridade em filas!")
+            escreva("Classificacao: Idoso")
+            escreva("Dica: Voce tem direito a prioridade em filas!")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 3: Classificacao do IMC
         // IMC = peso / (altura * altura)
         // ─────────────────────────────────────────────
-        escreval("=== CLASSIFICADOR DE IMC ===")
-        escreval("IMC = peso / (altura * altura)")
-        escreval()
+        escreva("=== CLASSIFICADOR DE IMC ===")
+        escreva("IMC = peso / (altura * altura)")
+        escreva()
 
         real peso, altura
 
@@ -90,36 +90,36 @@ programa {
         real imc = peso / (altura * altura)
 
         // Exibe com duas casas decimais usando divisao por inteiro
-        escreval("Seu IMC: ", imc)
-        escreval()
+        escreva("Seu IMC: ", imc)
+        escreva()
 
         escreva("Classificacao: ")
 
         se (imc < 18.5) {
-            escreval("Abaixo do peso")
+            escreva("Abaixo do peso")
         } senao se (imc < 25.0) {
-            escreval("Peso normal")
-            escreval("Parabens! Voce esta dentro do peso ideal.")
+            escreva("Peso normal")
+            escreva("Parabens! Voce esta dentro do peso ideal.")
         } senao se (imc < 30.0) {
-            escreval("Sobrepeso")
-            escreval("Atencao: considere habitos mais saudaveis.")
+            escreva("Sobrepeso")
+            escreva("Atencao: considere habitos mais saudaveis.")
         } senao se (imc < 35.0) {
-            escreval("Obesidade grau I")
+            escreva("Obesidade grau I")
         } senao se (imc < 40.0) {
-            escreval("Obesidade grau II")
+            escreva("Obesidade grau II")
         } senao {
-            escreval("Obesidade grau III")
-            escreval("Recomendacao: procure acompanhamento medico.")
+            escreva("Obesidade grau III")
+            escreva("Recomendacao: procure acompanhamento medico.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 4: Faixa de velocidade e multa
         // ─────────────────────────────────────────────
-        escreval("=== VERIFICADOR DE VELOCIDADE ===")
-        escreval("Limite da via: 80 km/h")
-        escreval()
+        escreva("=== VERIFICADOR DE VELOCIDADE ===")
+        escreva("Limite da via: 80 km/h")
+        escreva()
 
         real velocidade
         real multa
@@ -127,24 +127,24 @@ programa {
         leia(velocidade)
 
         se (velocidade < 0.0) {
-            escreval("Velocidade invalida!")
+            escreva("Velocidade invalida!")
         } senao se (velocidade <= 80.0) {
-            escreval("Status: Dentro do limite. Dirija com seguranca!")
+            escreva("Status: Dentro do limite. Dirija com seguranca!")
         } senao se (velocidade <= 100.0) {
             multa = 130.16
-            escreval("Status: INFRACAO LEVE")
-            escreval("Multa: R$ ", multa)
-            escreval("Pontos na CNH: 3")
+            escreva("Status: INFRACAO LEVE")
+            escreva("Multa: R$ ", multa)
+            escreva("Pontos na CNH: 3")
         } senao se (velocidade <= 120.0) {
             multa = 195.23
-            escreval("Status: INFRACAO MEDIA")
-            escreval("Multa: R$ ", multa)
-            escreval("Pontos na CNH: 5")
+            escreva("Status: INFRACAO MEDIA")
+            escreva("Multa: R$ ", multa)
+            escreva("Pontos na CNH: 5")
         } senao {
             multa = 293.47
-            escreval("Status: INFRACAO GRAVE")
-            escreval("Multa: R$ ", multa)
-            escreval("Pontos na CNH: 7 + possibilidade de suspensao")
+            escreva("Status: INFRACAO GRAVE")
+            escreva("Multa: R$ ", multa)
+            escreva("Pontos na CNH: 7 + possibilidade de suspensao")
         }
     }
 }

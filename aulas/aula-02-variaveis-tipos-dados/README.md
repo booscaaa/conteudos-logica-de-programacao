@@ -179,11 +179,11 @@ escreva("Ola, mundo!")
 escreva("Valor: ", 42)
 ```
 
-### `escreval()` — Exibir com quebra de linha (Enter)
+### `escreva()` — Exibir com quebra de linha (Enter)
 
 ```portugol
-escreval("Primeira linha")
-escreval("Segunda linha")
+escreva("Primeira linha")
+escreva("Segunda linha")
 ```
 
 ### `leia()` — Receber valor do usuário
@@ -305,11 +305,11 @@ Para juntar textos e valores, use o operador `+` com cadeias:
 ```portugol
 cadeia nome = "Carlos"
 inteiro idade = 30
-escreval("Nome: " + nome)
-escreval("Idade: " + idade)
+escreva("Nome: " + nome)
+escreva("Idade: " + idade)
 
 // Também funciona assim:
-escreval("Nome: ", nome, " - Idade: ", idade)
+escreva("Nome: ", nome, " - Idade: ", idade)
 ```
 
 ---

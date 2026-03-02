@@ -20,8 +20,8 @@ programa {
         // ─────────────────────────────────────────────
         // EXEMPLO 1: Operadores logicos - e, ou, nao
         // ─────────────────────────────────────────────
-        escreval("=== OPERADORES LOGICOS ===")
-        escreval()
+        escreva("=== OPERADORES LOGICOS ===")
+        escreva()
 
         inteiro idade
         logico tem_carteira
@@ -34,31 +34,31 @@ programa {
         leia(resposta)
         tem_carteira = (resposta == 1)
 
-        escreval()
+        escreva()
 
         // Operador "e" (AND): ambos precisam ser verdadeiros
         se (idade >= 18 e tem_carteira) {
-            escreval("Habilitado para dirigir.")
+            escreva("Habilitado para dirigir.")
         } senao se (idade >= 18 e nao tem_carteira) {
-            escreval("Maior de idade, mas sem carteira de motorista.")
+            escreva("Maior de idade, mas sem carteira de motorista.")
         } senao {
-            escreval("Menor de idade. Nao pode dirigir.")
+            escreva("Menor de idade. Nao pode dirigir.")
         }
 
         // Operador "ou" (OR): pelo menos um precisa ser verdadeiro
         se (idade < 12 ou idade >= 65) {
-            escreval("Tem direito a meia-entrada em eventos culturais.")
+            escreva("Tem direito a meia-entrada em eventos culturais.")
         } senao {
-            escreval("Sem desconto de meia-entrada.")
+            escreva("Sem desconto de meia-entrada.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 2: Sistema de login
         // Aninhamento com multiplas verificacoes
         // ─────────────────────────────────────────────
-        escreval("=== SISTEMA DE LOGIN ===")
+        escreva("=== SISTEMA DE LOGIN ===")
 
         // Credenciais corretas (definidas no codigo)
         cadeia usuario_correto = "admin"
@@ -72,25 +72,25 @@ programa {
         escreva("Senha: ")
         leia(senha_digitada)
 
-        escreval()
+        escreva()
 
         se (usuario_digitado == usuario_correto) {
             se (senha_digitada == senha_correta) {
-                escreval(">>> Acesso concedido! Bem-vindo, ", usuario_digitado, "! <<<")
+                escreva(">>> Acesso concedido! Bem-vindo, ", usuario_digitado, "! <<<")
             } senao {
-                escreval("Senha incorreta. Tente novamente.")
+                escreva("Senha incorreta. Tente novamente.")
             }
         } senao {
-            escreval("Usuario nao encontrado.")
+            escreva("Usuario nao encontrado.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 3: Classificacao de triangulo
         // Combina validacao + classificacao aninhada
         // ─────────────────────────────────────────────
-        escreval("=== CLASSIFICADOR DE TRIANGULO ===")
+        escreva("=== CLASSIFICADOR DE TRIANGULO ===")
 
         real lado_a, lado_b, lado_c
 
@@ -101,34 +101,34 @@ programa {
         escreva("Lado C: ")
         leia(lado_c)
 
-        escreval()
+        escreva()
 
         // Primeiro: valida se forma um triangulo valido
         // (cada lado deve ser menor que a soma dos outros dois)
         logico e_triangulo = (lado_a < lado_b + lado_c) e (lado_b < lado_a + lado_c) e (lado_c < lado_a + lado_b)
 
         se (nao e_triangulo) {
-            escreval("INVALIDO: Esses lados nao formam um triangulo.")
+            escreva("INVALIDO: Esses lados nao formam um triangulo.")
         } senao {
-            escreval("Triangulo VALIDO!")
+            escreva("Triangulo VALIDO!")
 
             // Segundo: classifica o triangulo
             se (lado_a == lado_b e lado_b == lado_c) {
-                escreval("Tipo: Equilatero (todos os lados iguais)")
+                escreva("Tipo: Equilatero (todos os lados iguais)")
             } senao se (lado_a == lado_b ou lado_b == lado_c ou lado_a == lado_c) {
-                escreval("Tipo: Isosceles (dois lados iguais)")
+                escreva("Tipo: Isosceles (dois lados iguais)")
             } senao {
-                escreval("Tipo: Escaleno (todos os lados diferentes)")
+                escreva("Tipo: Escaleno (todos os lados diferentes)")
             }
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 4: Desconto progressivo com bonus premium
         // Combina faixas de valor + condicao logico
         // ─────────────────────────────────────────────
-        escreval("=== SISTEMA DE DESCONTO ===")
+        escreva("=== SISTEMA DE DESCONTO ===")
 
         real valor_compra
         inteiro eh_premium
@@ -159,32 +159,32 @@ programa {
         real desconto = valor_compra * (percentual_desconto / 100.0)
         real valor_final = valor_compra - desconto
 
-        escreval()
-        escreval("Valor original: R$ ", valor_compra)
+        escreva()
+        escreva("Valor original: R$ ", valor_compra)
 
         se (percentual_desconto > 0.0) {
-            escreval("Desconto total: ", percentual_desconto, "% (-R$ ", desconto, ")")
+            escreva("Desconto total: ", percentual_desconto, "% (-R$ ", desconto, ")")
             se (premium) {
-                escreval("  (inclui +5% bonus premium)")
+                escreva("  (inclui +5% bonus premium)")
             }
         } senao {
-            escreval("Sem desconto. Compre acima de R$ 100 para ter desconto!")
+            escreva("Sem desconto. Compre acima de R$ 100 para ter desconto!")
         }
 
-        escreval("Valor final: R$ ", valor_final)
-        escreval()
+        escreva("Valor final: R$ ", valor_final)
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 5: Verificador de ano bissexto
         // Regra: divisivel por 4, exceto seculares,
         //        exceto se tambem divisivel por 400
         // ─────────────────────────────────────────────
-        escreval("=== VERIFICADOR DE ANO BISSEXTO ===")
-        escreval("Regras:")
-        escreval("  - Divisivel por 4 E nao divisivel por 100 → Bissexto")
-        escreval("  - Divisivel por 400 → Bissexto")
-        escreval("  - Demais casos → Nao bissexto")
-        escreval()
+        escreva("=== VERIFICADOR DE ANO BISSEXTO ===")
+        escreva("Regras:")
+        escreva("  - Divisivel por 4 E nao divisivel por 100 → Bissexto")
+        escreva("  - Divisivel por 400 → Bissexto")
+        escreva("  - Demais casos → Nao bissexto")
+        escreva()
 
         inteiro ano
         escreva("Digite um ano: ")
@@ -193,9 +193,9 @@ programa {
         logico bissexto = (ano % 400 == 0) ou (ano % 4 == 0 e ano % 100 != 0)
 
         se (bissexto) {
-            escreval(ano, " e um ano BISSEXTO (366 dias).")
+            escreva(ano, " e um ano BISSEXTO (366 dias).")
         } senao {
-            escreval(ano, " NAO e um ano bissexto (365 dias).")
+            escreva(ano, " NAO e um ano bissexto (365 dias).")
         }
     }
 }

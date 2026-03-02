@@ -19,66 +19,66 @@ programa {
         // EXEMPLO 1: Estrutura "se" simples
         // O bloco so executa se a condicao for verdadeira
         // ─────────────────────────────────────────────
-        escreval("=== ESTRUTURA: se ===")
+        escreva("=== ESTRUTURA: se ===")
 
         inteiro temperatura = 35
 
-        escreval("Temperatura: ", temperatura, " graus Celsius")
+        escreva("Temperatura: ", temperatura, " graus Celsius")
 
         se (temperatura > 30) {
-            escreval("Aviso: Esta muito quente! Hidrate-se.")
+            escreva("Aviso: Esta muito quente! Hidrate-se.")
         }
 
         se (temperatura > 40) {
-            escreval("Alerta: Temperatura extrema!")
+            escreva("Alerta: Temperatura extrema!")
             // Este bloco NAO executa pois 35 nao e > 40
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 2: Estrutura "se/senao"
         // Sempre executa UM dos dois blocos
         // ─────────────────────────────────────────────
-        escreval("=== ESTRUTURA: se/senao ===")
+        escreva("=== ESTRUTURA: se/senao ===")
 
         inteiro nota
         escreva("Digite sua nota (0 a 10): ")
         leia(nota)
 
         se (nota >= 7) {
-            escreval("Situacao: APROVADO!")
-            escreval("Parabens pelo desempenho.")
+            escreva("Situacao: APROVADO!")
+            escreva("Parabens pelo desempenho.")
         } senao {
-            escreval("Situacao: REPROVADO.")
-            escreval("Estude mais para a proxima.")
+            escreva("Situacao: REPROVADO.")
+            escreva("Estude mais para a proxima.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 3: Par ou impar
         // Usando o operador modulo (%) para verificar resto
         // ─────────────────────────────────────────────
-        escreval("=== PAR OU IMPAR ===")
+        escreva("=== PAR OU IMPAR ===")
 
         inteiro numero
         escreva("Digite um numero inteiro: ")
         leia(numero)
 
         se (numero % 2 == 0) {
-            escreval(numero, " e PAR.")
+            escreva(numero, " e PAR.")
         } senao {
-            escreval(numero, " e IMPAR.")
+            escreva(numero, " e IMPAR.")
         }
 
-        escreval()
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 4: Desconto em compra
         // Condicional com calculo
         // ─────────────────────────────────────────────
-        escreval("=== DESCONTO EM COMPRA ===")
+        escreva("=== DESCONTO EM COMPRA ===")
 
         real preco
         escreva("Informe o valor da compra: R$ ")
@@ -89,20 +89,20 @@ programa {
         se (preco > 100.0) {
             desconto = preco * 0.15   // 15% de desconto
             preco_final = preco - desconto
-            escreval("Desconto de 15% aplicado: -R$ ", desconto)
+            escreva("Desconto de 15% aplicado: -R$ ", desconto)
         } senao {
             desconto = 0.0
             preco_final = preco
-            escreval("Nenhum desconto. Compre acima de R$ 100 para ter desconto.")
+            escreva("Nenhum desconto. Compre acima de R$ 100 para ter desconto.")
         }
 
-        escreval("Valor final: R$ ", preco_final)
-        escreval()
+        escreva("Valor final: R$ ", preco_final)
+        escreva()
 
         // ─────────────────────────────────────────────
         // EXEMPLO 5: Comparando dois numeros
         // ─────────────────────────────────────────────
-        escreval("=== COMPARANDO NUMEROS ===")
+        escreva("=== COMPARANDO NUMEROS ===")
 
         inteiro a, b
         escreva("Digite o primeiro numero: ")
@@ -111,12 +111,12 @@ programa {
         leia(b)
 
         se (a > b) {
-            escreval("O maior numero e: ", a)
+            escreva("O maior numero e: ", a)
         } senao {
             se (b > a) {
-                escreval("O maior numero e: ", b)
+                escreva("O maior numero e: ", b)
             } senao {
-                escreval("Os dois numeros sao iguais!")
+                escreva("Os dois numeros sao iguais!")
             }
         }
     }

@@ -128,9 +128,9 @@ se (condição) {
 inteiro temperatura = 35
 
 se (temperatura > 30) {
-    escreval("Está muito quente! Beba água.")
+    escreva("Está muito quente! Beba água.")
 }
-escreval("Fim do programa.")
+escreva("Fim do programa.")
 ```
 
 **Saída:**
@@ -139,7 +139,7 @@ Está muito quente! Beba água.
 Fim do programa.
 ```
 
-Se `temperatura` fosse `25`, o `escreval` dentro do `se` seria ignorado, e apenas `"Fim do programa."` seria exibido.
+Se `temperatura` fosse `25`, o `escreva` dentro do `se` seria ignorado, e apenas `"Fim do programa."` seria exibido.
 
 ---
 
@@ -175,9 +175,9 @@ se (condição) {
 inteiro nota = 6
 
 se (nota >= 7) {
-    escreval("Aprovado!")
+    escreva("Aprovado!")
 } senao {
-    escreval("Reprovado.")
+    escreva("Reprovado.")
 }
 ```
 
@@ -209,15 +209,15 @@ se (condição1) {
 inteiro nota = 85
 
 se (nota >= 90) {
-    escreval("Conceito A — Excelente!")
+    escreva("Conceito A — Excelente!")
 } senao se (nota >= 75) {
-    escreval("Conceito B — Bom!")
+    escreva("Conceito B — Bom!")
 } senao se (nota >= 60) {
-    escreval("Conceito C — Regular.")
+    escreva("Conceito C — Regular.")
 } senao se (nota >= 50) {
-    escreval("Conceito D — Abaixo do esperado.")
+    escreva("Conceito D — Abaixo do esperado.")
 } senao {
-    escreval("Conceito F — Reprovado.")
+    escreva("Conceito F — Reprovado.")
 }
 ```
 
@@ -231,13 +231,13 @@ se (nota >= 90) {
 inteiro idade = 16
 
 se (idade < 12) {
-    escreval("Criança")
+    escreva("Criança")
 } senao se (idade < 18) {
-    escreval("Adolescente")
+    escreva("Adolescente")
 } senao se (idade < 60) {
-    escreval("Adulto")
+    escreva("Adulto")
 } senao {
-    escreval("Idoso")
+    escreva("Idoso")
 }
 ```
 
@@ -275,28 +275,28 @@ inteiro dia = 3
 
 escolha (dia) {
     caso 1:
-        escreval("Segunda-feira")
+        escreva("Segunda-feira")
         pare
     caso 2:
-        escreval("Terça-feira")
+        escreva("Terça-feira")
         pare
     caso 3:
-        escreval("Quarta-feira")
+        escreva("Quarta-feira")
         pare
     caso 4:
-        escreval("Quinta-feira")
+        escreva("Quinta-feira")
         pare
     caso 5:
-        escreval("Sexta-feira")
+        escreva("Sexta-feira")
         pare
     caso 6:
-        escreval("Sábado")
+        escreva("Sábado")
         pare
     caso 7:
-        escreval("Domingo")
+        escreva("Domingo")
         pare
     contrario:
-        escreval("Dia inválido! Informe um número de 1 a 7.")
+        escreva("Dia inválido! Informe um número de 1 a 7.")
         pare
 }
 ```
@@ -313,16 +313,16 @@ leia(opcao)
 
 escolha (opcao) {
     caso 1:
-        escreval("Você escolheu: Novo jogo")
+        escreva("Você escolheu: Novo jogo")
         pare
     caso 2:
-        escreval("Você escolheu: Carregar jogo")
+        escreva("Você escolheu: Carregar jogo")
         pare
     caso 3:
-        escreval("Saindo...")
+        escreva("Saindo...")
         pare
     contrario:
-        escreval("Opção inválida!")
+        escreva("Opção inválida!")
         pare
 }
 ```
@@ -351,12 +351,12 @@ logico tem_carteira = verdadeiro
 
 se (idade >= 18) {
     se (tem_carteira) {
-        escreval("Pode dirigir!")
+        escreva("Pode dirigir!")
     } senao {
-        escreval("Maior de idade, mas sem carteira.")
+        escreva("Maior de idade, mas sem carteira.")
     }
 } senao {
-    escreval("Menor de idade. Não pode dirigir.")
+    escreva("Menor de idade. Não pode dirigir.")
 }
 ```
 
@@ -368,13 +368,13 @@ se (idade >= 18) {
 // Versão aninhada (mais difícil de ler)
 se (idade >= 18) {
     se (tem_carteira) {
-        escreval("Pode dirigir!")
+        escreva("Pode dirigir!")
     }
 }
 
 // Versão com operador lógico (mais clara)
 se (idade >= 18 e tem_carteira) {
-    escreval("Pode dirigir!")
+    escreva("Pode dirigir!")
 }
 ```
 
@@ -401,16 +401,16 @@ inteiro nota = 95
 
 // ERRADO — a primeira condição captura tudo >= 60, nunca chegará ao >= 90
 se (nota >= 60) {
-    escreval("Aprovado")
+    escreva("Aprovado")
 } senao se (nota >= 90) {
-    escreval("Excelente")  // nunca executado!
+    escreva("Excelente")  // nunca executado!
 }
 
 // CORRETO — do mais restritivo para o menos restritivo
 se (nota >= 90) {
-    escreval("Excelente")
+    escreva("Excelente")
 } senao se (nota >= 60) {
-    escreval("Aprovado")
+    escreva("Aprovado")
 }
 ```
 
@@ -422,20 +422,20 @@ Sem o `pare`, o programa continua executando os próximos casos, mesmo que não 
 // SEM pare — executa todos os casos a partir do que combina
 escolha (opcao) {
     caso 1:
-        escreval("Um")   // executa
+        escreva("Um")   // executa
     caso 2:
-        escreval("Dois") // também executa!
+        escreva("Dois") // também executa!
     caso 3:
-        escreval("Três") // também executa!
+        escreva("Três") // também executa!
 }
 
 // COM pare — correto
 escolha (opcao) {
     caso 1:
-        escreval("Um")
+        escreva("Um")
         pare  // para aqui
     caso 2:
-        escreval("Dois")
+        escreva("Dois")
         pare
 }
 ```
