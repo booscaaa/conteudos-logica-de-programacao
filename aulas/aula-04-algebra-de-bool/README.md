@@ -2,7 +2,7 @@
 
 > "Toda decisão que o computador toma se resume a verdadeiro ou falso — e isso é Álgebra de Bool."
 
-📊 **[Abrir apresentação de slides](./slides.html)** — navegue com as setas `←` `→` do teclado.
+📊 **[Abrir apresentação de slides](https://htmlpreview.github.io/?https://github.com/booscaaa/conteudos-logica-de-programacao/blob/main/aulas/aula-04-algebra-de-bool/slides.html)** — navegue com as setas `←` `→` do teclado.
 
 ---
 
@@ -395,7 +395,7 @@ Os exemplos estão na pasta `exemplos/`:
 
 ## Slides
 
-📊 [slides.html](./slides.html) — apresentação interativa com os conceitos desta aula.
+📊 [Abrir slides](https://htmlpreview.github.io/?https://github.com/booscaaa/conteudos-logica-de-programacao/blob/main/aulas/aula-04-algebra-de-bool/slides.html) — apresentação interativa com os conceitos desta aula.
 
 ---
 
