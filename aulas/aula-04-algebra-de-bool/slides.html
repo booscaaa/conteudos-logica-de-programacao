@@ -1,0 +1,3275 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Álgebra de Bool & Tabela Verdade — CESURG</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --bg: #07090a;
+        --teal: #00a3b8;
+        --teal-dk: #005f73;
+        --gold: #c8952a;
+        --gold-lt: #e8aa3d;
+        --white: #ffffff;
+        --dim: rgba(255, 255, 255, 0.55);
+        --dim2: rgba(255, 255, 255, 0.28);
+        --glass: rgba(255, 255, 255, 0.04);
+        --glass-b: rgba(255, 255, 255, 0.08);
+        --true-c: #34d27a;
+        --false-c: #ff5c5c;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+
+      /* ─── LIGHT MODE TOKENS ─── */
+      body.light-mode {
+        --bg: #f8fafc;
+        --teal: #0891b2;
+        --teal-dk: #164e63;
+        --gold: #b45309;
+        --gold-lt: #d97706;
+        --white: #0f172a; /* Text color in light mode */
+        --dim: #475569;
+        --dim2: #94a3b8;
+        --glass: rgba(15, 23, 42, 0.03);
+        --glass-b: rgba(15, 23, 42, 0.06);
+        --border: rgba(15, 23, 42, 0.08);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition:
+          background-color 0.3s,
+          color 0.3s,
+          border-color 0.3s;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--white);
+        -webkit-font-smoothing: antialiased;
+        user-select: none;
+        cursor: none;
+      }
+
+      /* ─── CUSTOM CURSOR ─── */
+      #cur-dot {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--white);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.15s,
+          height 0.15s,
+          background 0.2s,
+          opacity 0.2s;
+        will-change: transform;
+      }
+
+      #cur-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+          height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+          border-color 0.25s,
+          opacity 0.2s;
+        will-change: transform;
+      }
+
+      #cur-glow {
+        position: fixed;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 163, 184, 0.12) 0%,
+          rgba(0, 163, 184, 0.04) 45%,
+          transparent 70%
+        );
+        transition: opacity 0.3s;
+        will-change: transform;
+      }
+
+      /* States triggered by JS class on <body> */
+      body.cur-hover #cur-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--teal);
+      }
+      body.cur-hover #cur-ring {
+        width: 52px;
+        height: 52px;
+        border-color: var(--teal);
+      }
+      body.cur-hover #cur-glow {
+        background: radial-gradient(
+          circle,
+          rgba(0, 163, 184, 0.18) 0%,
+          rgba(0, 163, 184, 0.06) 45%,
+          transparent 70%
+        );
+      }
+
+      body.cur-click #cur-dot {
+        width: 12px;
+        height: 12px;
+        background: var(--gold);
+      }
+      body.cur-click #cur-ring {
+        width: 22px;
+        height: 22px;
+        border-color: var(--gold);
+        border-width: 2px;
+      }
+
+      body.cur-nav #cur-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--gold);
+      }
+      body.cur-nav #cur-ring {
+        width: 60px;
+        height: 60px;
+        border-color: var(--gold);
+        border-width: 2px;
+      }
+      body.cur-nav #cur-glow {
+        width: 240px;
+        height: 240px;
+        background: radial-gradient(
+          circle,
+          rgba(200, 149, 42, 0.16) 0%,
+          rgba(200, 149, 42, 0.05) 45%,
+          transparent 70%
+        );
+      }
+
+      /* ─── LIGHT MODE ADAPTATIONS ─── */
+      body.light-mode #cur-dot {
+        background: var(--teal);
+      }
+      body.light-mode #cur-ring {
+        border-color: rgba(15, 23, 42, 0.4);
+      }
+      body.light-mode #footer {
+        background: rgba(248, 250, 252, 0.92);
+        border-top: 1px solid var(--border);
+      }
+      body.light-mode .dbg {
+        background: #f1f5f9;
+        border-color: rgba(15, 23, 42, 0.12);
+      }
+      body.light-mode .dbg-bar {
+        background: rgba(8, 145, 178, 0.06);
+        border-bottom-color: rgba(15, 23, 42, 0.08);
+      }
+      body.light-mode .dbg-label {
+        color: var(--teal);
+      }
+      body.light-mode .dbg-dot {
+        background: var(--teal);
+      }
+      body.light-mode .dbg-step-info {
+        color: var(--dim);
+      }
+      body.light-mode .dbg-btn {
+        border-color: rgba(15, 23, 42, 0.15);
+        color: var(--dim);
+        background: transparent;
+      }
+      body.light-mode .dbg-btn:hover:not(:disabled) {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      body.light-mode .dbg-btn.run {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #fff;
+      }
+      body.light-mode .dbg-content {
+        color: #1e4e6a; /* code text */
+      }
+      body.light-mode .dbg-lnum {
+        color: rgba(15, 23, 42, 0.25);
+      }
+      body.light-mode .dbg-line.active {
+        background: rgba(180, 83, 9, 0.08); /* amber tint for active line */
+      }
+      body.light-mode .dbg-line.active .dbg-lnum {
+        color: var(--gold);
+      }
+      body.light-mode .dbg-line.active .dbg-arr {
+        color: var(--gold);
+      }
+      body.light-mode .dbg-exp {
+        background: rgba(180, 83, 9, 0.04);
+        border-top-color: rgba(15, 23, 42, 0.08);
+        color: var(--dim);
+      }
+      body.light-mode .dbg-exp strong {
+        color: #0f172a;
+      }
+      body.light-mode .dbg-exp em {
+        color: var(--teal);
+      }
+      body.light-mode .dbg-dots span {
+        background: rgba(15, 23, 42, 0.15);
+      }
+      body.light-mode .dbg-dots span.on {
+        background: var(--gold);
+      }
+      /* fix code syntax colors in light mode */
+      body.light-mode .kw {
+        color: #0369a1;
+      }
+      body.light-mode .str {
+        color: #15803d;
+      }
+      body.light-mode .op {
+        color: #b45309;
+      }
+      body.light-mode .cm {
+        color: #94a3b8;
+      }
+      body.light-mode .nbtn {
+        border-color: var(--border);
+        color: var(--dim);
+      }
+      body.light-mode .nbtn:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      body.light-mode .f-count {
+        color: var(--dim);
+      }
+      body.light-mode .f-name .l1 {
+        color: var(--dim);
+      }
+      body.light-mode .f-name .l2 {
+        color: var(--gold);
+      }
+      body.light-mode .f-sep {
+        background: var(--border);
+      }
+      body.light-mode .f-bar {
+        background: var(--teal-dk);
+        opacity: 0.15;
+      }
+
+      /* keep native cursor on interactive elements */
+      button,
+      a,
+      [onclick],
+      input,
+      select,
+      textarea {
+        cursor: none;
+      }
+
+      /* ─── PROGRESS ─── */
+      #prog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--teal), var(--gold));
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+      }
+
+      /* ─── SLIDES ─── */
+      #deck {
+        width: 100%;
+        height: calc(100vh - 56px);
+        position: relative;
+        perspective: 1400px;
+        perspective-origin: 50% 45%;
+      }
+
+      /* Base: hidden, off to the side */
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 36px 56px;
+        opacity: 0;
+        pointer-events: none;
+        will-change: transform, opacity;
+        /* no transition by default — animations handle it */
+      }
+
+      /* Active slide: fully visible, no transform */
+      .slide.active {
+        opacity: 1;
+        pointer-events: all;
+        transform: none;
+      }
+
+      /* ── Keyframes — Apple easeOutQuart feel ──
+       cubic-bezier(0.22, 1, 0.36, 1) = snappy deceleration */
+
+      /* Forward (→): current exits left-back, next enters right-front */
+      @keyframes kExitFwd {
+        from {
+          opacity: 1;
+          transform: translateX(0) scale(1) translateZ(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(-4%) scale(0.94) translateZ(-60px);
+        }
+      }
+      @keyframes kEnterFwd {
+        from {
+          opacity: 0;
+          transform: translateX(5%) scale(0.96) translateZ(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1) translateZ(0);
+        }
+      }
+
+      /* Backward (←): current exits right-back, next enters left-front */
+      @keyframes kExitBwd {
+        from {
+          opacity: 1;
+          transform: translateX(0) scale(1) translateZ(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(4%) scale(0.94) translateZ(-60px);
+        }
+      }
+      @keyframes kEnterBwd {
+        from {
+          opacity: 0;
+          transform: translateX(-5%) scale(0.96) translateZ(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1) translateZ(0);
+        }
+      }
+
+      /* Animation classes applied by JS */
+      .anim-exit-fwd {
+        animation: kExitFwd 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .anim-exit-bwd {
+        animation: kExitBwd 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .anim-enter-fwd {
+        animation: kEnterFwd 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        pointer-events: all;
+      }
+      .anim-enter-bwd {
+        animation: kEnterBwd 560ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        pointer-events: all;
+      }
+
+      /* ─── FOOTER ─── */
+      #footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: rgba(7, 9, 10, 0.92);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 36px;
+        z-index: 500;
+      }
+
+      .f-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .f-cic {
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: var(--teal);
+        letter-spacing: -0.5px;
+      }
+      .f-cic span {
+        color: var(--gold);
+      }
+      .f-sep {
+        width: 1px;
+        height: 24px;
+        background: var(--border);
+      }
+      .f-name {
+        line-height: 1.2;
+      }
+      .f-name .l1 {
+        font-size: 0.58rem;
+        font-weight: 600;
+        color: var(--dim2);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+      .f-name .l2 {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--gold);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .f-bar {
+        flex: 1;
+        height: 2px;
+        background: var(--teal-dk);
+        margin: 0 24px;
+        border-radius: 1px;
+      }
+
+      .f-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .f-count {
+        font-size: 0.72rem;
+        font-weight: 500;
+        color: var(--dim2);
+        min-width: 44px;
+        text-align: center;
+      }
+
+      .nbtn {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--dim);
+        padding: 5px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 600;
+        font-family: inherit;
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          background 0.2s;
+      }
+      .nbtn:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .nbtn.p {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #fff;
+      }
+      .nbtn.p:hover {
+        background: var(--teal-dk);
+      }
+
+      /* ─── TYPOGRAPHY SYSTEM ─── */
+      .eyebrow {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--teal);
+        margin-bottom: 16px;
+      }
+
+      .hero {
+        font-size: clamp(3.5rem, 8vw, 7rem);
+        font-weight: 800;
+        line-height: 1;
+        text-align: center;
+        letter-spacing: -0.03em;
+      }
+      .hero em {
+        font-style: normal;
+        color: var(--gold);
+      }
+      .hero strong {
+        color: var(--teal);
+      }
+
+      .title {
+        font-size: clamp(2rem, 4.5vw, 3.6rem);
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+        letter-spacing: -0.02em;
+      }
+      .title em {
+        font-style: normal;
+        color: var(--gold);
+      }
+      .title strong {
+        color: var(--teal);
+      }
+
+      .subtitle {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 400;
+        color: var(--dim);
+        line-height: 1.7;
+        text-align: center;
+      }
+      .subtitle strong {
+        color: var(--white);
+        font-weight: 600;
+      }
+
+      /* ─── GLASS CARD ─── */
+      .gc {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 40px;
+        backdrop-filter: blur(8px);
+        width: 100%;
+        max-width: 920px;
+      }
+      .gc-sm {
+        max-width: 640px;
+      }
+      .gc-md {
+        max-width: 780px;
+      }
+
+      /* ─── DIVIDER ─── */
+      .line {
+        width: 40px;
+        height: 2px;
+        background: var(--gold);
+        border-radius: 1px;
+        margin: 14px auto;
+      }
+
+      /* ─── GRID ─── */
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        width: 100%;
+        max-width: 960px;
+      }
+      .g3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        width: 100%;
+        max-width: 1000px;
+      }
+
+      /* ─── OP CARD ─── */
+      .oc {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px 20px;
+        text-align: center;
+        transition:
+          transform 0.25s,
+          background 0.25s,
+          border-color 0.25s;
+      }
+      .oc:hover {
+        transform: translateY(-4px);
+        background: var(--glass-b);
+      }
+      .oc .sym {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+      .oc .nm {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--white);
+      }
+      .oc .ds {
+        font-size: 0.82rem;
+        color: var(--dim);
+        line-height: 1.55;
+      }
+
+      /* ─── TABLE ─── */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.9rem;
+      }
+      th {
+        background: rgba(0, 163, 184, 0.18);
+        color: var(--teal);
+        padding: 10px 14px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.76rem;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      td {
+        padding: 9px 14px;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        color: var(--dim);
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+      tr:hover td {
+        background: var(--glass);
+      }
+      .tv {
+        color: var(--true-c) !important;
+        font-weight: 700;
+      }
+      .fv {
+        color: var(--false-c) !important;
+        font-weight: 700;
+      }
+
+      /* ─── CALLOUT ─── */
+      .callout {
+        border-left: 2px solid var(--teal);
+        padding: 12px 18px;
+        margin-top: 16px;
+        font-size: 0.88rem;
+        color: var(--dim);
+        background: rgba(0, 163, 184, 0.06);
+        border-radius: 0 8px 8px 0;
+      }
+      .callout strong {
+        color: var(--white);
+      }
+      .callout-gold {
+        border-left: 2px solid var(--gold);
+        background: rgba(200, 149, 42, 0.06);
+      }
+
+      /* ─── CODE ─── */
+      .code {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 24px;
+        font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+        font-size: clamp(0.75rem, 1.4vw, 0.88rem);
+        white-space: pre;
+        text-align: left;
+        color: #a8d8e4;
+        line-height: 1.65;
+        width: 100%;
+      }
+      .kw {
+        color: #7ec8e3;
+      }
+      .str {
+        color: #a8d8b0;
+      }
+      .op {
+        color: var(--gold-lt);
+      }
+      .cm {
+        color: #4a6a74;
+      }
+
+      /* ─── PILL ─── */
+      .pill {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .pt {
+        background: rgba(52, 210, 122, 0.12);
+        color: var(--true-c);
+        border: 1px solid rgba(52, 210, 122, 0.25);
+      }
+      .pf {
+        background: rgba(255, 92, 92, 0.12);
+        color: var(--false-c);
+        border: 1px solid rgba(255, 92, 92, 0.25);
+      }
+      .pa {
+        background: rgba(0, 163, 184, 0.12);
+        color: var(--teal);
+        border: 1px solid rgba(0, 163, 184, 0.25);
+      }
+
+      /* ─── BIG STAT ─── */
+      .big-stat {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 24px 0;
+      }
+      .stat {
+        text-align: center;
+      }
+      .stat-val {
+        font-size: 4rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .stat-lbl {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--dim);
+        margin-top: 6px;
+      }
+
+      /* ─── LAMP ─── */
+      .lamp {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        border: 1px solid var(--border);
+      }
+      .lon {
+        background: rgba(52, 210, 122, 0.1);
+        border-color: rgba(52, 210, 122, 0.4);
+        box-shadow: 0 0 24px rgba(52, 210, 122, 0.2);
+      }
+      .loff {
+        background: rgba(255, 92, 92, 0.1);
+        border-color: rgba(255, 92, 92, 0.4);
+      }
+
+      /* ─── INTERACTIVE ─── */
+      .gate-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .gi {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tog {
+        width: 76px;
+        height: 38px;
+        border-radius: 19px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.8rem;
+        font-family: inherit;
+        transition: all 0.2s;
+        letter-spacing: 0.5px;
+      }
+      .tog.on {
+        background: var(--teal);
+        color: #fff;
+        box-shadow: 0 0 16px rgba(0, 163, 184, 0.4);
+      }
+      .tog.off {
+        background: var(--glass-b);
+        color: var(--dim);
+        border: 1px solid var(--border);
+      }
+
+      .gbox {
+        border-radius: 12px;
+        padding: 12px 22px;
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+        text-align: center;
+        min-width: 80px;
+      }
+      .gand {
+        background: rgba(0, 163, 184, 0.15);
+        border: 1.5px solid var(--teal);
+        color: var(--teal);
+      }
+      .gor {
+        background: rgba(200, 149, 42, 0.15);
+        border: 1.5px solid var(--gold);
+        color: var(--gold-lt);
+      }
+      .gnot {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1.5px solid var(--border);
+        color: var(--dim);
+      }
+
+      .wire {
+        width: 28px;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .rball {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 900;
+        border: 1px solid var(--border);
+        transition: all 0.25s;
+      }
+      .rt {
+        background: rgba(52, 210, 122, 0.12);
+        border-color: rgba(52, 210, 122, 0.4);
+        color: var(--true-c);
+        box-shadow: 0 0 20px rgba(52, 210, 122, 0.2);
+      }
+      .rf {
+        background: rgba(255, 92, 92, 0.08);
+        border-color: rgba(255, 92, 92, 0.3);
+        color: var(--false-c);
+      }
+
+      .in-lbl {
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--dim2);
+        text-align: center;
+        margin-top: 5px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* ─── STEPS ─── */
+      .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .step:last-child {
+        border: none;
+      }
+      .sn {
+        min-width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(0, 163, 184, 0.15);
+        border: 1px solid rgba(0, 163, 184, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.82rem;
+        color: var(--teal);
+        flex-shrink: 0;
+      }
+
+      /* ─── QUIZ ─── */
+      .qopt {
+        width: 100%;
+        text-align: left;
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 18px;
+        color: var(--dim);
+        font-size: 0.9rem;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .qopt:hover {
+        border-color: var(--teal);
+        color: var(--white);
+        background: rgba(0, 163, 184, 0.08);
+      }
+      .qopt.ok {
+        border-color: var(--true-c);
+        background: rgba(52, 210, 122, 0.1);
+        color: var(--true-c);
+        font-weight: 700;
+      }
+      .qopt.no {
+        border-color: var(--false-c);
+        background: rgba(255, 92, 92, 0.08);
+        color: var(--false-c);
+      }
+
+      /* ─── REVEAL ─── */
+      .rev {
+        background: var(--glass);
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin-top: 8px;
+        cursor: pointer;
+        font-size: 0.84rem;
+        color: var(--dim2);
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .rev:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+
+      /* ─── ICONS ─── */
+      .mi {
+        font-family: "Material Symbols Outlined";
+        font-weight: normal;
+        font-style: normal;
+        font-size: 1.5rem;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-feature-settings: "liga";
+        vertical-align: middle;
+      }
+      .mi-sm {
+        font-size: 1.2rem;
+      }
+      .mi-lg {
+        font-size: 2.2rem;
+      }
+
+      /* ─── CAPA ─── */
+      .capa-icon {
+        font-size: 5rem;
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      /* ─── FINAL ─── */
+      .final-hero {
+        font-size: clamp(3.5rem, 9vw, 7rem);
+        font-weight: 900;
+        line-height: 1;
+        text-align: center;
+        letter-spacing: -0.04em;
+      }
+      .final-hero em {
+        font-style: normal;
+        color: var(--gold);
+      }
+
+      /* ─── ANALOGIA ─── */
+      .ana-pair {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 20px 0;
+        text-align: center;
+      }
+      .ana-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .ana-icon {
+        font-size: 2.8rem;
+      }
+
+      /* ─── DEBUGGER ─── */
+      .dbg {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        width: 100%;
+        font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      }
+      .dbg-bar {
+        background: rgba(0, 163, 184, 0.07);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .dbg-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--teal);
+        font-family: "Inter", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dbg-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--teal);
+        animation: dbgpulse 1.4s ease-in-out infinite;
+      }
+      @keyframes dbgpulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+      .dbg-step-info {
+        font-size: 0.72rem;
+        color: var(--dim2);
+        font-family: "Inter", sans-serif;
+      }
+      .dbg-controls {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .dbg-btn {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--dim);
+        padding: 4px 13px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        transition: all 0.15s;
+        line-height: 1.5;
+      }
+      .dbg-btn:hover:not(:disabled) {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .dbg-btn:disabled {
+        opacity: 0.22;
+        cursor: default;
+      }
+      .dbg-btn.run {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #fff;
+      }
+      .dbg-btn.run:hover:not(:disabled) {
+        background: var(--teal-dk);
+      }
+      .dbg-code {
+        padding: 8px 0;
+        overflow-x: auto;
+      }
+      .dbg-line {
+        display: flex;
+        align-items: center;
+        min-height: 28px;
+        transition: background 0.22s;
+      }
+      .dbg-line.active {
+        background: rgba(200, 149, 42, 0.13);
+      }
+      .dbg-lnum {
+        width: 38px;
+        text-align: right;
+        padding-right: 14px;
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.18);
+        flex-shrink: 0;
+        transition: color 0.22s;
+        line-height: 28px;
+        flex-shrink: 0;
+      }
+      .dbg-line.active .dbg-lnum {
+        color: var(--gold);
+      }
+      .dbg-arr {
+        width: 18px;
+        flex-shrink: 0;
+        color: var(--gold);
+        font-size: 0.8rem;
+        text-align: center;
+        line-height: 28px;
+        visibility: hidden;
+      }
+      .dbg-line.active .dbg-arr {
+        visibility: visible;
+      }
+      .dbg-content {
+        flex: 1;
+        font-size: clamp(0.72rem, 1.3vw, 0.86rem);
+        color: #a8d8e4;
+        padding-right: 20px;
+        white-space: pre;
+        line-height: 28px;
+      }
+      .dbg-exp {
+        border-top: 1px solid var(--border);
+        background: rgba(200, 149, 42, 0.055);
+        padding: 13px 20px;
+        font-size: 0.88rem;
+        color: var(--dim);
+        min-height: 52px;
+        font-family: "Inter", sans-serif;
+        line-height: 1.6;
+        transition: opacity 0.25s;
+      }
+      .dbg-exp strong {
+        color: var(--white);
+      }
+      .dbg-exp em {
+        color: var(--teal);
+        font-style: normal;
+      }
+      .dbg-dots {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .dbg-dots span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+      .dbg-dots span.on {
+        background: var(--gold);
+        transform: scale(1.3);
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 640px) {
+        .g2,
+        .g3 {
+          grid-template-columns: 1fr;
+        }
+        .gate-wrap,
+        .big-stat,
+        .ana-pair {
+          flex-direction: column;
+          align-items: center;
+        }
+        .slide {
+          padding: 20px 16px;
+        }
+        #footer {
+          padding: 0 16px;
+        }
+        .f-bar {
+          margin: 0 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─── CURSOR ELEMENTS ─── -->
+    <div id="cur-glow"></div>
+    <div id="cur-ring"></div>
+    <div id="cur-dot"></div>
+
+    <div id="prog"></div>
+
+    <div id="deck">
+      <!-- ══════════ S1 — CAPA ══════════ -->
+      <div class="slide active" id="s1">
+        <div class="eyebrow">Lógica de Programação</div>
+        <span
+          class="mi"
+          style="font-size: 5rem; color: var(--teal); margin-bottom: 20px"
+          >account_tree</span
+        >
+        <h1 class="hero">Álgebra de Bool<br />&amp; <em>Tabela Verdade</em></h1>
+        <div class="line"></div>
+      </div>
+
+      <!-- ══════════ S2 — O QUE É LÓGICA ══════════ -->
+      <div class="slide" id="s2">
+        <div class="eyebrow">Conceito Base</div>
+        <h2 class="title">O que é <strong>Lógica</strong>?</h2>
+        <div class="line"></div>
+        <div class="big-stat">
+          <div class="stat">
+            <div class="stat-val" style="color: var(--true-c)">1</div>
+            <div class="stat-lbl">verdadeiro</div>
+          </div>
+          <div style="display: flex; align-items: center">
+            <div style="font-size: 2rem; color: var(--dim2)">|</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" style="color: var(--false-c)">0</div>
+            <div class="stat-lbl">falso</div>
+          </div>
+        </div>
+        <p class="subtitle" style="max-width: 500px">
+          Na computação, lógica sempre responde com <strong>SIM</strong> ou
+          <strong>NÃO</strong>.<br />
+          Só existem dois estados possíveis — e é isso.
+        </p>
+        <div
+          class="callout"
+          style="max-width: 480px; margin-top: 24px; text-align: center"
+        >
+          <span class="mi mi-sm" style="color: var(--gold)">lightbulb</span>
+          Toda decisão que o computador toma é baseada em
+          <strong>verdadeiro ou falso</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S3 — GEORGE BOOLE ══════════ -->
+      <div class="slide" id="s3">
+        <div class="eyebrow">História</div>
+        <h2 class="title">Quem foi <em>George Boole</em>?</h2>
+        <div class="line"></div>
+        <div
+          class="gc gc-md"
+          style="display: flex; gap: 28px; align-items: center; flex-wrap: wrap"
+        >
+          <div
+            style="
+              font-size: 2.5rem;
+              flex-shrink: 0;
+              line-height: 1;
+              color: var(--dim2);
+              font-weight: 200;
+            "
+          >
+            1815<br />–<br />1864
+          </div>
+          <div>
+            <p style="font-size: 0.95rem; color: var(--dim); line-height: 1.7">
+              Matemático britânico
+              <strong style="color: var(--white)">(1815–1864)</strong> que criou
+              um sistema onde só existem dois valores.
+            </p>
+            <div
+              style="display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap"
+            >
+              <span class="pill pt">VERDADEIRO (1)</span>
+              <span class="pill pf">FALSO (0)</span>
+            </div>
+            <p style="font-size: 0.95rem; color: var(--dim); line-height: 1.7">
+              Esse sistema é chamado de
+              <strong style="color: var(--teal)">Álgebra de Bool</strong> e é a
+              base de
+              <strong style="color: var(--white)">todos os computadores</strong>
+              modernos.
+            </p>
+          </div>
+        </div>
+        <div
+          class="callout"
+          style="max-width: 640px; text-align: center; margin-top: 0"
+        >
+          <span class="mi mi-sm" style="color: var(--teal)"
+            >desktop_windows</span
+          >
+          Todo software que você já usou funciona com as ideias de Boole.
+        </div>
+      </div>
+
+      <!-- ══════════ S4 — VARIÁVEL BOOLEANA ══════════ -->
+      <div class="slide" id="s4">
+        <div class="eyebrow">Conceito</div>
+        <h2 class="title">Variável <strong>Booleana</strong></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 520px; margin-bottom: 24px">
+          Uma variável que guarda
+          <strong>apenas dois valores possíveis</strong>.
+        </p>
+        <div class="g2" style="max-width: 640px; margin-bottom: 20px">
+          <div class="oc" style="border-color: rgba(52, 210, 122, 0.3)">
+            <div
+              class="sym"
+              style="color: var(--true-c); font-size: 2.5rem; font-weight: 900"
+            >
+              <span class="mi mi-lg">check_circle</span>
+            </div>
+            <div class="nm">1 — VERDADEIRO</div>
+            <div class="ds">true · sim · ligado · ativo</div>
+          </div>
+          <div class="oc" style="border-color: rgba(255, 92, 92, 0.3)">
+            <div
+              class="sym"
+              style="color: var(--false-c); font-size: 2.5rem; font-weight: 900"
+            >
+              <span class="mi mi-lg">cancel</span>
+            </div>
+            <div class="nm">0 — FALSO</div>
+            <div class="ds">false · não · desligado · inativo</div>
+          </div>
+        </div>
+        <div class="dbg" id="dbg-0" style="max-width: 700px"></div>
+      </div>
+
+      <!-- ══════════ S5 — OS 3 OPERADORES ══════════ -->
+      <div class="slide" id="s5">
+        <div class="eyebrow">Operadores</div>
+        <h2 class="title">Os <em>3 Operadores</em> Principais</h2>
+        <div class="line"></div>
+        <div class="g3">
+          <div class="oc" style="border-top: 2px solid var(--teal)">
+            <span
+              class="mi mi-lg"
+              style="color: var(--teal); margin-bottom: 8px"
+              >dataset</span
+            >
+            <div class="sym" style="color: var(--teal)">e</div>
+            <div class="nm">
+              AND — palavra
+              <code style="color: var(--teal); font-size: 0.8rem">e</code>
+            </div>
+            <div class="ds">
+              Verdadeiro só quando
+              <strong style="color: var(--white)">ambos</strong> são
+              verdadeiros.
+            </div>
+            <div
+              style="margin-top: 14px; font-size: 1.6rem; color: var(--dim2)"
+            >
+              ∧
+            </div>
+          </div>
+          <div class="oc" style="border-top: 2px solid var(--gold)">
+            <span
+              class="mi mi-lg"
+              style="color: var(--gold-lt); margin-bottom: 8px"
+              >dataset_linked</span
+            >
+            <div class="sym" style="color: var(--gold-lt)">ou</div>
+            <div class="nm">
+              OR — palavra
+              <code style="color: var(--gold-lt); font-size: 0.8rem">ou</code>
+            </div>
+            <div class="ds">
+              Verdadeiro quando
+              <strong style="color: var(--white)">pelo menos um</strong>.
+            </div>
+            <div
+              style="margin-top: 14px; font-size: 1.6rem; color: var(--dim2)"
+            >
+              ∨
+            </div>
+          </div>
+          <div class="oc" style="border-top: 2px solid var(--dim2)">
+            <span class="mi mi-lg" style="color: var(--dim); margin-bottom: 8px"
+              >published_with_changes</span
+            >
+            <div class="sym" style="color: var(--white)">nao</div>
+            <div class="nm">
+              NOT — palavra
+              <code style="color: var(--dim); font-size: 0.8rem">nao</code>
+            </div>
+            <div class="ds">
+              <strong style="color: var(--white)">Inverte</strong> sempre:
+              verdadeiro vira falso.
+            </div>
+            <div
+              style="margin-top: 14px; font-size: 1.6rem; color: var(--dim2)"
+            >
+              ¬
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S6 — ANALOGIA AND ══════════ -->
+      <div class="slide" id="s6">
+        <div class="eyebrow">AND — Analogia</div>
+        <h2 class="title">Entendendo o <strong>AND</strong></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 520px; margin-bottom: 24px">
+          Imagine uma porta com <strong>2 cadeados</strong>.<br />Ela só abre
+          com as <strong>duas chaves giradas ao mesmo tempo</strong>.
+        </p>
+        <div class="ana-pair">
+          <div class="ana-item">
+            <div
+              style="font-size: 2rem; letter-spacing: 4px; color: var(--dim)"
+            >
+              <span class="mi mi-lg">lock</span>
+              <span class="mi mi-lg">lock</span>
+            </div>
+            <span class="pill pt"
+              >A <span class="mi mi-sm">check</span> &nbsp; B
+              <span class="mi mi-sm">check</span></span
+            >
+            <p
+              style="
+                color: var(--true-c);
+                font-weight: 700;
+                font-size: 0.9rem;
+                margin-top: 4px;
+              "
+            >
+              PORTA ABERTA
+            </p>
+          </div>
+          <div
+            style="
+              color: var(--dim2);
+              font-size: 1rem;
+              display: flex;
+              align-items: center;
+              letter-spacing: 1px;
+            "
+          >
+            vs
+          </div>
+          <div class="ana-item">
+            <div
+              style="font-size: 2rem; letter-spacing: 4px; color: var(--dim)"
+            >
+              <span class="mi mi-lg">lock</span>
+              <span class="mi mi-lg">lock_open</span>
+            </div>
+            <span class="pill pf"
+              >A <span class="mi mi-sm">check</span> &nbsp; B
+              <span class="mi mi-sm">close</span></span
+            >
+            <p
+              style="
+                color: var(--false-c);
+                font-weight: 700;
+                font-size: 0.9rem;
+                margin-top: 4px;
+              "
+            >
+              PORTA FECHADA
+            </p>
+          </div>
+        </div>
+        <div class="callout" style="max-width: 460px">
+          Regra: <code style="color: var(--teal)">A AND B</code> → verdadeiro só
+          quando <strong>A = 1 e B = 1</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S7 — TABELA AND ══════════ -->
+      <div class="slide" id="s7">
+        <div class="eyebrow">Tabela Verdade</div>
+        <h2 class="title">Tabela Verdade — <strong>AND</strong></h2>
+        <div class="line"></div>
+        <div class="gc gc-sm">
+          <table>
+            <thead>
+              <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>A AND B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">0 — Falso</td>
+                <td class="fv">0 — Falso</td>
+                <td class="fv">0 — Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">0 — Falso</td>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="fv">0 — Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="fv">0 — Falso</td>
+                <td class="fv">0 — Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="tv">1 — Verdadeiro</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 14px">
+            🔑 AND só é verdadeiro quando <strong>todos</strong> são
+            verdadeiros.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S8 — ANALOGIA OR ══════════ -->
+      <div class="slide" id="s8">
+        <div class="eyebrow">OR — Analogia</div>
+        <h2 class="title">Entendendo o <em>OR</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 520px; margin-bottom: 24px">
+          Você entra numa <strong>festa</strong> se tiver ingresso<br /><em
+            >OU</em
+          >
+          se for amigo do dono. Basta <strong>uma</strong> condição!
+        </p>
+        <div class="ana-pair">
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color: var(--teal)"
+              >confirmation_number</span
+            >
+            <span class="pill pt">Tem ingresso</span>
+            <p
+              style="
+                color: var(--true-c);
+                font-weight: 700;
+                font-size: 0.9rem;
+                margin-top: 4px;
+              "
+            >
+              ENTRA <span class="mi mi-sm">check_circle</span>
+            </p>
+          </div>
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color: var(--gold-lt)"
+              >handshake</span
+            >
+            <span class="pill pt">Amigo do dono</span>
+            <p
+              style="
+                color: var(--true-c);
+                font-weight: 700;
+                font-size: 0.9rem;
+                margin-top: 4px;
+              "
+            >
+              ENTRA <span class="mi mi-sm">check_circle</span>
+            </p>
+          </div>
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color: var(--false-c)">block</span>
+            <span class="pill pf">Nenhum dos dois</span>
+            <p
+              style="
+                color: var(--false-c);
+                font-weight: 700;
+                font-size: 0.9rem;
+                margin-top: 4px;
+              "
+            >
+              NÃO ENTRA <span class="mi mi-sm">cancel</span>
+            </p>
+          </div>
+        </div>
+        <div class="callout callout-gold" style="max-width: 460px">
+          Regra: <code style="color: var(--gold-lt)">A OR B</code> → verdadeiro
+          quando <strong>pelo menos um</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S9 — TABELA OR ══════════ -->
+      <div class="slide" id="s9">
+        <div class="eyebrow">Tabela Verdade</div>
+        <h2 class="title">Tabela Verdade — <em>OR</em></h2>
+        <div class="line"></div>
+        <div class="gc gc-sm">
+          <table>
+            <thead>
+              <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>A OR B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">0 — Falso</td>
+                <td class="fv">0 — Falso</td>
+                <td class="fv">0 — Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">0 — Falso</td>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="tv">1 — Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="fv">0 — Falso</td>
+                <td class="tv">1 — Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="tv">1 — Verdadeiro</td>
+                <td class="tv">1 — Verdadeiro</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout callout-gold" style="margin-top: 14px">
+            🔑 OR só é falso quando <strong>todos</strong> são falsos.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S10 — ANALOGIA NOT ══════════ -->
+      <div class="slide" id="s10">
+        <div class="eyebrow">NOT — Analogia</div>
+        <h2 class="title">Entendendo o <strong>NOT</strong></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 460px; margin-bottom: 24px">
+          NOT é um <strong>espelho perfeito</strong>.<br />Ele inverte tudo —
+          sempre.
+        </p>
+        <div class="ana-pair" style="gap: 48px">
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color: var(--gold-lt)"
+              >light_mode</span
+            >
+            <span class="pill pt" style="margin: 6px">É DIA = true</span>
+            <div style="color: var(--dim2); font-size: 0.85rem; margin: 4px">
+              <span class="mi mi-sm">south</span> NOT
+              <span class="mi mi-sm">south</span>
+            </div>
+            <span class="mi mi-lg" style="color: var(--dim2)">dark_mode</span>
+            <span class="pill pf">NÃO É DIA = false</span>
+          </div>
+          <div
+            style="width: 1px; background: var(--border); height: 140px"
+          ></div>
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color: var(--true-c)">lightbulb</span>
+            <span class="pill pt" style="margin: 6px">LIGADA = true</span>
+            <div style="color: var(--dim2); font-size: 0.85rem; margin: 4px">
+              <span class="mi mi-sm">south</span> NOT
+              <span class="mi mi-sm">south</span>
+            </div>
+            <span class="mi mi-lg" style="color: var(--false-c)"
+              >power_off</span
+            >
+            <span class="pill pf">APAGADA = false</span>
+          </div>
+        </div>
+        <div class="callout" style="max-width: 400px; text-align: center">
+          <code>nao verdadeiro = falso</code> &nbsp;·&nbsp;
+          <code>nao falso = verdadeiro</code>
+        </div>
+      </div>
+
+      <!-- ══════════ S11 — INTERATIVO AND ══════════ -->
+      <div class="slide" id="s11">
+        <div class="eyebrow">Interativo · Teste você mesmo</div>
+        <h2 class="title">Teste o <strong>AND</strong> ao vivo</h2>
+        <div class="gate-wrap">
+          <div class="gi">
+            <div style="text-align: center">
+              <button class="tog off" id="and-a" onclick="tg('and', 'a')">
+                OFF
+              </button>
+              <p class="in-lbl">Entrada A</p>
+            </div>
+            <div style="text-align: center">
+              <button class="tog off" id="and-b" onclick="tg('and', 'b')">
+                OFF
+              </button>
+              <p class="in-lbl">Entrada B</p>
+            </div>
+          </div>
+          <div class="wire"></div>
+          <div class="gbox gand">AND</div>
+          <div class="wire"></div>
+          <div style="text-align: center">
+            <div class="rball rf" id="and-res">0</div>
+            <p class="in-lbl" id="and-lbl">FALSO</p>
+          </div>
+        </div>
+        <div
+          class="gc"
+          style="max-width: 480px; padding: 14px 20px; margin-top: 20px"
+        >
+          <p
+            style="text-align: center; font-size: 0.88rem; color: var(--dim)"
+            id="and-exp"
+          >
+            Ligue <strong style="color: var(--white)">ambas</strong> as entradas
+            para obter resultado verdadeiro.
+          </p>
+        </div>
+      </div>
+
+      <!-- ══════════ S12 — INTERATIVO OR ══════════ -->
+      <div class="slide" id="s12">
+        <div class="eyebrow">Interativo · Teste você mesmo</div>
+        <h2 class="title">Teste o <em>OR</em> ao vivo</h2>
+        <div class="gate-wrap">
+          <div class="gi">
+            <div style="text-align: center">
+              <button class="tog off" id="or-a" onclick="tg('or', 'a')">
+                OFF
+              </button>
+              <p class="in-lbl">Entrada A</p>
+            </div>
+            <div style="text-align: center">
+              <button class="tog off" id="or-b" onclick="tg('or', 'b')">
+                OFF
+              </button>
+              <p class="in-lbl">Entrada B</p>
+            </div>
+          </div>
+          <div class="wire"></div>
+          <div class="gbox gor">OR</div>
+          <div class="wire"></div>
+          <div style="text-align: center">
+            <div class="rball rf" id="or-res">0</div>
+            <p class="in-lbl" id="or-lbl">FALSO</p>
+          </div>
+        </div>
+        <div
+          class="gc"
+          style="max-width: 480px; padding: 14px 20px; margin-top: 20px"
+        >
+          <p
+            style="text-align: center; font-size: 0.88rem; color: var(--dim)"
+            id="or-exp"
+          >
+            Ligue
+            <strong style="color: var(--white)">pelo menos uma</strong> entrada
+            para resultado verdadeiro.
+          </p>
+        </div>
+      </div>
+
+      <!-- ══════════ S13 — INTERATIVO NOT ══════════ -->
+      <div class="slide" id="s13">
+        <div class="eyebrow">Interativo · Teste você mesmo</div>
+        <h2 class="title">Teste o <strong>NOT</strong> ao vivo</h2>
+        <div class="gate-wrap">
+          <div style="text-align: center">
+            <button class="tog off" id="not-a" onclick="tgNot()">OFF</button>
+            <p class="in-lbl">Entrada A</p>
+          </div>
+          <div class="wire"></div>
+          <div class="gbox gnot">NOT</div>
+          <div class="wire"></div>
+          <div style="text-align: center">
+            <div class="rball rt" id="not-res">1</div>
+            <p class="in-lbl" id="not-lbl">VERDADEIRO</p>
+          </div>
+        </div>
+        <div
+          class="gc"
+          style="max-width: 480px; padding: 14px 20px; margin-top: 20px"
+        >
+          <p style="text-align: center; font-size: 0.88rem; color: var(--dim)">
+            O NOT
+            <strong style="color: var(--white)">sempre inverte</strong
+            >.<br />OFF → resultado ON &nbsp;·&nbsp; ON → resultado OFF
+          </p>
+        </div>
+      </div>
+
+      <!-- ══════════ S14 — COMBINANDO ══════════ -->
+      <div class="slide" id="s14">
+        <div class="eyebrow">Combinando Operadores</div>
+        <h2 class="title">Expressões <em>Combinadas</em></h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width: 740px">
+          <div class="step">
+            <div class="sn">1</div>
+            <div>
+              <code style="color: var(--teal); font-size: 0.95rem"
+                >A <span style="color: var(--teal)">e</span> (nao B)</code
+              >
+              <p style="margin-top: 4px; font-size: 0.88rem; color: var(--dim)">
+                A é verdadeiro <strong style="color: var(--white)">E</strong> B
+                não é verdadeiro.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">2</div>
+            <div>
+              <code style="color: var(--teal); font-size: 0.95rem"
+                >(A <span style="color: var(--gold-lt)">ou</span> B)
+                <span style="color: var(--teal)">e</span> C</code
+              >
+              <p style="margin-top: 4px; font-size: 0.88rem; color: var(--dim)">
+                Um dos dois (A ou B) é verdadeiro,
+                <strong style="color: var(--white)">E</strong> C também é.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">3</div>
+            <div style="width: 100%">
+              <p
+                style="
+                  margin-bottom: 8px;
+                  font-size: 0.85rem;
+                  color: var(--dim);
+                "
+              >
+                Acesso a conteúdo — logado E (assinatura OU admin):
+              </p>
+              <div class="dbg" id="dbg-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S15 — COTIDIANO ══════════ -->
+      <div class="slide" id="s15">
+        <div class="eyebrow">Exemplos do Dia a Dia</div>
+        <h2 class="title">Lógica no <strong>Cotidiano</strong></h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width: 760px">
+          <div
+            class="oc"
+            style="border-top: 2px solid var(--teal); text-align: left"
+          >
+            <div style="font-size: 1.8rem; margin-bottom: 8px">
+              <span class="mi mi-lg">directions_car</span>
+            </div>
+            <div class="nm">Carro liga?</div>
+            <div class="ds" style="margin-top: 8px">
+              <span
+                class="pill pa"
+                style="margin-bottom: 8px; display: inline-block"
+                >AND</span
+              ><br />
+              Tem combustível
+              <strong style="color: var(--white)">E</strong> chave girada<br /><br />
+              <code style="color: var(--teal); font-size: 0.8rem"
+                >combustivel e chave</code
+              >
+            </div>
+          </div>
+          <div
+            class="oc"
+            style="border-top: 2px solid var(--gold); text-align: left"
+          >
+            <span class="mi mi-lg" style="color: var(--dim); margin-bottom: 6px"
+              >smartphone</span
+            >
+            <div class="nm">Acorda?</div>
+            <div class="ds" style="margin-top: 8px">
+              <span
+                class="pill"
+                style="
+                  background: rgba(200, 149, 42, 0.12);
+                  color: var(--gold-lt);
+                  border: 1px solid rgba(200, 149, 42, 0.25);
+                  margin-bottom: 8px;
+                  display: inline-block;
+                "
+                >OR</span
+              ><br />
+              Alarme tocou
+              <strong style="color: var(--white)">OU</strong> alguém chamou<br /><br />
+              <code style="color: var(--gold-lt); font-size: 0.8rem"
+                >alarme ou chamou</code
+              >
+            </div>
+          </div>
+          <div
+            class="oc"
+            style="border-top: 2px solid var(--dim2); text-align: left"
+          >
+            <span class="mi mi-lg" style="color: var(--dim); margin-bottom: 6px"
+              >lock</span
+            >
+            <div class="nm">Acessa o sistema?</div>
+            <div class="ds" style="margin-top: 8px">
+              <span
+                class="pill"
+                style="
+                  background: rgba(255, 255, 255, 0.06);
+                  color: var(--dim);
+                  border: 1px solid var(--border);
+                  margin-bottom: 8px;
+                  display: inline-block;
+                "
+                >NOT</span
+              ><br />
+              Bloqueia se <strong style="color: var(--white)">NÃO</strong> está
+              logado<br /><br />
+              <code style="color: var(--dim); font-size: 0.8rem"
+                >nao estaLogado → login</code
+              >
+            </div>
+          </div>
+          <div
+            class="oc"
+            style="border-top: 2px solid var(--true-c); text-align: left"
+          >
+            <span class="mi mi-lg" style="color: var(--dim); margin-bottom: 6px"
+              >sports_esports</span
+            >
+            <div class="nm">Continua no jogo?</div>
+            <div class="ds" style="margin-top: 8px">
+              <span
+                class="pill pt"
+                style="margin-bottom: 8px; display: inline-block"
+                >AND + NOT</span
+              ><br />
+              Tem vidas
+              <strong style="color: var(--white)">E NÃO</strong> esgotou
+              tempo<br /><br />
+              <code style="color: var(--true-c); font-size: 0.8rem"
+                >temVidas e nao semTempo</code
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S16 — TABELA COMPLETA ══════════ -->
+      <div class="slide" id="s16">
+        <div class="eyebrow">Tabela Verdade Completa</div>
+        <h2 class="title">AND, <em>OR</em> e NOT lado a lado</h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width: 680px; padding: 20px 24px">
+          <table>
+            <thead>
+              <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>A AND B</th>
+                <th>A OR B</th>
+                <th>NOT A</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">0</td>
+                <td class="fv">0</td>
+                <td class="fv">0</td>
+                <td class="fv">0</td>
+                <td class="tv">1</td>
+              </tr>
+              <tr>
+                <td class="fv">0</td>
+                <td class="tv">1</td>
+                <td class="fv">0</td>
+                <td class="tv">1</td>
+                <td class="tv">1</td>
+              </tr>
+              <tr>
+                <td class="tv">1</td>
+                <td class="fv">0</td>
+                <td class="fv">0</td>
+                <td class="tv">1</td>
+                <td class="fv">0</td>
+              </tr>
+              <tr>
+                <td class="tv">1</td>
+                <td class="tv">1</td>
+                <td class="tv">1</td>
+                <td class="tv">1</td>
+                <td class="fv">0</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 14px">
+            💡 Cada linha é uma combinação possível de A e B —
+            <strong>todas as situações existentes</strong>.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S17 — 3 VARIÁVEIS: e ══════════ -->
+      <div class="slide" id="s17">
+        <div class="eyebrow">Tabela Verdade · 3 Variáveis</div>
+        <h2 class="title">A <strong>e</strong> B <strong>e</strong> C</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 620px; margin-bottom: 16px">
+          Com 3 variáveis temos <strong>8 combinações</strong> possíveis (2³ =
+          8).<br />
+          O <strong>e</strong> exige que <em>todas</em> sejam verdadeiras.
+        </p>
+        <div class="gc" style="max-width: 780px; padding: 20px 28px">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="mi mi-sm">input</span> A</th>
+                <th><span class="mi mi-sm">input</span> B</th>
+                <th><span class="mi mi-sm">input</span> C</th>
+                <th>
+                  <span class="mi mi-sm">playlist_add_check</span> A
+                  <span style="color: var(--teal)">e</span> B
+                  <span style="color: var(--teal)">e</span> C
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr style="background: rgba(52, 210, 122, 0.06)">
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 14px">
+            🔑 Com <strong>e</strong>, qualquer falso contamina tudo. Só a
+            última linha passa!
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S18 — 3 VARIÁVEIS: ou ══════════ -->
+      <div class="slide" id="s18">
+        <div class="eyebrow">Tabela Verdade · 3 Variáveis</div>
+        <h2 class="title">A <em>ou</em> B <em>ou</em> C</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 620px; margin-bottom: 16px">
+          O <strong>ou</strong> é generoso — basta <em>um</em> ser verdadeiro
+          para o resultado ser verdadeiro.
+        </p>
+        <div class="gc" style="max-width: 780px; padding: 20px 28px">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="mi mi-sm">input</span> A</th>
+                <th><span class="mi mi-sm">input</span> B</th>
+                <th><span class="mi mi-sm">input</span> C</th>
+                <th>
+                  <span class="mi mi-sm">playlist_add_check</span> A
+                  <span style="color: var(--gold-lt)">ou</span> B
+                  <span style="color: var(--gold-lt)">ou</span> C
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: rgba(255, 92, 92, 0.05)">
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout callout-gold" style="margin-top: 14px">
+            🔑 Com <strong>ou</strong>, só a primeira linha é falsa — quando
+            <em>ninguém</em> é verdadeiro.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S19 — 3 VARS MISTA: (A ou B) e C ══════════ -->
+      <div class="slide" id="s19">
+        <div class="eyebrow">Tabela Verdade · Expressão Mista</div>
+        <h2 class="title">(<em>A ou B</em>) <strong>e</strong> C</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 660px; margin-bottom: 14px">
+          Combinamos <strong>ou</strong> e <strong>e</strong> na mesma
+          expressão.<br />
+          A coluna do meio mostra o resultado parcial de <em>(A ou B)</em> antes
+          do <strong>e C</strong>.
+        </p>
+        <div class="gc" style="max-width: 920px; padding: 18px 24px">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="mi mi-sm">input</span> A</th>
+                <th><span class="mi mi-sm">input</span> B</th>
+                <th><span class="mi mi-sm">input</span> C</th>
+                <th style="color: var(--gold-lt)">
+                  <span class="mi mi-sm">groups</span> A ou B
+                </th>
+                <th>
+                  <span class="mi mi-sm">playlist_add_check</span> (A ou B) e C
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr style="background: rgba(52, 210, 122, 0.06)">
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr style="background: rgba(52, 210, 122, 0.06)">
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr style="background: rgba(52, 210, 122, 0.06)">
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 12px">
+            💡 Resolva sempre de <strong>dentro para fora</strong>: primeiro os
+            parênteses, depois o restante.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S20 — 3 VARS COM NAO: A e (nao B) e C ══════════ -->
+      <div class="slide" id="s20">
+        <div class="eyebrow">Tabela Verdade · Com nao</div>
+        <h2 class="title">
+          A <strong>e</strong> (<span class="mi mi-sm">swap_horiz</span>
+          <strong>nao</strong> B) <strong>e</strong> C
+        </h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 660px; margin-bottom: 14px">
+          O <strong>nao</strong> inverte B antes de qualquer cálculo.<br />
+          Veja como isso muda completamente os resultados.
+        </p>
+        <div class="gc" style="max-width: 920px; padding: 18px 24px">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="mi mi-sm">input</span> A</th>
+                <th><span class="mi mi-sm">input</span> B</th>
+                <th><span class="mi mi-sm">input</span> C</th>
+                <th style="color: var(--dim)">
+                  <span class="mi mi-sm">swap_horiz</span> nao B
+                </th>
+                <th>
+                  <span class="mi mi-sm">playlist_add_check</span> A e (nao B) e
+                  C
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr style="background: rgba(52, 210, 122, 0.06)">
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">Verdadeiro</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+              <tr>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="tv">V</td>
+                <td class="fv">F</td>
+                <td class="fv">Falso</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 12px">
+            🔑 Só <strong>uma combinação</strong> passa: A=V, B=<em>F</em> (nao
+            B = V), C=V. O <strong>nao</strong> é muito restritivo!
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S21 — 4 E 5 VARIÁVEIS ══════════ -->
+      <div class="slide" id="s21">
+        <div class="eyebrow">Tabela Verdade · 4 e 5 Variáveis</div>
+        <h2 class="title">Expressões com <em>4 e 5</em> variáveis</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width: 700px; margin-bottom: 14px">
+          Com mais variáveis, resolvemos <strong>passo a passo</strong>, de
+          dentro para fora.
+        </p>
+        <div class="g2" style="max-width: 960px; align-items: start">
+          <div class="gc" style="max-width: none; padding: 20px 24px">
+            <p
+              style="
+                font-size: 0.78rem;
+                color: var(--dim);
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+              "
+            >
+              4 variáveis — (A e B) ou (C e D)
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>C</th>
+                  <th>D</th>
+                  <th style="color: var(--gold-lt)">A e B</th>
+                  <th style="color: var(--gold-lt)">C e D</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">Falso</td>
+                </tr>
+                <tr>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+                <tr>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+                <tr style="background: rgba(52, 210, 122, 0.06)">
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="callout" style="margin-top: 10px; font-size: 0.82rem">
+              Cada grupo (<em>A e B</em>) e (<em>C e D</em>) é avaliado
+              separadamente, depois o <strong>ou</strong> une os dois.
+            </div>
+          </div>
+
+          <div class="gc" style="max-width: none; padding: 20px 24px">
+            <p
+              style="
+                font-size: 0.78rem;
+                color: var(--dim);
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+              "
+            >
+              5 variáveis — (A e B) ou (C e D) ou E
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>C</th>
+                  <th>D</th>
+                  <th>E</th>
+                  <th style="color: var(--gold-lt)">A e B</th>
+                  <th style="color: var(--gold-lt)">C e D</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">Falso</td>
+                </tr>
+                <tr style="background: rgba(52, 210, 122, 0.06)">
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+                <tr style="background: rgba(52, 210, 122, 0.06)">
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+                <tr style="background: rgba(52, 210, 122, 0.06)">
+                  <td class="tv">V</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="fv">F</td>
+                  <td class="tv">V</td>
+                  <td class="fv">F</td>
+                  <td class="tv">Verdadeiro</td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              class="callout callout-gold"
+              style="margin-top: 10px; font-size: 0.82rem"
+            >
+              Com 5 variáveis, 2⁵ = <strong>32 combinações</strong>. A tabela é
+              enorme — por isso usamos expressões para raciocinar!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S22 — CÓDIGO REAL ══════════ -->
+      <div class="slide" id="s22">
+        <div class="eyebrow">Código Real</div>
+        <h2 class="title">
+          Booleanos no <strong>Código</strong>
+          <span
+            class="mi"
+            style="
+              font-size: 2.5rem;
+              color: var(--teal);
+              vertical-align: middle;
+            "
+            >code</span
+          >
+        </h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width: 680px">
+          <p style="font-size: 0.88rem; color: var(--dim); margin-bottom: 14px">
+            Sistema de login em Portugol Studio:
+          </p>
+          <div class="dbg" id="dbg-2"></div>
+          <div class="callout callout-gold" style="margin-top: 12px">
+            Resultado: <strong>"Bem-vinda, Ana!"</strong> — porque
+            <code style="color: var(--gold-lt)"
+              >verdadeiro e verdadeiro e verdadeiro = verdadeiro</code
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S18 — EXERCÍCIO ══════════ -->
+      <div class="slide" id="s23">
+        <div class="eyebrow">Pratique!</div>
+        <h2 class="title">
+          Exercício Mental
+          <span
+            class="mi"
+            style="font-size: 2rem; color: var(--dim2); vertical-align: middle"
+            >extension</span
+          >
+        </h2>
+        <div class="line"></div>
+        <div class="gc gc-md">
+          <p
+            style="
+              text-align: center;
+              font-size: 0.9rem;
+              color: var(--dim);
+              margin-bottom: 18px;
+            "
+          >
+            Dado:
+            <strong style="color: var(--teal)"
+              >A = verdadeiro &nbsp;·&nbsp; B = falso &nbsp;·&nbsp; C =
+              verdadeiro</strong
+            >
+          </p>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex: 1">
+              <code style="color: var(--teal); font-size: 0.95rem"
+                >A <span style="color: var(--teal)">e</span> B</code
+              >
+              <div
+                class="rev"
+                onclick="
+                  this.innerHTML =
+                    '<strong style=color:var(--false-c)>falso</strong> — B é falso e <b>e</b> precisa de todos verdadeiros.'
+                "
+              >
+                <span class="mi mi-sm">touch_app</span> Clique para ver
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex: 1">
+              <code style="color: var(--teal); font-size: 0.95rem"
+                >A <span style="color: var(--gold-lt)">ou</span> B</code
+              >
+              <div
+                class="rev"
+                onclick="
+                  this.innerHTML =
+                    '<strong style=color:var(--true-c)>verdadeiro</strong> — A é verdadeiro e <b>ou</b> só precisa de um.'
+                "
+              >
+                <span class="mi mi-sm">touch_app</span> Clique para ver
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex: 1">
+              <code style="color: var(--teal); font-size: 0.95rem"
+                >(nao B) <span style="color: var(--teal)">e</span> C</code
+              >
+              <div
+                class="rev"
+                onclick="
+                  this.innerHTML =
+                    '<strong style=color:var(--true-c)>verdadeiro</strong> — nao falso = verdadeiro, e verdadeiro e verdadeiro = verdadeiro.'
+                "
+              >
+                <span class="mi mi-sm">touch_app</span> Clique para ver
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S19 — QUIZ ══════════ -->
+      <div class="slide" id="s24">
+        <div class="eyebrow">Quiz!</div>
+        <h2 class="title">
+          Teste seu Conhecimento
+          <span
+            class="mi"
+            style="font-size: 2rem; color: var(--dim2); vertical-align: middle"
+            >target</span
+          >
+        </h2>
+        <div class="line"></div>
+        <div class="gc gc-sm">
+          <p
+            style="
+              text-align: center;
+              font-size: 0.95rem;
+              color: var(--dim);
+              margin-bottom: 18px;
+            "
+          >
+            Se <strong style="color: var(--teal)">A = verdadeiro</strong> e
+            <strong style="color: var(--teal)">B = verdadeiro</strong>, qual é o
+            resultado de<br />
+            <code style="color: var(--gold-lt); font-size: 1.2rem"
+              >nao (A e B)</code
+            >?
+          </p>
+          <div
+            style="display: flex; flex-direction: column; gap: 10px"
+            id="qopts"
+          >
+            <button class="qopt" onclick="qz(this, false)">
+              A) &nbsp;verdadeiro
+            </button>
+            <button class="qopt" onclick="qz(this, true)">
+              B) &nbsp;falso
+            </button>
+            <button class="qopt" onclick="qz(this, false)">
+              C) &nbsp;nulo
+            </button>
+            <button class="qopt" onclick="qz(this, false)">
+              D) &nbsp;verdadeiro e falso ao mesmo tempo
+            </button>
+          </div>
+          <div
+            id="qfb"
+            style="
+              margin-top: 14px;
+              font-size: 0.88rem;
+              font-weight: 600;
+              min-height: 22px;
+            "
+          ></div>
+        </div>
+      </div>
+
+      <!-- ══════════ S20 — RESUMÃO ══════════ -->
+      <div class="slide" id="s25">
+        <div class="eyebrow">Resumo</div>
+        <h2 class="title">
+          Resumão
+          <span
+            class="mi"
+            style="font-size: 2rem; color: var(--dim2); vertical-align: middle"
+            >menu_book</span
+          >
+        </h2>
+        <div class="line"></div>
+        <div class="g3" style="margin-bottom: 18px">
+          <div class="oc" style="border-top: 2px solid var(--teal)">
+            <div class="sym" style="color: var(--teal); font-size: 1.6rem">
+              AND
+            </div>
+            <div class="ds" style="margin-top: 8px">
+              Verdadeiro só quando
+              <strong style="color: var(--white)">todos</strong>.
+            </div>
+            <code
+              style="
+                color: var(--teal);
+                font-size: 0.78rem;
+                margin-top: 10px;
+                display: block;
+                line-height: 1.8;
+              "
+              >1 AND 1 = 1<br />1 AND 0 = 0</code
+            >
+          </div>
+          <div class="oc" style="border-top: 2px solid var(--gold)">
+            <div class="sym" style="color: var(--gold-lt); font-size: 1.6rem">
+              OR
+            </div>
+            <div class="ds" style="margin-top: 8px">
+              Verdadeiro quando
+              <strong style="color: var(--white)">um ou mais</strong>.
+            </div>
+            <code
+              style="
+                color: var(--gold-lt);
+                font-size: 0.78rem;
+                margin-top: 10px;
+                display: block;
+                line-height: 1.8;
+              "
+              >1 OR 0 = 1<br />0 OR 0 = 0</code
+            >
+          </div>
+          <div class="oc" style="border-top: 2px solid var(--dim2)">
+            <div class="sym" style="color: var(--white); font-size: 1.6rem">
+              NOT
+            </div>
+            <div class="ds" style="margin-top: 8px">
+              <strong style="color: var(--white)">Inverte</strong> sempre.
+            </div>
+            <code
+              style="
+                color: var(--dim);
+                font-size: 0.78rem;
+                margin-top: 10px;
+                display: block;
+                line-height: 1.8;
+              "
+              >NOT 1 = 0<br />NOT 0 = 1</code
+            >
+          </div>
+        </div>
+        <div class="callout" style="max-width: 740px; text-align: center">
+          ✅ Booleanos têm só <strong>dois valores</strong> &nbsp;·&nbsp; Toda
+          decisão usa lógica booleana &nbsp;·&nbsp; Operadores podem ser
+          <strong>combinados</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S21 — FIM ══════════ -->
+    </div>
+    <!-- #deck -->
+
+    <!-- ══════════ FOOTER ══════════ -->
+    <div id="footer">
+      <div class="f-brand">
+        <img
+          src="https://www.cesurgmarau.com.br/site/statics/logo.png"
+          alt="CESURG"
+          style="
+            height: 36px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+          "
+          id="logo-img"
+        />
+        <div class="f-sep"></div>
+        <button
+          class="nbtn"
+          onclick="toggleTheme()"
+          id="theme-btn"
+          title="Alternar Tema"
+        >
+          <span class="mi mi-sm" id="theme-icon">dark_mode</span>
+        </button>
+      </div>
+
+      <div class="f-bar"></div>
+
+      <div class="f-nav">
+        <button class="nbtn" id="btn-prev" onclick="go(-1)">
+          <span class="mi mi-sm">chevron_left</span> Anterior
+        </button>
+        <span class="f-count" id="cnt">1 / 21</span>
+        <button class="nbtn p" id="btn-next" onclick="go(1)">
+          Próximo <span class="mi mi-sm">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const N = 25;
+      let cur = 1,
+        busy = false;
+      const gs = {
+        and: { a: false, b: false },
+        or: { a: false, b: false },
+        not: { a: false },
+      };
+
+      function toggleTheme() {
+        const isLight = document.body.classList.toggle("light-mode");
+        const icon = document.getElementById("theme-icon");
+        const logo = document.getElementById("logo-img");
+
+        icon.textContent = isLight ? "light_mode" : "dark_mode";
+        logo.style.filter = isLight ? "none" : "brightness(0) invert(1)";
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+      }
+
+      // Auto-apply stored theme
+      if (localStorage.getItem("theme") === "light") toggleTheme();
+
+      function render() {
+        document.getElementById("cnt").textContent = cur + " / " + N;
+        document.getElementById("prog").style.width =
+          ((cur - 1) / (N - 1)) * 100 + "%";
+        document.getElementById("btn-prev").style.opacity =
+          cur === 1 ? ".3" : "1";
+        const nb = document.getElementById("btn-next");
+        if (cur === N) {
+          nb.textContent = "↺ Reiniciar";
+          nb.onclick = () => jump(1);
+        } else {
+          nb.textContent = "Próximo →";
+          nb.onclick = () => go(1);
+        }
+      }
+
+      const ANIM_DUR = 560; // ms — match longest keyframe above
+
+      function clearAnims(el) {
+        el.classList.remove(
+          "active",
+          "anim-exit-fwd",
+          "anim-exit-bwd",
+          "anim-enter-fwd",
+          "anim-enter-bwd",
+        );
+        el.style.cssText = "";
+      }
+
+      function go(dir) {
+        if (busy) return;
+        const nxt = cur + dir;
+        if (nxt < 1 || nxt > N) return;
+        busy = true;
+
+        const ce = document.getElementById("s" + cur);
+        const ne = document.getElementById("s" + nxt);
+
+        // Exit current
+        ce.classList.remove("active");
+        ce.classList.add(dir > 0 ? "anim-exit-fwd" : "anim-exit-bwd");
+
+        // Prepare next (off-screen, no anim yet)
+        ne.style.opacity = "0";
+        ne.style.pointerEvents = "none";
+
+        // Stagger: enter starts just slightly after exit begins — feels snappier
+        setTimeout(() => {
+          ne.style.opacity = "";
+          ne.classList.add(dir > 0 ? "anim-enter-fwd" : "anim-enter-bwd");
+        }, 40);
+
+        // Clean up after animations complete
+        setTimeout(() => {
+          clearAnims(ce);
+          ce.style.opacity = "0";
+          ce.style.pointerEvents = "none";
+
+          clearAnims(ne);
+          ne.classList.add("active");
+
+          busy = false;
+        }, ANIM_DUR + 40);
+
+        cur = nxt;
+        render();
+      }
+
+      function jump(n) {
+        const ce = document.getElementById("s" + cur);
+        clearAnims(ce);
+        ce.style.opacity = "0";
+        ce.style.pointerEvents = "none";
+
+        cur = n;
+        const ne = document.getElementById("s" + cur);
+        clearAnims(ne);
+        ne.classList.add("active");
+        render();
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
+          e.preventDefault();
+          go(1);
+        }
+        if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
+          e.preventDefault();
+          go(-1);
+        }
+      });
+
+      /* GATES */
+      function tg(gate, inp) {
+        gs[gate][inp] = !gs[gate][inp];
+        const b = document.getElementById(gate + "-" + inp);
+        b.textContent = gs[gate][inp] ? "ON" : "OFF";
+        b.className = "tog " + (gs[gate][inp] ? "on" : "off");
+        calc(gate);
+      }
+
+      function calc(gate) {
+        const { a, b } = gs[gate];
+        const r = gate === "and" ? a && b : a || b;
+        const re = document.getElementById(gate + "-res");
+        re.textContent = r ? "1" : "0";
+        re.className = "rball " + (r ? "rt" : "rf");
+        document.getElementById(gate + "-lbl").textContent = r
+          ? "VERDADEIRO"
+          : "FALSO";
+        const ex = document.getElementById(gate + "-exp");
+        if (gate === "and") {
+          if (!a && !b)
+            ex.innerHTML =
+              'Nenhuma ligada. AND precisa das <strong style="color:#fff">duas</strong>.';
+          else if ((a && !b) || (!a && b))
+            ex.innerHTML =
+              'Só uma ligada. AND precisa das <strong style="color:#fff">duas</strong>.';
+          else
+            ex.innerHTML =
+              'Ambas ligadas — AND retorna <strong style="color:var(--true-c)">VERDADEIRO</strong>!';
+        } else {
+          ex.innerHTML =
+            !a && !b
+              ? 'Nenhuma ligada. OR precisa de <strong style="color:#fff">pelo menos uma</strong>.'
+              : 'Pelo menos uma ligada — OR retorna <strong style="color:var(--true-c)">VERDADEIRO</strong>!';
+        }
+      }
+
+      function tgNot() {
+        gs.not.a = !gs.not.a;
+        const b = document.getElementById("not-a");
+        b.textContent = gs.not.a ? "ON" : "OFF";
+        b.className = "tog " + (gs.not.a ? "on" : "off");
+        const r = !gs.not.a;
+        const re = document.getElementById("not-res");
+        re.textContent = r ? "1" : "0";
+        re.className = "rball " + (r ? "rt" : "rf");
+        document.getElementById("not-lbl").textContent = r
+          ? "VERDADEIRO"
+          : "FALSO";
+      }
+
+      function qz(btn, ok) {
+        document.querySelectorAll(".qopt").forEach((o) => (o.disabled = true));
+        btn.classList.add(ok ? "ok" : "no");
+        if (!ok)
+          document.querySelectorAll(".qopt").forEach((o) => {
+            if (o.textContent.includes("false")) o.classList.add("ok");
+          });
+        document.getElementById("qfb").innerHTML = ok
+          ? '<span style="color:var(--true-c)">Correto! A e B = verdadeiro → nao verdadeiro = <strong>falso</strong>.</span>'
+          : '<span style="color:var(--false-c)">Quase! A e B = verdadeiro → nao verdadeiro = <strong>falso</strong>.</span>';
+      }
+
+      /* ─── DEBUGGER SYSTEM ─── */
+      const DBG_DATA = [
+        {
+          // 0: S4 — variáveis lógicas
+          lines: [
+            `<span class="cm">// Exemplos em Portugol Studio</span>`,
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">logico</span> estaLogado   = <span class="str">verdadeiro</span>  <span class="cm">// usuário entrou</span>`,
+            `    <span class="kw">logico</span> temPermissao = <span class="str">falso</span>       <span class="cm">// sem acesso</span>`,
+            `    <span class="kw">logico</span> lampAcesa    = <span class="str">verdadeiro</span>  <span class="cm">// lâmpada ligada</span>`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            {
+              line: 1,
+              exp: `Declaramos o <strong>programa</strong>. Todo código em Portugol começa com essa palavra-chave.`,
+            },
+            {
+              line: 2,
+              exp: `A <strong>funcao inicio()</strong> é o ponto de partida — o programa começa a executar daqui.`,
+            },
+            {
+              line: 3,
+              exp: `<strong>logico estaLogado = verdadeiro</strong> — criamos uma variável que só aceita <em>verdadeiro</em> ou <em>falso</em>. O usuário está logado.`,
+            },
+            {
+              line: 4,
+              exp: `<strong>logico temPermissao = falso</strong> — outra variável lógica. O usuário ainda não tem permissão de acesso.`,
+            },
+            {
+              line: 5,
+              exp: `<strong>logico lampAcesa = verdadeiro</strong> — a lâmpada está ligada. Simples assim!`,
+            },
+            {
+              line: 6,
+              exp: `Fechamos a <strong>funcao inicio()</strong> com a chave <strong>}</strong>.`,
+            },
+            {
+              line: 7,
+              exp: `Fechamos o <strong>programa</strong>. Fim da execução — o computador para aqui.`,
+            },
+          ],
+          cur: 0,
+        },
+        {
+          // 1: S14 — expressão combinada com se/senao
+          lines: [
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">logico</span> logado     = <span class="str">verdadeiro</span>`,
+            `    <span class="kw">logico</span> assinatura = <span class="str">falso</span>`,
+            `    <span class="kw">logico</span> admin      = <span class="str">verdadeiro</span>`,
+            ``,
+            `    <span class="kw">se</span> (logado <span class="op">e</span> (assinatura <span class="op">ou</span> admin)) {`,
+            `      escreva(<span class="str">"Conteúdo liberado!"</span>)`,
+            `    }`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            {
+              line: 2,
+              exp: `<strong>logado = verdadeiro</strong> — o usuário está logado no sistema.`,
+            },
+            {
+              line: 3,
+              exp: `<strong>assinatura = falso</strong> — ele não tem assinatura ativa.`,
+            },
+            {
+              line: 4,
+              exp: `<strong>admin = verdadeiro</strong> — mas ele é administrador!`,
+            },
+            {
+              line: 6,
+              exp: `Avaliamos de dentro para fora:<br>① <em>assinatura <strong style="color:var(--gold-lt)">ou</strong> admin</em> → falso ou verdadeiro = <strong>verdadeiro</strong><br>② <em>logado <strong style="color:var(--teal)">e</strong> verdadeiro</em> → verdadeiro e verdadeiro = <strong>verdadeiro</strong>`,
+            },
+            {
+              line: 7,
+              exp: `Condição foi verdadeira → <strong>escreva</strong> é executado. Conteúdo liberado!`,
+            },
+            {
+              line: 8,
+              exp: `Fim do bloco <strong>se</strong>. O programa continua normalmente.`,
+            },
+          ],
+          cur: 0,
+        },
+        {
+          // 2: S22 — sistema de login
+          lines: [
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">cadeia</span>  usuario   = <span class="str">"ana"</span>`,
+            `    <span class="kw">cadeia</span>  senha     = <span class="str">"1234"</span>`,
+            `    <span class="kw">logico</span>  estaAtivo = <span class="str">verdadeiro</span>`,
+            ``,
+            `    <span class="kw">logico</span> usuarioOk = (usuario <span class="op">==</span> <span class="str">"ana"</span>)   <span class="cm">// verdadeiro</span>`,
+            `    <span class="kw">logico</span> senhaOk   = (senha <span class="op">==</span> <span class="str">"1234"</span>)   <span class="cm">// verdadeiro</span>`,
+            ``,
+            `    <span class="kw">se</span> (usuarioOk <span class="op">e</span> senhaOk <span class="op">e</span> estaAtivo) {`,
+            `      escreva(<span class="str">"Bem-vinda, Ana!"</span>)`,
+            `    } <span class="kw">senao</span> {`,
+            `      escreva(<span class="str">"Acesso negado"</span>)`,
+            `    }`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            {
+              line: 2,
+              exp: `<strong>cadeia usuario = "ana"</strong> — variável de texto (<em>cadeia</em>) guardando o nome digitado.`,
+            },
+            {
+              line: 3,
+              exp: `<strong>cadeia senha = "1234"</strong> — variável de texto com a senha informada pelo usuário.`,
+            },
+            {
+              line: 4,
+              exp: `<strong>logico estaAtivo = verdadeiro</strong> — a conta deste usuário está ativa no sistema.`,
+            },
+            {
+              line: 6,
+              exp: `Comparamos: <em>usuario == "ana"</em> → os textos são iguais → <strong>verdadeiro</strong>. Armazenado em <strong>usuarioOk</strong>.`,
+            },
+            {
+              line: 7,
+              exp: `Comparamos: <em>senha == "1234"</em> → os textos são iguais → <strong>verdadeiro</strong>. Armazenado em <strong>senhaOk</strong>.`,
+            },
+            {
+              line: 9,
+              exp: `Avaliamos: usuarioOk <strong style="color:var(--teal)">e</strong> senhaOk <strong style="color:var(--teal)">e</strong> estaAtivo<br>→ verdadeiro <strong style="color:var(--teal)">e</strong> verdadeiro <strong style="color:var(--teal)">e</strong> verdadeiro = <strong>verdadeiro</strong>`,
+            },
+            {
+              line: 10,
+              exp: `Condição verdadeira → executa <strong>escreva("Bem-vinda, Ana!")</strong>. Login aprovado!`,
+            },
+            {
+              line: 11,
+              exp: `O bloco <strong>senao</strong> é <em>ignorado</em> — a condição já foi verdadeira acima, então pulamos direto.`,
+            },
+          ],
+          cur: 0,
+        },
+      ];
+
+      function renderDbg(id) {
+        const el = document.getElementById("dbg-" + id);
+        if (!el) return;
+        const d = DBG_DATA[id];
+        const step = d.steps[d.cur];
+        const total = d.steps.length;
+
+        const dots = d.steps
+          .map((_, i) => `<span class="${i === d.cur ? "on" : ""}"></span>`)
+          .join("");
+
+        const linesHTML = d.lines
+          .map((content, i) => {
+            const active = i === step.line;
+            return `<div class="dbg-line${active ? " active" : ""}">
+        <div class="dbg-lnum">${i + 1}</div>
+        <div class="dbg-arr">▶</div>
+        <div class="dbg-content">${content}</div>
+      </div>`;
+          })
+          .join("");
+
+        el.innerHTML = `
+      <div class="dbg-bar">
+        <div class="dbg-label">
+          <div class="dbg-dot"></div>
+          DEBUGGER
+          <div class="dbg-dots">${dots}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="dbg-step-info">Passo ${d.cur + 1} / ${total}</span>
+          <div class="dbg-controls">
+            <button class="dbg-btn" onclick="dbgStep(${id},-1)" ${d.cur === 0 ? "disabled" : ""}>◀ Anterior</button>
+            <button class="dbg-btn run" onclick="dbgStep(${id},1)" ${d.cur === total - 1 ? "disabled" : ""}>Próxima ▶</button>
+          </div>
+        </div>
+      </div>
+      <div class="dbg-code">${linesHTML}</div>
+      <div class="dbg-exp">💬 &nbsp;${step.exp}</div>`;
+      }
+
+      function dbgStep(id, dir) {
+        const d = DBG_DATA[id];
+        d.cur = Math.max(0, Math.min(d.steps.length - 1, d.cur + dir));
+        renderDbg(id);
+      }
+
+      [0, 1, 2].forEach(renderDbg);
+
+      render();
+
+      /* ─── CUSTOM CURSOR ─── */
+      const dot = document.getElementById("cur-dot");
+      const ring = document.getElementById("cur-ring");
+      const glow = document.getElementById("cur-glow");
+
+      let mx = -200,
+        my = -200; // start off-screen
+      let rx = -200,
+        ry = -200; // ring lag position
+      let gx = -200,
+        gy = -200; // glow lag position
+      let raf;
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function animCursor() {
+        // ring follows with slight lag
+        rx = lerp(rx, mx, 0.14);
+        ry = lerp(ry, my, 0.14);
+        // glow follows with more lag
+        gx = lerp(gx, mx, 0.08);
+        gy = lerp(gy, my, 0.08);
+
+        dot.style.left = mx + "px";
+        dot.style.top = my + "px";
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        glow.style.left = gx + "px";
+        glow.style.top = gy + "px";
+
+        raf = requestAnimationFrame(animCursor);
+      }
+      animCursor();
+
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+
+      // Hide when leaving window
+      document.addEventListener("mouseleave", () => {
+        dot.style.opacity = "0";
+        ring.style.opacity = "0";
+        glow.style.opacity = "0";
+      });
+      document.addEventListener("mouseenter", () => {
+        dot.style.opacity = "1";
+        ring.style.opacity = "1";
+        glow.style.opacity = "1";
+      });
+
+      // Click flash
+      document.addEventListener("mousedown", () => {
+        document.body.classList.add("cur-click");
+      });
+      document.addEventListener("mouseup", () => {
+        document.body.classList.remove("cur-click");
+      });
+
+      // Hover on interactive elements → teal ring
+      const HOVER_SEL = "button, a, [onclick], .oc, .rev, .qopt";
+      document.addEventListener("mouseover", (e) => {
+        const el = e.target.closest(HOVER_SEL);
+        document.body.classList.toggle("cur-hover", !!el);
+      });
+
+      // Nav buttons → gold enlarged ring
+      const NAV_SEL = "#btn-prev, #btn-next";
+      document.addEventListener("mouseover", (e) => {
+        const el = e.target.closest(NAV_SEL);
+        if (el) {
+          document.body.classList.remove("cur-hover");
+          document.body.classList.add("cur-nav");
+        }
+      });
+      document.addEventListener("mouseout", (e) => {
+        const el = e.target.closest(NAV_SEL);
+        if (el) document.body.classList.remove("cur-nav");
+      });
+    </script>
+  </body>
+</html>
