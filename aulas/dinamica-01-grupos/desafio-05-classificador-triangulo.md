@@ -15,13 +15,12 @@
 ### Condição de existência do triângulo
 Um triângulo é válido se **cada lado for menor que a soma dos outros dois**:
 
-```
-a < (b + c)   E   b < (a + c)   E   c < (a + b)
-```
+- `a < (b + c)` **E** `b < (a + c)` **E** `c < (a + b)`
 
 > Se qualquer uma das três condições falhar, **não é um triângulo válido**.
 
 ### Classificação
+
 | Condição | Tipo |
 |----------|------|
 | `a == b` **e** `b == c` | Equilátero (todos iguais) |
@@ -62,7 +61,7 @@ a < (b + c)   E   b < (a + c)   E   c < (a + b)
 - O que acontece com lados negativos ou zero? *(Não é requisito tratar — versão simples)*
 - Um triângulo com lados (5, 5, 5) é equilátero? *(Sim)*
 - Um triângulo com lados (5, 5, 3) é isósceles? *(Sim — dois lados iguais)*
-- Por que (1, 2, 10) não forma triângulo? *(Porque 1 não é menor que 2+10? Errado — 1 < 12. O problema é 10 < 1+2 = 3, que é falso!)*
+- Por que (1, 2, 10) não forma triângulo? *(Porque 10 < 1+2 = 3 é falso!)*
 
 ### Checklist de validação (faça ao final)
 - [ ] Lados (3, 3, 3) → Equilátero ✅
@@ -70,7 +69,6 @@ a < (b + c)   E   b < (a + c)   E   c < (a + b)
 - [ ] Lados (5, 5, 3) → Isósceles ✅ (ordem diferente dos lados iguais)
 - [ ] Lados (3, 4, 5) → Escaleno ✅
 - [ ] Lados (1, 2, 10) → Não forma triângulo ✅ (10 >= 1+2)
-- [ ] Lados (0, 5, 5) → Não forma triângulo ✅ (se tratar lado zero)
 - [ ] Textos exibidos são claros e sem erros
 
 ---
@@ -81,60 +79,25 @@ a < (b + c)   E   b < (a + c)   E   c < (a + b)
 - Usar álgebra booleana (`e`, `ou`) de forma explícita e correta.
 - Estruturar o código em duas etapas: validação e classificação.
 
-### Estrutura esperada do programa
+### Fluxo esperado do programa
+1. Declarar variáveis: `real a`, `real b`, `real c`
+2. Solicitar e ler os 3 lados (textos do UX Writer)
+3. Usar `se` com a condição de existência ligada por `e`:
+   - `se (a < (b + c) e b < (a + c) e c < (a + b))`
+4. Dentro do `se` (triângulo válido), classificar com `se/senão` aninhado:
+   - Se `a == b e b == c` → Equilátero
+   - Senão se `a == b ou b == c ou a == c` → Isósceles
+   - Senão → Escaleno
+5. No `senao` externo: exibir mensagem de triângulo inválido
 
-```portugol
-programa {
-  funcao inicio() {
-    // 1. Variáveis
-    real a, b, c
-
-    // 2. Entrada (textos do UX Writer)
-    escreva("...")
-    leia(a)
-    escreva("...")
-    leia(b)
-    escreva("...")
-    leia(c)
-
-    // 3. Verificar se é triângulo válido
-    //    Condição: cada lado menor que a soma dos outros dois
-    se (a < (b + c) e b < (a + c) e c < (a + b)) {
-
-      // 4. É válido — classificar
-      se (a == b e b == c) {
-        escreva("...")  // Equilátero
-      } senao se (a == b ou b == c ou a == c) {
-        escreva("...")  // Isósceles
-      } senao {
-        escreva("...")  // Escaleno
-      }
-
-    } senao {
-      escreva("...")  // Não forma triângulo
-    }
-  }
-}
-```
+### Por que Equilátero precisa vir antes de Isósceles?
+Lados (3, 3, 3) satisfazem tanto a condição de Equilátero (`a == b e b == c`) quanto a de Isósceles (`a == b ou b == c ou a == c`). Se testar Isósceles primeiro, o programa classificaria errado. Por isso, o teste de Equilátero **deve vir antes**.
 
 ### Dicas técnicas
 - Use `real` para os três lados — o professor pode testar com 3.5, 4.5, 5.0.
-- A condição de existência **precisa dos 3 termos** ligados por `e`:
-  - `a < (b + c) e b < (a + c) e c < (a + b)`
-  - Omitir um dos termos causa bugs para casos específicos.
+- A condição de existência **precisa dos 3 termos** ligados por `e` — omitir um causa bugs.
 - Para Isósceles, a condição `a == b ou b == c ou a == c` cobre todas as posições dos lados iguais.
-- A ordem das classificações importa: teste Equilátero **primeiro**, pois um equilátero também satisfaz a condição de Isósceles.
-- Com `real`, a comparação `==` pode ter imprecisão em valores decimais. Para esta dinâmica, use valores inteiros nos testes.
-
-### Por que Equilátero precisa vir antes de Isósceles?
-
-```
-Lados (3, 3, 3):
-  - a == b ou b == c ou a == c   → VERDADEIRO (seria classificado como Isósceles!)
-  - a == b e b == c              → VERDADEIRO (é Equilátero!)
-
-Se testar Equilátero primeiro, classificamos corretamente.
-```
+- Com `real`, a comparação `==` pode ter imprecisão em decimais — para os testes, use valores inteiros.
 
 ---
 
@@ -157,9 +120,9 @@ Se testar Equilátero primeiro, classificamos corretamente.
 | CT07 | 7 | 10 | 5 | Sim | Escaleno | |
 | CT08 | 1 | 2 | 10 | Não | Mensagem de inválido | |
 | CT09 | 5 | 1 | 1 | Não | Mensagem de inválido | |
-| CT10 | 3 | 4 | 7 | Não | Inválido (7 não < 3+4=7, falha `c < a+b`) | |
+| CT10 | 3 | 4 | 7 | Não | Inválido (7 não < 3+4=7) | |
 
-> **CT10** é um caso especial: `c < a + b` → `7 < 7` → **falso**! Use isso para testar o `<` (estrito).
+> **CT10** é um caso especial: `c < a + b` → `7 < 7` → **falso**! Use isso para testar se o Dev usou `<` (estrito) e não `<=`.
 
 ### Como verificar manualmente a condição de existência
 
@@ -203,17 +166,13 @@ Para (3, 4, 7):
 
 ## Estruturas que devem ser usadas
 
-```
-se / senao se / senao   ← OBRIGATÓRIO (validação e classificação)
-e / ou                  ← OBRIGATÓRIO (álgebra booleana — condição de existência e isósceles)
-```
+- `se / senao se / senao` ← OBRIGATÓRIO (validação e classificação)
+- `e / ou` ← OBRIGATÓRIO (álgebra booleana — condição de existência e isósceles)
 
 ## Estruturas proibidas
 
-```
-escolha / caso          ← Não se aplica a este problema
-enquanto / para / repita  ← PENALIDADE -2 pontos
-```
+- `escolha / caso` ← não se aplica a este problema
+- `enquanto / para / repita` ← PENALIDADE -2 pontos
 
 ---
 

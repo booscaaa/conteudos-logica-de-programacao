@@ -67,58 +67,22 @@
 - Escrever o algoritmo combinando `se/senão` e `escolha/caso`.
 - O `se/senão` é obrigatório para faixas de valores (média é `real`, não pode usar `escolha` diretamente).
 
-### Estratégia de implementação
+### Fluxo esperado do programa
 
-**Passo 1:** Use `se/senão` para determinar situação e conceito (como uma variável `caracter`).
+**Passo 1 — Entrada:**
+1. Declarar variáveis: `cadeia nome`, `real media`, `caracter conceito`
+2. Solicitar e ler o nome do aluno
+3. Solicitar e ler a média final
 
-```portugol
-programa {
-  funcao inicio() {
-    // 1. Variáveis
-    cadeia nome
-    real media
-    caracter conceito
+**Passo 2 — Situação e conceito com `se/senão`:**
+- Se média ≥ 9.0 → conceito = `'A'`, exibir "Aprovado — Conceito A"
+- Senão se média ≥ 7.0 → conceito = `'B'`, exibir "Aprovado — Conceito B"
+- Senão se média ≥ 5.0 → conceito = `'C'`, exibir "Aprovado — Conceito C"
+- Senão se média ≥ 3.0 → conceito = `'D'`, exibir "Recuperação — Conceito D"
+- Senão → exibir "Reprovado"
 
-    // 2. Entrada
-    escreva("...")  // texto do UX Writer
-    leia(nome)
-    escreva("...")
-    leia(media)
-
-    // 3. Determinar situação e conceito com se/senão
-    se (media >= 9.0) {
-      conceito = 'A'
-      escreva("Aprovado — Conceito A")
-    } senao se (media >= 7.0) {
-      conceito = 'B'
-      escreva("Aprovado — Conceito B")
-    } senao se (media >= 5.0) {
-      conceito = 'C'
-      escreva("Aprovado — Conceito C")
-    } senao se (media >= 3.0) {
-      conceito = 'D'
-      escreva("Recuperação — Conceito D")
-    } senao {
-      escreva("Reprovado")
-    }
-  }
-}
-```
-
-**Passo 2 (opcional — para ganhar ponto extra de estrutura):** Após determinar o `conceito` com `se/senão`, use `escolha(conceito)` para exibir uma mensagem personalizada por conceito.
-
-```portugol
-    escolha(conceito) {
-      caso 'A':
-        escreva("Excelente desempenho! Continue assim.")
-      caso 'B':
-        escreva("Bom trabalho! Você está aprovado.")
-      caso 'C':
-        escreva("Passou, mas pode melhorar mais!")
-      caso 'D':
-        escreva("Atenção: você vai para recuperação.")
-    }
-```
+**Passo 3 — Mensagem personalizada com `escolha(conceito)`:**
+- Usar `escolha` para exibir uma frase motivacional diferente para cada conceito A, B, C e D.
 
 ### Dicas técnicas
 - `media` deve ser `real` — aceita 7.5, 9.0 etc.
@@ -177,7 +141,7 @@ programa {
 | Resultado — Recuperação | `"D"` | _"Atenção, [nome]. Conceito D — você vai para recuperação."_ |
 | Resultado — Reprovado | `"rep"` | _"[nome], infelizmente você foi reprovado. Não desista!"_ |
 
-> **Nota:** O Portugol não interpola variáveis automaticamente. Escreva os textos separados das variáveis usando vírgula: `escreva("Parabéns, ", nome, "! Aprovado com Conceito A.")`
+> **Nota:** No Portugol, escreva os textos separados das variáveis usando vírgula: `escreva("Parabéns, ", nome, "! Aprovado com Conceito A.")`
 
 ### Regras de qualidade
 - O nome do aluno **deve aparecer** em todas as mensagens de resultado.
@@ -188,13 +152,9 @@ programa {
 
 ## Estruturas que devem ser usadas
 
-```
-se / senao se / senao   ← OBRIGATÓRIO (para comparar faixas de média)
-escolha / caso          ← OBRIGATÓRIO (para mensagem por conceito)
-```
+- `se / senao se / senao` ← OBRIGATÓRIO (para comparar faixas de média)
+- `escolha / caso` ← OBRIGATÓRIO (para mensagem por conceito)
 
 ## Estruturas proibidas
 
-```
-enquanto / para / repita   ← PENALIDADE -2 pontos
-```
+- `enquanto / para / repita` ← PENALIDADE -2 pontos

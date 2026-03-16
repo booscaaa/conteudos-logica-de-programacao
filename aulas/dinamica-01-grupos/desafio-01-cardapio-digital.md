@@ -67,39 +67,13 @@
 - Usar **obrigatoriamente** a estrutura `escolha / caso`.
 - Não usar nenhuma estrutura proibida (laços, funções, vetores).
 
-### Estrutura esperada do programa
-
-```portugol
-programa {
-  funcao inicio() {
-    // 1. Declaração de variáveis
-    inteiro opcao
-
-    // 2. Saudação (texto do UX Writer)
-    escreva("...")
-
-    // 3. Solicitar opção
-    escreva("...")
-    leia(opcao)
-
-    // 4. Decisão com escolha/caso
-    escolha(opcao) {
-      caso 1:
-        escreva("...")  // nome + preço + confirmação
-      caso 2:
-        escreva("...")
-      caso 3:
-        escreva("...")
-      caso 4:
-        escreva("...")
-      caso 5:
-        escreva("...")
-      outrocaso:
-        escreva("...")  // mensagem de erro
-    }
-  }
-}
-```
+### Fluxo esperado do programa
+1. Declarar variável `inteiro opcao`
+2. Exibir saudação (texto do UX Writer)
+3. Solicitar e ler a opção do atendente
+4. Usar `escolha(opcao)` com um `caso` para cada número de 1 a 5
+5. Cada `caso` deve exibir nome + preço + mensagem de confirmação (textos do UX Writer)
+6. O `outrocaso` deve exibir mensagem de erro amigável
 
 ### Dicas técnicas
 - Declare `inteiro opcao` — o `escolha` não aceita `real`.
@@ -162,12 +136,8 @@ programa {
 
 ## Estrutura que deve ser usada
 
-```
-escolha / caso / outrocaso   ← OBRIGATÓRIO
-```
+- `escolha / caso / outrocaso` ← OBRIGATÓRIO
 
 ## Estruturas proibidas
 
-```
-enquanto / para / repita     ← PENALIDADE -2 pontos
-```
+- `enquanto / para / repita` ← PENALIDADE -2 pontos
