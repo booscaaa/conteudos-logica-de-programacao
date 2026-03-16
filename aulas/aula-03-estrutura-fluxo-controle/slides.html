@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estruturas de Fluxo de Controle — CESURG</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --bg: #07090a;
+        --teal: #00a3b8;
+        --teal-dk: #005f73;
+        --gold: #c8952a;
+        --gold-lt: #e8aa3d;
+        --white: #ffffff;
+        --dim: rgba(255, 255, 255, 0.55);
+        --dim2: rgba(255, 255, 255, 0.28);
+        --glass: rgba(255, 255, 255, 0.04);
+        --glass-b: rgba(255, 255, 255, 0.08);
+        --true-c: #34d27a;
+        --false-c: #ff5c5c;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+
+      body.light-mode {
+        --bg: #f8fafc;
+        --teal: #0891b2;
+        --teal-dk: #164e63;
+        --gold: #b45309;
+        --gold-lt: #d97706;
+        --white: #0f172a;
+        --dim: #475569;
+        --dim2: #94a3b8;
+        --glass: rgba(15, 23, 42, 0.03);
+        --glass-b: rgba(15, 23, 42, 0.06);
+        --border: rgba(15, 23, 42, 0.08);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition:
+          background-color 0.3s,
+          color 0.3s,
+          border-color 0.3s;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--white);
+        -webkit-font-smoothing: antialiased;
+        user-select: none;
+        cursor: none;
+      }
+
+      /* ─── CUSTOM CURSOR ─── */
+      #cur-dot {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--white);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.15s, height 0.15s, background 0.2s, opacity 0.2s;
+        will-change: transform;
+      }
+
+      #cur-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+          height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+          border-color 0.25s,
+          opacity 0.2s;
+        will-change: transform;
+      }
+
+      #cur-glow {
+        position: fixed;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 163, 184, 0.12) 0%,
+          rgba(0, 163, 184, 0.04) 45%,
+          transparent 70%
+        );
+        transition: opacity 0.3s;
+        will-change: transform;
+      }
+
+      body.cur-hover #cur-dot { width: 6px; height: 6px; background: var(--teal); }
+      body.cur-hover #cur-ring { width: 52px; height: 52px; border-color: var(--teal); }
+      body.cur-hover #cur-glow {
+        background: radial-gradient(circle, rgba(0,163,184,0.18) 0%, rgba(0,163,184,0.06) 45%, transparent 70%);
+      }
+      body.cur-click #cur-dot { width: 12px; height: 12px; background: var(--gold); }
+      body.cur-click #cur-ring { width: 22px; height: 22px; border-color: var(--gold); border-width: 2px; }
+      body.cur-nav #cur-dot { width: 10px; height: 10px; background: var(--gold); }
+      body.cur-nav #cur-ring { width: 60px; height: 60px; border-color: var(--gold); border-width: 2px; }
+      body.cur-nav #cur-glow {
+        width: 240px; height: 240px;
+        background: radial-gradient(circle, rgba(200,149,42,0.16) 0%, rgba(200,149,42,0.05) 45%, transparent 70%);
+      }
+
+      body.light-mode #cur-dot { background: var(--teal); }
+      body.light-mode #cur-ring { border-color: rgba(15,23,42,0.4); }
+      body.light-mode #footer { background: rgba(248,250,252,0.92); border-top: 1px solid var(--border); }
+      body.light-mode .dbg { background: #f1f5f9; border-color: rgba(15,23,42,0.12); }
+      body.light-mode .dbg-bar { background: rgba(8,145,178,0.06); border-bottom-color: rgba(15,23,42,0.08); }
+      body.light-mode .dbg-label { color: var(--teal); }
+      body.light-mode .dbg-dot { background: var(--teal); }
+      body.light-mode .dbg-step-info { color: var(--dim); }
+      body.light-mode .dbg-btn { border-color: rgba(15,23,42,0.15); color: var(--dim); background: transparent; }
+      body.light-mode .dbg-btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+      body.light-mode .dbg-btn.run { background: var(--teal); border-color: var(--teal); color: #fff; }
+      body.light-mode .dbg-content { color: #1e4e6a; }
+      body.light-mode .dbg-lnum { color: rgba(15,23,42,0.25); }
+      body.light-mode .dbg-line.active { background: rgba(180,83,9,0.08); }
+      body.light-mode .dbg-line.active .dbg-lnum { color: var(--gold); }
+      body.light-mode .dbg-line.active .dbg-arr { color: var(--gold); }
+      body.light-mode .dbg-exp { background: rgba(180,83,9,0.04); border-top-color: rgba(15,23,42,0.08); color: var(--dim); }
+      body.light-mode .dbg-exp strong { color: #0f172a; }
+      body.light-mode .dbg-exp em { color: var(--teal); }
+      body.light-mode .dbg-dots span { background: rgba(15,23,42,0.15); }
+      body.light-mode .dbg-dots span.on { background: var(--gold); }
+      body.light-mode .kw { color: #0369a1; }
+      body.light-mode .str { color: #15803d; }
+      body.light-mode .op { color: #b45309; }
+      body.light-mode .cm { color: #94a3b8; }
+      body.light-mode .nbtn { border-color: var(--border); color: var(--dim); }
+      body.light-mode .nbtn:hover { border-color: var(--teal); color: var(--teal); }
+      body.light-mode .f-count { color: var(--dim); }
+      body.light-mode .f-name .l1 { color: var(--dim); }
+      body.light-mode .f-name .l2 { color: var(--gold); }
+      body.light-mode .f-sep { background: var(--border); }
+      body.light-mode .f-bar { background: var(--teal-dk); opacity: 0.15; }
+
+      button, a, [onclick], input, select, textarea { cursor: none; }
+
+      /* ─── PROGRESS ─── */
+      #prog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--teal), var(--gold));
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+      }
+
+      /* ─── SLIDES ─── */
+      #deck {
+        width: 100%;
+        height: calc(100vh - 56px);
+        position: relative;
+        perspective: 1400px;
+        perspective-origin: 50% 45%;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 36px 56px;
+        opacity: 0;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+
+      .slide.active {
+        opacity: 1;
+        pointer-events: all;
+        transform: none;
+      }
+
+      @keyframes kExitFwd {
+        from { opacity: 1; transform: translateX(0) scale(1) translateZ(0); }
+        to   { opacity: 0; transform: translateX(-4%) scale(0.94) translateZ(-60px); }
+      }
+      @keyframes kEnterFwd {
+        from { opacity: 0; transform: translateX(5%) scale(0.96) translateZ(-30px); }
+        to   { opacity: 1; transform: translateX(0) scale(1) translateZ(0); }
+      }
+      @keyframes kExitBwd {
+        from { opacity: 1; transform: translateX(0) scale(1) translateZ(0); }
+        to   { opacity: 0; transform: translateX(4%) scale(0.94) translateZ(-60px); }
+      }
+      @keyframes kEnterBwd {
+        from { opacity: 0; transform: translateX(-5%) scale(0.96) translateZ(-30px); }
+        to   { opacity: 1; transform: translateX(0) scale(1) translateZ(0); }
+      }
+
+      .anim-exit-fwd { animation: kExitFwd 520ms cubic-bezier(0.22,1,0.36,1) forwards; }
+      .anim-exit-bwd { animation: kExitBwd 520ms cubic-bezier(0.22,1,0.36,1) forwards; }
+      .anim-enter-fwd { animation: kEnterFwd 560ms cubic-bezier(0.22,1,0.36,1) forwards; pointer-events: all; }
+      .anim-enter-bwd { animation: kEnterBwd 560ms cubic-bezier(0.22,1,0.36,1) forwards; pointer-events: all; }
+
+      /* ─── FOOTER ─── */
+      #footer {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 56px;
+        background: rgba(7,9,10,0.92);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 36px;
+        z-index: 500;
+      }
+
+      .f-brand { display: flex; align-items: center; gap: 10px; }
+      .f-cic { font-size: 1.25rem; font-weight: 900; color: var(--teal); letter-spacing: -0.5px; }
+      .f-cic span { color: var(--gold); }
+      .f-sep { width: 1px; height: 24px; background: var(--border); }
+      .f-name { line-height: 1.2; }
+      .f-name .l1 { font-size: 0.58rem; font-weight: 600; color: var(--dim2); letter-spacing: 1.5px; text-transform: uppercase; }
+      .f-name .l2 { font-size: 0.75rem; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+      .f-bar { flex: 1; height: 2px; background: var(--teal-dk); margin: 0 24px; border-radius: 1px; }
+      .f-nav { display: flex; align-items: center; gap: 10px; }
+      .f-count { font-size: 0.72rem; font-weight: 500; color: var(--dim2); min-width: 44px; text-align: center; }
+
+      .nbtn {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--dim);
+        padding: 5px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 600;
+        font-family: inherit;
+        transition: border-color 0.2s, color 0.2s, background 0.2s;
+      }
+      .nbtn:hover { border-color: var(--teal); color: var(--teal); }
+      .nbtn.p { background: var(--teal); border-color: var(--teal); color: #fff; }
+      .nbtn.p:hover { background: var(--teal-dk); }
+
+      /* ─── TYPOGRAPHY ─── */
+      .eyebrow {
+        font-size: 0.68rem; font-weight: 700; letter-spacing: 3px;
+        text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+      }
+
+      .hero {
+        font-size: clamp(3.5rem, 8vw, 7rem);
+        font-weight: 800; line-height: 1; text-align: center; letter-spacing: -0.03em;
+      }
+      .hero em { font-style: normal; color: var(--gold); }
+      .hero strong { color: var(--teal); }
+
+      .title {
+        font-size: clamp(2rem, 4.5vw, 3.6rem);
+        font-weight: 700; line-height: 1.1; text-align: center; letter-spacing: -0.02em;
+      }
+      .title em { font-style: normal; color: var(--gold); }
+      .title strong { color: var(--teal); }
+
+      .subtitle {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-weight: 400; color: var(--dim); line-height: 1.7; text-align: center;
+      }
+      .subtitle strong { color: var(--white); font-weight: 600; }
+
+      /* ─── GLASS CARD ─── */
+      .gc {
+        background: var(--glass); border: 1px solid var(--border);
+        border-radius: 20px; padding: 28px 40px;
+        backdrop-filter: blur(8px); width: 100%; max-width: 920px;
+      }
+      .gc-sm { max-width: 640px; }
+      .gc-md { max-width: 780px; }
+
+      /* ─── DIVIDER ─── */
+      .line { width: 40px; height: 2px; background: var(--gold); border-radius: 1px; margin: 14px auto; }
+
+      /* ─── GRID ─── */
+      .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 960px; }
+      .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; width: 100%; max-width: 1000px; }
+
+      /* ─── OP CARD ─── */
+      .oc {
+        background: var(--glass); border: 1px solid var(--border);
+        border-radius: 16px; padding: 24px 20px; text-align: center;
+        transition: transform 0.25s, background 0.25s, border-color 0.25s;
+      }
+      .oc:hover { transform: translateY(-4px); background: var(--glass-b); }
+      .oc .sym { font-size: 2rem; font-weight: 900; margin-bottom: 6px; }
+      .oc .nm { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+      .oc .ds { font-size: 0.82rem; color: var(--dim); line-height: 1.55; }
+
+      /* ─── CALLOUT ─── */
+      .callout {
+        border-left: 2px solid var(--teal); padding: 12px 18px; margin-top: 16px;
+        font-size: 0.88rem; color: var(--dim);
+        background: rgba(0,163,184,0.06); border-radius: 0 8px 8px 0;
+      }
+      .callout strong { color: var(--white); }
+      .callout-gold { border-left: 2px solid var(--gold); background: rgba(200,149,42,0.06); }
+
+      /* ─── CODE ─── */
+      .code {
+        background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+        border-radius: 12px; padding: 20px 24px;
+        font-family: "SF Mono","Fira Code","Courier New",monospace;
+        font-size: clamp(0.75rem, 1.4vw, 0.88rem);
+        white-space: pre; text-align: left; color: #a8d8e4;
+        line-height: 1.65; width: 100%;
+      }
+      .kw { color: #7ec8e3; }
+      .str { color: #a8d8b0; }
+      .op  { color: var(--gold-lt); }
+      .cm  { color: #4a6a74; }
+
+      /* ─── PILL ─── */
+      .pill { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+      .pt { background: rgba(52,210,122,0.12); color: var(--true-c); border: 1px solid rgba(52,210,122,0.25); }
+      .pf { background: rgba(255,92,92,0.12); color: var(--false-c); border: 1px solid rgba(255,92,92,0.25); }
+      .pa { background: rgba(0,163,184,0.12); color: var(--teal); border: 1px solid rgba(0,163,184,0.25); }
+
+      /* ─── ANA PAIR ─── */
+      .ana-pair { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 20px 0; text-align: center; }
+      .ana-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+      .ana-icon { font-size: 2.8rem; }
+
+      /* ─── STEPS ─── */
+      .step { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+      .step:last-child { border: none; }
+      .sn {
+        min-width: 30px; height: 30px; border-radius: 50%;
+        background: rgba(0,163,184,0.15); border: 1px solid rgba(0,163,184,0.3);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.82rem; color: var(--teal); flex-shrink: 0;
+      }
+
+      /* ─── QUIZ ─── */
+      .qopt {
+        width: 100%; text-align: left; background: var(--glass);
+        border: 1px solid var(--border); border-radius: 10px;
+        padding: 12px 18px; color: var(--dim); font-size: 0.9rem;
+        font-family: inherit; cursor: pointer; transition: all 0.2s;
+      }
+      .qopt:hover { border-color: var(--teal); color: var(--white); background: rgba(0,163,184,0.08); }
+      .qopt.ok { border-color: var(--true-c); background: rgba(52,210,122,0.1); color: var(--true-c); font-weight: 700; }
+      .qopt.no { border-color: var(--false-c); background: rgba(255,92,92,0.08); color: var(--false-c); }
+
+      /* ─── REVEAL ─── */
+      .rev {
+        background: var(--glass); border: 1px dashed var(--border);
+        border-radius: 8px; padding: 10px 16px; margin-top: 8px;
+        cursor: pointer; font-size: 0.84rem; color: var(--dim2);
+        transition: border-color 0.2s, color 0.2s;
+      }
+      .rev:hover { border-color: var(--teal); color: var(--teal); }
+
+      /* ─── ICONS ─── */
+      .mi {
+        font-family: "Material Symbols Outlined"; font-weight: normal; font-style: normal;
+        font-size: 1.5rem; line-height: 1; letter-spacing: normal; text-transform: none;
+        display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr;
+        -webkit-font-smoothing: antialiased; font-feature-settings: "liga";
+        vertical-align: middle;
+      }
+      .mi-sm { font-size: 1.2rem; }
+      .mi-lg { font-size: 2.2rem; }
+
+      /* ─── FINAL ─── */
+      .final-hero {
+        font-size: clamp(3.5rem, 9vw, 7rem);
+        font-weight: 900; line-height: 1; text-align: center; letter-spacing: -0.04em;
+      }
+      .final-hero em { font-style: normal; color: var(--gold); }
+
+      /* ─── DEBUGGER ─── */
+      .dbg {
+        background: rgba(0,0,0,0.55); border: 1px solid var(--border);
+        border-radius: 14px; overflow: hidden; width: 100%;
+        font-family: "SF Mono","Fira Code","Courier New",monospace;
+      }
+      .dbg-bar {
+        background: rgba(0,163,184,0.07); border-bottom: 1px solid var(--border);
+        padding: 8px 16px; display: flex; align-items: center;
+        justify-content: space-between; gap: 12px;
+      }
+      .dbg-label {
+        font-size: 0.62rem; font-weight: 700; letter-spacing: 2px;
+        text-transform: uppercase; color: var(--teal);
+        font-family: "Inter",sans-serif; display: flex; align-items: center; gap: 8px;
+      }
+      .dbg-dot {
+        width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+        animation: dbgpulse 1.4s ease-in-out infinite;
+      }
+      @keyframes dbgpulse { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+      .dbg-step-info { font-size: 0.72rem; color: var(--dim2); font-family: "Inter",sans-serif; }
+      .dbg-controls { display: flex; gap: 6px; align-items: center; }
+      .dbg-btn {
+        background: none; border: 1px solid var(--border); color: var(--dim);
+        padding: 4px 13px; border-radius: 6px; cursor: pointer;
+        font-size: 0.75rem; font-weight: 600; font-family: "Inter",sans-serif;
+        transition: all 0.15s; line-height: 1.5;
+      }
+      .dbg-btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+      .dbg-btn:disabled { opacity: 0.22; cursor: default; }
+      .dbg-btn.run { background: var(--teal); border-color: var(--teal); color: #fff; }
+      .dbg-btn.run:hover:not(:disabled) { background: var(--teal-dk); }
+      .dbg-code { padding: 8px 0; overflow-x: auto; }
+      .dbg-line { display: flex; align-items: center; min-height: 28px; transition: background 0.22s; }
+      .dbg-line.active { background: rgba(200,149,42,0.13); }
+      .dbg-lnum {
+        width: 38px; text-align: right; padding-right: 14px;
+        font-size: 0.7rem; color: rgba(255,255,255,0.18);
+        flex-shrink: 0; transition: color 0.22s; line-height: 28px;
+      }
+      .dbg-line.active .dbg-lnum { color: var(--gold); }
+      .dbg-arr { width: 18px; flex-shrink: 0; color: var(--gold); font-size: 0.8rem; text-align: center; line-height: 28px; visibility: hidden; }
+      .dbg-line.active .dbg-arr { visibility: visible; }
+      .dbg-content { flex: 1; font-size: clamp(0.72rem,1.3vw,0.86rem); color: #a8d8e4; padding-right: 20px; white-space: pre; line-height: 28px; }
+      .dbg-exp {
+        border-top: 1px solid var(--border); background: rgba(200,149,42,0.055);
+        padding: 13px 20px; font-size: 0.88rem; color: var(--dim);
+        min-height: 52px; font-family: "Inter",sans-serif; line-height: 1.6; transition: opacity 0.25s;
+      }
+      .dbg-exp strong { color: var(--white); }
+      .dbg-exp em { color: var(--teal); font-style: normal; }
+      .dbg-dots { display: flex; align-items: center; gap: 5px; }
+      .dbg-dots span {
+        display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+        background: rgba(255,255,255,0.18); transition: background 0.2s, transform 0.2s;
+      }
+      .dbg-dots span.on { background: var(--gold); transform: scale(1.3); }
+
+      /* ─── FLOW DIAGRAM ─── */
+      .flow-box {
+        border-radius: 12px; padding: 11px 22px; font-size: 0.88rem;
+        font-weight: 700; text-align: center; border: 1.5px solid;
+        display: inline-block;
+      }
+      .flow-condition {
+        background: rgba(0,163,184,0.12); border-color: var(--teal); color: var(--teal);
+        border-radius: 50px;
+      }
+      .flow-true {
+        background: rgba(52,210,122,0.1); border-color: rgba(52,210,122,0.4); color: var(--true-c);
+      }
+      .flow-false {
+        background: rgba(255,92,92,0.08); border-color: rgba(255,92,92,0.35); color: var(--false-c);
+      }
+      .flow-arrow {
+        font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; color: var(--dim2);
+        display: flex; align-items: center; gap: 4px;
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 640px) {
+        .g2, .g3 { grid-template-columns: 1fr; }
+        .ana-pair { flex-direction: column; align-items: center; }
+        .slide { padding: 20px 16px; }
+        #footer { padding: 0 16px; }
+        .f-bar { margin: 0 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cur-glow"></div>
+    <div id="cur-ring"></div>
+    <div id="cur-dot"></div>
+
+    <div id="prog"></div>
+
+    <div id="deck">
+
+      <!-- ══════════ S1 — CAPA ══════════ -->
+      <div class="slide active" id="s1">
+        <div class="eyebrow">Lógica de Programação — Aula 03</div>
+        <span class="mi" style="font-size:5rem;color:var(--teal);margin-bottom:20px">alt_route</span>
+        <h1 class="hero">Estruturas de<br /><em>Fluxo</em> de Controle</h1>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:480px;margin-top:16px">
+          <strong>SE · SENÃO · SENÃO SE</strong><br />
+          Como o computador toma decisões.
+        </p>
+      </div>
+
+      <!-- ══════════ S2 — O QUE É FLUXO DE CONTROLE ══════════ -->
+      <div class="slide" id="s2">
+        <div class="eyebrow">Conceito Base</div>
+        <h2 class="title">O que é <strong>Fluxo de Controle</strong>?</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:560px;margin-bottom:24px">
+          Um programa normalmente executa linha por linha, de cima para baixo.<br />
+          As estruturas de controle permitem <strong>mudar esse caminho</strong>.
+        </p>
+        <div class="gc gc-md" style="padding:24px 32px">
+          <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center">
+            <div style="text-align:center">
+              <span class="mi mi-lg" style="color:var(--dim2)">linear_scale</span>
+              <p style="font-size:0.82rem;color:var(--dim);margin-top:8px">Sem controle<br /><strong style="color:var(--dim)">sempre linha a linha</strong></p>
+            </div>
+            <span class="mi" style="color:var(--gold);font-size:2rem">east</span>
+            <div style="text-align:center">
+              <span class="mi mi-lg" style="color:var(--teal)">alt_route</span>
+              <p style="font-size:0.82rem;color:var(--dim);margin-top:8px">Com controle<br /><strong style="color:var(--white)">escolhe o caminho certo</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="max-width:520px;margin-top:20px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--gold)">lightbulb</span>
+          É como um semáforo: dependendo da situação, o programa <strong>segue por caminhos diferentes</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S3 — OS 3 TIPOS ══════════ -->
+      <div class="slide" id="s3">
+        <div class="eyebrow">Visão Geral</div>
+        <h2 class="title">3 Formas de <em>Decidir</em></h2>
+        <div class="line"></div>
+        <div class="g3" style="margin-top:10px">
+          <div class="oc" style="border-top:2px solid var(--teal)">
+            <div class="sym" style="color:var(--teal)">
+              <span class="mi" style="font-size:2rem">check_circle</span>
+            </div>
+            <div class="nm" style="margin-top:8px">SE simples</div>
+            <div class="ds">Executa um bloco <strong style="color:var(--white)">somente se</strong> a condição for verdadeira. Senão, pula.</div>
+            <div style="margin-top:12px">
+              <span class="pill pa">1 caminho possível</span>
+            </div>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--gold)">
+            <div class="sym" style="color:var(--gold-lt)">
+              <span class="mi" style="font-size:2rem">compare_arrows</span>
+            </div>
+            <div class="nm" style="margin-top:8px">SE … SENÃO</div>
+            <div class="ds">Sempre executa <strong style="color:var(--white)">um dos dois</strong> blocos — verdadeiro ou falso.</div>
+            <div style="margin-top:12px">
+              <span class="pill pa">2 caminhos</span>
+            </div>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--dim2)">
+            <div class="sym" style="color:var(--white)">
+              <span class="mi" style="font-size:2rem">account_tree</span>
+            </div>
+            <div class="nm" style="margin-top:8px">SENÃO SE</div>
+            <div class="ds">Verifica <strong style="color:var(--white)">várias condições</strong> em sequência. Para na primeira verdadeira.</div>
+            <div style="margin-top:12px">
+              <span class="pill pa">N caminhos</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="max-width:760px;margin-top:18px;text-align:center">
+          Vamos estudar cada um com <strong>exemplos práticos</strong> e código passo a passo.
+        </div>
+      </div>
+
+      <!-- ══════════ S4 — SE SIMPLES: CONCEITO ══════════ -->
+      <div class="slide" id="s4">
+        <div class="eyebrow">Primeiro Tipo</div>
+        <h2 class="title"><strong>SE</strong> Simples</h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:820px;margin-top:8px;align-items:start">
+          <div>
+            <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+              Estrutura em Portugol:
+            </p>
+            <div class="code"
+><span class="kw">se</span> (condição) {
+    <span class="cm">// executa SOMENTE</span>
+    <span class="cm">// se condição = verdadeiro</span>
+}
+
+<span class="cm">// aqui o programa continua</span>
+<span class="cm">// independente do resultado</span></div>
+            <div class="callout" style="margin-top:14px">
+              <strong>Regra:</strong> se a condição for <span style="color:var(--false-c)">falsa</span>, o bloco inteiro é <strong>ignorado</strong>.
+            </div>
+          </div>
+          <div>
+            <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+              Fluxo de execução:
+            </p>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px">
+              <span class="mi" style="color:var(--dim2)">play_circle</span>
+              <span style="font-size:0.75rem;color:var(--dim2)">início</span>
+              <div style="width:1px;height:16px;background:var(--border)"></div>
+              <span class="flow-box flow-condition">condição?</span>
+              <div style="display:flex;gap:32px;align-items:flex-start;margin-top:4px">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span class="flow-arrow"><span class="mi mi-sm" style="color:var(--true-c)">check</span> verdadeiro</span>
+                  <span class="flow-box flow-true">executa o bloco</span>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span class="flow-arrow"><span class="mi mi-sm" style="color:var(--false-c)">close</span> falso</span>
+                  <span class="flow-box flow-false">pula o bloco</span>
+                </div>
+              </div>
+              <div style="width:1px;height:16px;background:var(--border);margin-top:4px"></div>
+              <span class="mi" style="color:var(--dim2)">stop_circle</span>
+              <span style="font-size:0.75rem;color:var(--dim2)">continua aqui</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S5 — SE SIMPLES: ANALOGIA ══════════ -->
+      <div class="slide" id="s5">
+        <div class="eyebrow">SE Simples — Analogia</div>
+        <h2 class="title">O Guarda-Chuva<br /><em>na Chuva</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:520px;margin-bottom:24px">
+          Antes de sair de casa, você verifica o tempo.<br />
+          Só pega o guarda-chuva <strong>se estiver chovendo</strong>.
+        </p>
+        <div class="ana-pair" style="gap:40px">
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color:#64b5f6">cloudy_snowing</span>
+            <span class="pill pt" style="margin:4px">Está chovendo = verdadeiro</span>
+            <span class="mi mi-lg" style="color:var(--teal);margin-top:4px">umbrella</span>
+            <p style="color:var(--true-c);font-weight:700;font-size:0.9rem;margin-top:4px">
+              pega o guarda-chuva <span class="mi mi-sm">check_circle</span>
+            </p>
+          </div>
+          <div style="width:1px;background:var(--border);height:120px"></div>
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color:var(--gold-lt)">wb_sunny</span>
+            <span class="pill pf" style="margin:4px">Está chovendo = falso</span>
+            <span class="mi mi-lg" style="color:var(--dim2);margin-top:4px">directions_walk</span>
+            <p style="color:var(--dim);font-weight:700;font-size:0.9rem;margin-top:4px">
+              sai normalmente <span class="mi mi-sm">remove_circle</span>
+            </p>
+          </div>
+        </div>
+        <div class="callout" style="max-width:500px;text-align:center">
+          <code style="color:var(--teal)">se (estaChovendo) { pega(guarda_chuva) }</code><br />
+          <span style="font-size:0.82rem;margin-top:6px;display:block">O bloco de pegar o guarda-chuva só existe no caso da chuva.</span>
+        </div>
+      </div>
+
+      <!-- ══════════ S6 — SE SIMPLES: DEBUGGER ══════════ -->
+      <div class="slide" id="s6">
+        <div class="eyebrow">SE Simples — Código</div>
+        <h2 class="title">
+          Passo a Passo
+          <span class="mi" style="font-size:2.2rem;color:var(--teal);vertical-align:middle">terminal</span>
+        </h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width:680px">
+          <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+            Verificando se o usuário é maior de idade:
+          </p>
+          <div class="dbg" id="dbg-0"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ S7 — SE SENÃO: CONCEITO ══════════ -->
+      <div class="slide" id="s7">
+        <div class="eyebrow">Segundo Tipo</div>
+        <h2 class="title">SE … <em>SENÃO</em></h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:820px;margin-top:8px;align-items:start">
+          <div>
+            <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+              Estrutura em Portugol:
+            </p>
+            <div class="code"
+><span class="kw">se</span> (condição) {
+    <span class="cm">// executa se VERDADEIRO</span>
+} <span class="kw">senao</span> {
+    <span class="cm">// executa se FALSO</span>
+}</div>
+            <div class="callout callout-gold" style="margin-top:14px">
+              <strong>Regra:</strong> sempre executa <strong>exatamente um</strong> dos dois blocos. Nunca os dois, nunca nenhum.
+            </div>
+          </div>
+          <div>
+            <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+              Fluxo de execução:
+            </p>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px">
+              <span class="mi" style="color:var(--dim2)">play_circle</span>
+              <div style="width:1px;height:12px;background:var(--border)"></div>
+              <span class="flow-box flow-condition">condição?</span>
+              <div style="display:flex;gap:32px;align-items:flex-start;margin-top:4px">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span class="flow-arrow"><span class="mi mi-sm" style="color:var(--true-c)">check</span> verdadeiro</span>
+                  <span class="flow-box flow-true">bloco SE</span>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span class="flow-arrow"><span class="mi mi-sm" style="color:var(--false-c)">close</span> falso</span>
+                  <span class="flow-box flow-false">bloco SENÃO</span>
+                </div>
+              </div>
+              <div style="width:1px;height:12px;background:var(--border);margin-top:4px"></div>
+              <span class="mi" style="color:var(--dim2)">stop_circle</span>
+              <span style="font-size:0.75rem;color:var(--dim2)">continua aqui</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S8 — SE SENÃO: ANALOGIA ══════════ -->
+      <div class="slide" id="s8">
+        <div class="eyebrow">SENÃO — Analogia</div>
+        <h2 class="title">Par ou <em>Ímpar</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:500px;margin-bottom:24px">
+          Um número sempre é par <strong>ou</strong> ímpar — nunca os dois, nunca nenhum.<br />
+          O <strong>senão</strong> funciona exatamente assim.
+        </p>
+        <div class="ana-pair" style="gap:60px">
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color:var(--teal)">looks_two</span>
+            <span class="pill pt" style="margin:4px">número % 2 == 0</span>
+            <p style="color:var(--true-c);font-weight:700;font-size:0.95rem;margin-top:4px">
+              É PAR <span class="mi mi-sm">check_circle</span>
+            </p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+            <span style="font-size:1.8rem;color:var(--dim2);font-weight:200">|</span>
+            <span style="font-size:0.72rem;color:var(--dim2);font-weight:700;letter-spacing:1px;text-transform:uppercase">ou</span>
+            <span style="font-size:1.8rem;color:var(--dim2);font-weight:200">|</span>
+          </div>
+          <div class="ana-item">
+            <span class="mi mi-lg" style="color:var(--gold-lt)">looks_one</span>
+            <span class="pill pf" style="margin:4px">número % 2 != 0</span>
+            <p style="color:var(--false-c);font-weight:700;font-size:0.95rem;margin-top:4px">
+              É ÍMPAR <span class="mi mi-sm">cancel</span>
+            </p>
+          </div>
+        </div>
+        <div class="callout callout-gold" style="max-width:500px;text-align:center">
+          Com <strong>SE…SENÃO</strong>, você sempre cobre os dois casos. Nenhuma situação fica sem resposta.
+        </div>
+      </div>
+
+      <!-- ══════════ S9 — SE SENÃO: DEBUGGER ══════════ -->
+      <div class="slide" id="s9">
+        <div class="eyebrow">SE … SENÃO — Código</div>
+        <h2 class="title">
+          Passo a Passo
+          <span class="mi" style="font-size:2.2rem;color:var(--gold-lt);vertical-align:middle">terminal</span>
+        </h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width:680px">
+          <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+            Verificando se um número é par ou ímpar:
+          </p>
+          <div class="dbg" id="dbg-1"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ S10 — SENÃO SE: CONCEITO ══════════ -->
+      <div class="slide" id="s10">
+        <div class="eyebrow">Terceiro Tipo</div>
+        <h2 class="title"><strong>SENÃO SE</strong><br />Múltiplas Condições</h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:860px;margin-top:8px;align-items:start">
+          <div>
+            <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+              Estrutura em Portugol:
+            </p>
+            <div class="code"
+><span class="kw">se</span> (condição 1) {
+    <span class="cm">// executa se condição 1 = true</span>
+} <span class="kw">senao se</span> (condição 2) {
+    <span class="cm">// executa se condição 2 = true</span>
+} <span class="kw">senao se</span> (condição 3) {
+    <span class="cm">// executa se condição 3 = true</span>
+} <span class="kw">senao</span> {
+    <span class="cm">// executa se NENHUMA for true</span>
+}</div>
+          </div>
+          <div style="padding-top:26px">
+            <div class="step">
+              <div class="sn">1</div>
+              <div>
+                <strong>Avalia de cima para baixo</strong>
+                <p style="font-size:0.83rem;color:var(--dim);margin-top:4px">O programa testa cada condição na ordem em que aparecem.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="sn">2</div>
+              <div>
+                <strong>Para na primeira verdadeira</strong>
+                <p style="font-size:0.83rem;color:var(--dim);margin-top:4px">Encontrou verdadeiro? Executa o bloco e <em>ignora o resto</em>.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="sn">3</div>
+              <div>
+                <strong>SENÃO é o caso padrão</strong>
+                <p style="font-size:0.83rem;color:var(--dim);margin-top:4px">Se nenhuma condição for verdadeira, cai no bloco <code style="color:var(--teal)">senao</code>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S11 — SENÃO SE: ANALOGIA ══════════ -->
+      <div class="slide" id="s11">
+        <div class="eyebrow">SENÃO SE — Analogia</div>
+        <h2 class="title">Conceito por <em>Nota</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:520px;margin-bottom:18px">
+          A professora classifica a nota do aluno em letras.<br />
+          Ela verifica <strong>do maior para o menor</strong> — para na primeira que encaixar.
+        </p>
+        <div class="gc gc-md" style="padding:20px 32px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="flow-box flow-condition" style="min-width:110px">nota ≥ 9.0?</span>
+              <span class="mi mi-sm" style="color:var(--true-c)">east</span>
+              <span class="pill pt">Conceito A — Excelente!</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="flow-box flow-condition" style="min-width:110px">nota ≥ 7.0?</span>
+              <span class="mi mi-sm" style="color:var(--true-c)">east</span>
+              <span class="pill pt">Conceito B — Bom!</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="flow-box flow-condition" style="min-width:110px">nota ≥ 5.0?</span>
+              <span class="mi mi-sm" style="color:var(--true-c)">east</span>
+              <span class="pill pa">Conceito C — Regular</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="background:rgba(255,92,92,0.08);border:1.5px solid rgba(255,92,92,0.35);border-radius:50px;padding:11px 22px;font-weight:700;font-size:0.88rem;color:var(--false-c);min-width:110px;text-align:center">senão</span>
+              <span class="mi mi-sm" style="color:var(--false-c)">east</span>
+              <span class="pill pf">Conceito D — Reprovado</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-gold" style="max-width:520px;text-align:center">
+          <strong>Nota 7.5?</strong> Falha em "≥ 9.0", passa em "≥ 7.0" → imprime <strong>Conceito B</strong> e para.
+        </div>
+      </div>
+
+      <!-- ══════════ S12 — SENÃO SE: DEBUGGER ══════════ -->
+      <div class="slide" id="s12">
+        <div class="eyebrow">SENÃO SE — Código</div>
+        <h2 class="title">
+          Passo a Passo
+          <span class="mi" style="font-size:2.2rem;color:var(--dim2);vertical-align:middle">terminal</span>
+        </h2>
+        <div class="line"></div>
+        <div class="gc" style="max-width:680px">
+          <p style="font-size:0.88rem;color:var(--dim);margin-bottom:14px">
+            Classificando a nota do aluno:
+          </p>
+          <div class="dbg" id="dbg-2"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ S13 — QUANDO USAR CADA UM ══════════ -->
+      <div class="slide" id="s13">
+        <div class="eyebrow">Guia Prático</div>
+        <h2 class="title">Quando usar <em>cada um</em>?</h2>
+        <div class="line"></div>
+        <div class="g3" style="margin-top:10px">
+          <div class="oc" style="border-top:2px solid var(--teal)">
+            <div class="sym" style="color:var(--teal);font-size:1.6rem">SE</div>
+            <div class="ds" style="margin-top:8px">
+              Use quando a ação é <strong style="color:var(--white)">opcional</strong>.<br />
+              Não fazer nada também é uma opção válida.
+            </div>
+            <div class="callout" style="margin-top:12px;padding:8px 12px;font-size:0.78rem">
+              Exemplo: <em>"Se tiver desconto, aplicar."</em>
+            </div>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--gold)">
+            <div class="sym" style="color:var(--gold-lt);font-size:1.4rem">SE/SENÃO</div>
+            <div class="ds" style="margin-top:8px">
+              Use quando há <strong style="color:var(--white)">exatamente 2 casos</strong> e um sempre acontece.
+            </div>
+            <div class="callout callout-gold" style="margin-top:12px;padding:8px 12px;font-size:0.78rem">
+              Exemplo: <em>"Aprovado ou Reprovado."</em>
+            </div>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--dim2)">
+            <div class="sym" style="color:var(--white);font-size:1.25rem">SENÃO SE</div>
+            <div class="ds" style="margin-top:8px">
+              Use quando há <strong style="color:var(--white)">3 ou mais casos</strong> possíveis e mutuamente exclusivos.
+            </div>
+            <div class="callout" style="margin-top:12px;padding:8px 12px;font-size:0.78rem">
+              Exemplo: <em>"Criança / Adolescente / Adulto / Idoso."</em>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="max-width:760px;margin-top:16px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--gold)">lightbulb</span>
+          Dica: comece sempre pensando em <strong>quantos casos diferentes existem</strong>.
+        </div>
+      </div>
+
+      <!-- ══════════ S14 — QUIZ ══════════ -->
+      <div class="slide" id="s14">
+        <div class="eyebrow">Pratique!</div>
+        <h2 class="title">
+          Quiz
+          <span class="mi" style="font-size:2rem;color:var(--dim2);vertical-align:middle">quiz</span>
+        </h2>
+        <div class="line"></div>
+        <div class="gc gc-md">
+          <p style="font-size:0.92rem;color:var(--dim);text-align:center;margin-bottom:6px">
+            Qual é o resultado quando <strong style="color:var(--teal)">nota = 6.5</strong>?
+          </p>
+          <div class="code" style="margin-bottom:18px;font-size:0.8rem"
+><span class="kw">se</span> (nota <span class="op">>=</span> <span class="str">9.0</span>) {
+    escreva(<span class="str">"Conceito A"</span>)
+} <span class="kw">senao se</span> (nota <span class="op">>=</span> <span class="str">7.0</span>) {
+    escreva(<span class="str">"Conceito B"</span>)
+} <span class="kw">senao se</span> (nota <span class="op">>=</span> <span class="str">5.0</span>) {
+    escreva(<span class="str">"Conceito C"</span>)
+} <span class="kw">senao</span> {
+    escreva(<span class="str">"Conceito D"</span>)
+}</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="qopt" onclick="qz(this,false)">"Conceito A" — 6.5 é maior que 5, então vai para o A.</button>
+            <button class="qopt" onclick="qz(this,false)">"Conceito B" — 6.5 está perto de 7.</button>
+            <button class="qopt" onclick="qz(this,true)">"Conceito C" — 6.5 ≥ 5.0, mas não ≥ 7.0 nem ≥ 9.0.</button>
+            <button class="qopt" onclick="qz(this,false)">"Conceito D" — nenhuma condição foi verdadeira.</button>
+          </div>
+          <div id="qfb" style="margin-top:14px;font-size:0.88rem;min-height:24px;text-align:center"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ S15 — EXERCÍCIO MENTAL ══════════ -->
+      <div class="slide" id="s15">
+        <div class="eyebrow">Exercício Mental</div>
+        <h2 class="title">
+          Raciocine
+          <span class="mi" style="font-size:2rem;color:var(--dim2);vertical-align:middle">extension</span>
+        </h2>
+        <div class="line"></div>
+        <div class="gc gc-md">
+          <p style="text-align:center;font-size:0.9rem;color:var(--dim);margin-bottom:18px">
+            Dado: <strong style="color:var(--teal)">idade = 15</strong>
+          </p>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex:1">
+              <code style="color:var(--teal);font-size:0.92rem">se (idade >= 18)</code> — o bloco executa?
+              <div class="rev" onclick="this.innerHTML='<strong style=color:var(--false-c)>Não executa.</strong> 15 não é ≥ 18, então o bloco é ignorado.'">
+                Clique para revelar
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex:1">
+              <code style="color:var(--teal);font-size:0.92rem">senao</code> — se houvesse um senão, ele executaria?
+              <div class="rev" onclick="this.innerHTML='<strong style=color:var(--true-c)>Sim!</strong> Como a condição do <b>se</b> foi falsa, o bloco <b>senao</b> seria executado.'">
+                Clique para revelar
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">?</div>
+            <div style="flex:1">
+              Dado: <strong style="color:var(--teal)">nota = 9.5</strong>.
+              Com o código do quiz anterior, qual conceito?
+              <div class="rev" onclick="this.innerHTML='<strong style=color:var(--true-c)>Conceito A!</strong> 9.5 ≥ 9.0 → verdadeiro na primeira condição. Para aqui.'">
+                Clique para revelar
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ S16 — RESUMÃO ══════════ -->
+      <div class="slide" id="s16">
+        <div class="eyebrow">Resumo</div>
+        <h2 class="title">
+          Resumão
+          <span class="mi" style="font-size:2rem;color:var(--dim2);vertical-align:middle">menu_book</span>
+        </h2>
+        <div class="line"></div>
+        <div class="g3" style="margin-bottom:16px">
+          <div class="oc" style="border-top:2px solid var(--teal)">
+            <div class="sym" style="color:var(--teal);font-size:1.6rem">SE</div>
+            <div class="ds" style="margin-top:8px">
+              Executa bloco <strong style="color:var(--white)">só se verdadeiro</strong>.<br />Falso → bloco ignorado.
+            </div>
+            <code style="color:var(--teal);font-size:0.75rem;margin-top:10px;display:block;line-height:1.8">
+              se (cond) { ... }
+            </code>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--gold)">
+            <div class="sym" style="color:var(--gold-lt);font-size:1.35rem">SE/SENÃO</div>
+            <div class="ds" style="margin-top:8px">
+              <strong style="color:var(--white)">Sempre um</strong> dos dois.<br />Verdadeiro ou falso, sempre executa algo.
+            </div>
+            <code style="color:var(--gold-lt);font-size:0.75rem;margin-top:10px;display:block;line-height:1.8">
+              se (c) { } senao { }
+            </code>
+          </div>
+          <div class="oc" style="border-top:2px solid var(--dim2)">
+            <div class="sym" style="color:var(--white);font-size:1.2rem">SENÃO SE</div>
+            <div class="ds" style="margin-top:8px">
+              <strong style="color:var(--white)">Cadeia de condições</strong>.<br />Para na primeira verdadeira.
+            </div>
+            <code style="color:var(--dim);font-size:0.75rem;margin-top:10px;display:block;line-height:1.8">
+              se { } senao se { } ...
+            </code>
+          </div>
+        </div>
+        <div class="callout" style="max-width:760px;text-align:center">
+          ✅ Estruturas de controle <strong>direcionam o fluxo</strong> &nbsp;·&nbsp;
+          Condição é sempre <strong>verdadeiro ou falso</strong> &nbsp;·&nbsp;
+          Escolha o tipo certo pelo <strong>número de casos</strong>.
+        </div>
+      </div>
+
+    </div><!-- #deck -->
+
+    <!-- ══════════ FOOTER ══════════ -->
+    <div id="footer">
+      <div class="f-brand">
+        <img
+          src="https://www.cesurgmarau.com.br/site/statics/logo.png"
+          alt="CESURG"
+          style="height:36px;object-fit:contain;filter:brightness(0) invert(1)"
+          id="logo-img"
+        />
+        <div class="f-sep"></div>
+        <button class="nbtn" onclick="toggleTheme()" id="theme-btn" title="Alternar Tema">
+          <span class="mi mi-sm" id="theme-icon">dark_mode</span>
+        </button>
+      </div>
+
+      <div class="f-bar"></div>
+
+      <div class="f-nav">
+        <button class="nbtn" id="btn-prev" onclick="go(-1)">
+          <span class="mi mi-sm">chevron_left</span> Anterior
+        </button>
+        <span class="f-count" id="cnt">1 / 16</span>
+        <button class="nbtn p" id="btn-next" onclick="go(1)">
+          Próximo <span class="mi mi-sm">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const N = 16;
+      let cur = 1, busy = false;
+
+      function toggleTheme() {
+        const isLight = document.body.classList.toggle("light-mode");
+        const icon = document.getElementById("theme-icon");
+        const logo = document.getElementById("logo-img");
+        icon.textContent = isLight ? "light_mode" : "dark_mode";
+        logo.style.filter = isLight ? "none" : "brightness(0) invert(1)";
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+      }
+      if (localStorage.getItem("theme") === "light") toggleTheme();
+
+      function render() {
+        document.getElementById("cnt").textContent = cur + " / " + N;
+        document.getElementById("prog").style.width = ((cur - 1) / (N - 1)) * 100 + "%";
+        document.getElementById("btn-prev").style.opacity = cur === 1 ? ".3" : "1";
+        const nb = document.getElementById("btn-next");
+        if (cur === N) {
+          nb.textContent = "↺ Reiniciar";
+          nb.onclick = () => jump(1);
+        } else {
+          nb.innerHTML = 'Próximo <span class="mi mi-sm">chevron_right</span>';
+          nb.onclick = () => go(1);
+        }
+      }
+
+      const ANIM_DUR = 560;
+
+      function clearAnims(el) {
+        el.classList.remove("active","anim-exit-fwd","anim-exit-bwd","anim-enter-fwd","anim-enter-bwd");
+        el.style.cssText = "";
+      }
+
+      function go(dir) {
+        if (busy) return;
+        const nxt = cur + dir;
+        if (nxt < 1 || nxt > N) return;
+        busy = true;
+
+        const ce = document.getElementById("s" + cur);
+        const ne = document.getElementById("s" + nxt);
+
+        ce.classList.remove("active");
+        ce.classList.add(dir > 0 ? "anim-exit-fwd" : "anim-exit-bwd");
+
+        ne.style.opacity = "0";
+        ne.style.pointerEvents = "none";
+
+        setTimeout(() => {
+          ne.style.opacity = "";
+          ne.classList.add(dir > 0 ? "anim-enter-fwd" : "anim-enter-bwd");
+        }, 40);
+
+        setTimeout(() => {
+          clearAnims(ce);
+          ce.style.opacity = "0";
+          ce.style.pointerEvents = "none";
+          clearAnims(ne);
+          ne.classList.add("active");
+          busy = false;
+        }, ANIM_DUR + 40);
+
+        cur = nxt;
+        render();
+      }
+
+      function jump(n) {
+        const ce = document.getElementById("s" + cur);
+        clearAnims(ce);
+        ce.style.opacity = "0";
+        ce.style.pointerEvents = "none";
+        cur = n;
+        const ne = document.getElementById("s" + cur);
+        clearAnims(ne);
+        ne.classList.add("active");
+        render();
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (["ArrowRight","ArrowDown"," "].includes(e.key)) { e.preventDefault(); go(1); }
+        if (["ArrowLeft","ArrowUp"].includes(e.key)) { e.preventDefault(); go(-1); }
+      });
+
+      /* ─── QUIZ ─── */
+      function qz(btn, ok) {
+        document.querySelectorAll(".qopt").forEach(o => o.disabled = true);
+        btn.classList.add(ok ? "ok" : "no");
+        if (!ok) {
+          document.querySelectorAll(".qopt").forEach(o => {
+            if (o.textContent.includes("Conceito C")) o.classList.add("ok");
+          });
+        }
+        document.getElementById("qfb").innerHTML = ok
+          ? '<span style="color:var(--true-c)">Correto! 6.5 ≥ 5.0 é verdadeiro, mas 6.5 ≥ 7.0 é falso, então cai em <strong>Conceito C</strong>.</span>'
+          : '<span style="color:var(--false-c)">Quase! Lembre: o programa testa de cima para baixo e para na primeira condição verdadeira. 6.5 → <strong>Conceito C</strong>.</span>';
+      }
+
+      /* ─── DEBUGGER SYSTEM ─── */
+      const DBG_DATA = [
+        {
+          // 0: S6 — SE simples (maior de idade)
+          lines: [
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">inteiro</span> idade`,
+            ``,
+            `    escreva(<span class="str">"Digite sua idade: "</span>)`,
+            `    leia(idade)`,
+            ``,
+            `    <span class="kw">se</span> (idade <span class="op">>=</span> <span class="str">18</span>) {`,
+            `      escreval(<span class="str">"Você é maior de idade."</span>)`,
+            `      escreval(<span class="str">"Pode votar nas eleições."</span>)`,
+            `    }`,
+            ``,
+            `    escreval(<span class="str">"Fim do programa."</span>)`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            { line: 2, exp: `<strong>inteiro idade</strong> — declaramos uma variável do tipo inteiro para guardar a idade digitada pelo usuário.` },
+            { line: 4, exp: `<strong>escreva("Digite sua idade: ")</strong> — exibe a pergunta para o usuário. O programa aguarda a resposta.` },
+            { line: 5, exp: `<strong>leia(idade)</strong> — lê o valor digitado e armazena na variável <em>idade</em>. Vamos assumir que o usuário digitou <strong>20</strong>.` },
+            { line: 7, exp: `Avaliamos a condição: <em>idade >= 18</em> → <em>20 >= 18</em> → <strong style="color:var(--true-c)">verdadeiro</strong>! Entramos no bloco.` },
+            { line: 8, exp: `Condição verdadeira → executamos <strong>escreval("Você é maior de idade.")</strong>. Esta linha é impressa na tela.` },
+            { line: 9, exp: `Ainda dentro do bloco: <strong>escreval("Pode votar nas eleições.")</strong> também é executado.` },
+            { line: 10, exp: `Fechamos o bloco <strong>se</strong>. Se a condição fosse falsa (ex: idade = 15), teríamos pulado direto para cá.` },
+            { line: 12, exp: `<strong>escreval("Fim do programa.")</strong> — esta linha <em>sempre</em> executa, independente da condição acima. O SE não a afeta.` },
+          ],
+          cur: 0,
+        },
+        {
+          // 1: S9 — SE...SENÃO (par/ímpar)
+          lines: [
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">inteiro</span> numero`,
+            ``,
+            `    escreva(<span class="str">"Digite um número: "</span>)`,
+            `    leia(numero)`,
+            ``,
+            `    <span class="kw">se</span> (numero <span class="op">%</span> <span class="str">2</span> <span class="op">==</span> <span class="str">0</span>) {`,
+            `      escreval(numero, <span class="str">" é PAR"</span>)`,
+            `    } <span class="kw">senao</span> {`,
+            `      escreval(numero, <span class="str">" é ÍMPAR"</span>)`,
+            `    }`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            { line: 2, exp: `<strong>inteiro numero</strong> — declaramos a variável que vai receber o número digitado.` },
+            { line: 4, exp: `<strong>escreva("Digite um número: ")</strong> — pedimos o número ao usuário.` },
+            { line: 5, exp: `<strong>leia(numero)</strong> — lemos o valor. Vamos usar <strong>numero = 7</strong> como exemplo.` },
+            { line: 7, exp: `Avaliamos: <em>7 % 2 == 0</em>. O operador <strong>%</strong> retorna o <em>resto</em> da divisão. 7 ÷ 2 = 3, resto <strong>1</strong>. Então <em>1 == 0</em> é <strong style="color:var(--false-c)">falso</strong>.` },
+            { line: 8, exp: `Condição falsa → <strong>ignoramos</strong> o bloco SE. A linha <em>"7 é PAR"</em> NÃO é executada.` },
+            { line: 9, exp: `Condição foi falsa → caímos no bloco <strong>senao</strong>. Executamos <em>escreval(7, " é ÍMPAR")</em>. Imprime: <strong>"7 é ÍMPAR"</strong>.` },
+            { line: 11, exp: `Fechamos o bloco <strong>senao</strong>. O programa sempre passa por <em>um e somente um</em> dos dois blocos. Nunca os dois.` },
+          ],
+          cur: 0,
+        },
+        {
+          // 2: S12 — SENÃO SE (classificação de nota)
+          lines: [
+            `<span class="kw">programa</span> {`,
+            `  <span class="kw">funcao</span> inicio() {`,
+            `    <span class="kw">real</span> nota`,
+            ``,
+            `    escreva(<span class="str">"Digite a nota (0 a 10): "</span>)`,
+            `    leia(nota)`,
+            ``,
+            `    <span class="kw">se</span> (nota <span class="op">>=</span> <span class="str">9.0</span>) {`,
+            `      escreval(<span class="str">"Conceito A — Excelente!"</span>)`,
+            `    } <span class="kw">senao se</span> (nota <span class="op">>=</span> <span class="str">7.0</span>) {`,
+            `      escreval(<span class="str">"Conceito B — Bom!"</span>)`,
+            `    } <span class="kw">senao se</span> (nota <span class="op">>=</span> <span class="str">5.0</span>) {`,
+            `      escreval(<span class="str">"Conceito C — Regular"</span>)`,
+            `    } <span class="kw">senao</span> {`,
+            `      escreval(<span class="str">"Conceito D — Reprovado"</span>)`,
+            `    }`,
+            `  }`,
+            `}`,
+          ],
+          steps: [
+            { line: 2, exp: `<strong>real nota</strong> — variável do tipo real para aceitar valores decimais como 7.5 ou 8.0.` },
+            { line: 4, exp: `<strong>escreva("Digite a nota: ")</strong> — pedimos a nota ao usuário. Vamos usar <strong>nota = 7.5</strong>.` },
+            { line: 5, exp: `<strong>leia(nota)</strong> — lemos 7.5 e guardamos na variável. Agora vamos avaliar as condições.` },
+            { line: 7, exp: `Primeira condição: <em>7.5 >= 9.0</em> → <strong style="color:var(--false-c)">falso</strong>. Pulamos o bloco A e continuamos para o próximo.` },
+            { line: 8, exp: `Bloco A <em>ignorado</em> — "Conceito A" não é impresso.` },
+            { line: 9, exp: `Segunda condição: <em>7.5 >= 7.0</em> → <strong style="color:var(--true-c)">verdadeiro</strong>! Entramos neste bloco.` },
+            { line: 10, exp: `Imprimimos <strong>"Conceito B — Bom!"</strong>. Encontramos a condição verdadeira.` },
+            { line: 15, exp: `Os blocos <strong>senao se (≥ 5.0)</strong> e <strong>senao</strong> são <em>completamente ignorados</em>. Já encontramos nosso caso — o resto não é avaliado.` },
+          ],
+          cur: 0,
+        },
+      ];
+
+      function renderDbg(id) {
+        const el = document.getElementById("dbg-" + id);
+        if (!el) return;
+        const d = DBG_DATA[id];
+        const step = d.steps[d.cur];
+        const total = d.steps.length;
+
+        const dots = d.steps.map((_, i) => `<span class="${i === d.cur ? "on" : ""}"></span>`).join("");
+
+        const linesHTML = d.lines.map((content, i) => {
+          const active = i === step.line;
+          return `<div class="dbg-line${active ? " active" : ""}">
+        <div class="dbg-lnum">${i + 1}</div>
+        <div class="dbg-arr">▶</div>
+        <div class="dbg-content">${content}</div>
+      </div>`;
+        }).join("");
+
+        el.innerHTML = `
+      <div class="dbg-bar">
+        <div class="dbg-label">
+          <div class="dbg-dot"></div>
+          DEBUGGER
+          <div class="dbg-dots">${dots}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="dbg-step-info">Passo ${d.cur + 1} / ${total}</span>
+          <div class="dbg-controls">
+            <button class="dbg-btn" onclick="dbgStep(${id},-1)" ${d.cur === 0 ? "disabled" : ""}>◀ Anterior</button>
+            <button class="dbg-btn run" onclick="dbgStep(${id},1)" ${d.cur === total - 1 ? "disabled" : ""}>Próxima ▶</button>
+          </div>
+        </div>
+      </div>
+      <div class="dbg-code">${linesHTML}</div>
+      <div class="dbg-exp">💬 &nbsp;${step.exp}</div>`;
+      }
+
+      function dbgStep(id, dir) {
+        const d = DBG_DATA[id];
+        d.cur = Math.max(0, Math.min(d.steps.length - 1, d.cur + dir));
+        renderDbg(id);
+      }
+
+      [0, 1, 2].forEach(renderDbg);
+      render();
+
+      /* ─── CUSTOM CURSOR ─── */
+      const dot = document.getElementById("cur-dot");
+      const ring = document.getElementById("cur-ring");
+      const glow = document.getElementById("cur-glow");
+
+      let mx = -200, my = -200;
+      let rx = -200, ry = -200;
+      let gx = -200, gy = -200;
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function animCursor() {
+        rx = lerp(rx, mx, 0.14);
+        ry = lerp(ry, my, 0.14);
+        gx = lerp(gx, mx, 0.08);
+        gy = lerp(gy, my, 0.08);
+
+        dot.style.left = mx + "px";
+        dot.style.top = my + "px";
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        glow.style.left = gx + "px";
+        glow.style.top = gy + "px";
+
+        requestAnimationFrame(animCursor);
+      }
+      animCursor();
+
+      document.addEventListener("mousemove", (e) => { mx = e.clientX; my = e.clientY; });
+      document.addEventListener("mouseleave", () => { dot.style.opacity = "0"; ring.style.opacity = "0"; glow.style.opacity = "0"; });
+      document.addEventListener("mouseenter", () => { dot.style.opacity = "1"; ring.style.opacity = "1"; glow.style.opacity = "1"; });
+      document.addEventListener("mousedown", () => document.body.classList.add("cur-click"));
+      document.addEventListener("mouseup", () => document.body.classList.remove("cur-click"));
+
+      const interactiveEls = document.querySelectorAll("button, [onclick]");
+      interactiveEls.forEach(el => {
+        el.addEventListener("mouseenter", () => document.body.classList.add("cur-hover"));
+        el.addEventListener("mouseleave", () => document.body.classList.remove("cur-hover"));
+      });
+
+      const navEls = document.querySelectorAll("#btn-prev, #btn-next");
+      navEls.forEach(el => {
+        el.addEventListener("mouseenter", () => document.body.classList.add("cur-nav"));
+        el.addEventListener("mouseleave", () => document.body.classList.remove("cur-nav"));
+      });
+    </script>
+  </body>
+</html>
