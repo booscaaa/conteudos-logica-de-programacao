@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dinâmica em Grupo — CESURG</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --bg: #07090a;
+        --teal: #00a3b8;
+        --teal-dk: #005f73;
+        --gold: #c8952a;
+        --gold-lt: #e8aa3d;
+        --white: #ffffff;
+        --dim: rgba(255, 255, 255, 0.55);
+        --dim2: rgba(255, 255, 255, 0.28);
+        --glass: rgba(255, 255, 255, 0.04);
+        --glass-b: rgba(255, 255, 255, 0.08);
+        --true-c: #34d27a;
+        --false-c: #ff5c5c;
+        --border: rgba(255, 255, 255, 0.1);
+        --purple: #b482ff;
+        --orange: #ff8c42;
+      }
+
+      body.light-mode {
+        --bg: #f8fafc;
+        --teal: #0891b2;
+        --teal-dk: #164e63;
+        --gold: #b45309;
+        --gold-lt: #d97706;
+        --white: #0f172a;
+        --dim: #475569;
+        --dim2: #94a3b8;
+        --glass: rgba(15, 23, 42, 0.03);
+        --glass-b: rgba(15, 23, 42, 0.06);
+        --border: rgba(15, 23, 42, 0.08);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+      html, body { width: 100%; height: 100%; overflow: hidden; font-family: "Inter", "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--white); -webkit-font-smoothing: antialiased; user-select: none; cursor: none; }
+
+      #cur-dot { position: fixed; width: 8px; height: 8px; background: var(--white); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.15s, height 0.15s, background 0.2s, opacity 0.2s; will-change: transform; }
+      #cur-ring { position: fixed; width: 36px; height: 36px; border: 1.5px solid rgba(255,255,255,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.25s cubic-bezier(0.4,0,0.2,1), height 0.25s cubic-bezier(0.4,0,0.2,1), border-color 0.25s, opacity 0.2s; will-change: transform; }
+      #cur-glow { position: fixed; width: 180px; height: 180px; border-radius: 50%; pointer-events: none; z-index: 9997; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(0,163,184,0.12) 0%, rgba(0,163,184,0.04) 45%, transparent 70%); transition: opacity 0.3s; will-change: transform; }
+
+      body.cur-hover #cur-dot { width: 6px; height: 6px; background: var(--teal); }
+      body.cur-hover #cur-ring { width: 52px; height: 52px; border-color: var(--teal); }
+      body.cur-click #cur-dot { width: 12px; height: 12px; background: var(--gold); }
+      body.cur-click #cur-ring { width: 22px; height: 22px; border-color: var(--gold); border-width: 2px; }
+      body.cur-nav #cur-dot { width: 10px; height: 10px; background: var(--gold); }
+      body.cur-nav #cur-ring { width: 60px; height: 60px; border-color: var(--gold); border-width: 2px; }
+
+      body.light-mode #cur-dot { background: var(--teal); }
+      body.light-mode #cur-ring { border-color: rgba(15,23,42,0.4); }
+      body.light-mode #footer { background: rgba(248,250,252,0.92); border-top: 1px solid var(--border); }
+      body.light-mode .nbtn { border-color: var(--border); color: var(--dim); }
+      body.light-mode .nbtn:hover { border-color: var(--teal); color: var(--teal); }
+      body.light-mode .f-count { color: var(--dim); }
+      body.light-mode .f-sep { background: var(--border); }
+      body.light-mode .f-bar { background: var(--teal-dk); opacity: 0.15; }
+
+      button, a, [onclick], input, select, textarea { cursor: none; }
+
+      #prog { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--teal), var(--gold)); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 999; }
+
+      #deck { width: 100%; height: calc(100vh - 56px); position: relative; perspective: 1400px; perspective-origin: 50% 45%; }
+      .slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px 56px; opacity: 0; pointer-events: none; will-change: transform, opacity; }
+      .slide.active { opacity: 1; pointer-events: all; transform: none; }
+
+      @keyframes kExitFwd { from { opacity:1; transform:translateX(0) scale(1) translateZ(0); } to { opacity:0; transform:translateX(-4%) scale(0.94) translateZ(-60px); } }
+      @keyframes kEnterFwd { from { opacity:0; transform:translateX(5%) scale(0.96) translateZ(-30px); } to { opacity:1; transform:translateX(0) scale(1) translateZ(0); } }
+      @keyframes kExitBwd { from { opacity:1; transform:translateX(0) scale(1) translateZ(0); } to { opacity:0; transform:translateX(4%) scale(0.94) translateZ(-60px); } }
+      @keyframes kEnterBwd { from { opacity:0; transform:translateX(-5%) scale(0.96) translateZ(-30px); } to { opacity:1; transform:translateX(0) scale(1) translateZ(0); } }
+      .anim-exit-fwd { animation: kExitFwd 520ms cubic-bezier(0.22,1,0.36,1) forwards; }
+      .anim-exit-bwd { animation: kExitBwd 520ms cubic-bezier(0.22,1,0.36,1) forwards; }
+      .anim-enter-fwd { animation: kEnterFwd 560ms cubic-bezier(0.22,1,0.36,1) forwards; pointer-events: all; }
+      .anim-enter-bwd { animation: kEnterBwd 560ms cubic-bezier(0.22,1,0.36,1) forwards; pointer-events: all; }
+
+      #footer { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(7,9,10,0.92); backdrop-filter: blur(12px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 36px; z-index: 500; }
+      .f-brand { display: flex; align-items: center; gap: 10px; }
+      .f-cic { font-size: 1.25rem; font-weight: 900; color: var(--teal); letter-spacing: -0.5px; }
+      .f-cic span { color: var(--gold); }
+      .f-sep { width: 1px; height: 24px; background: var(--border); }
+      .f-name { line-height: 1.2; }
+      .f-name .l1 { font-size: 0.58rem; font-weight: 600; color: var(--dim2); letter-spacing: 1.5px; text-transform: uppercase; }
+      .f-name .l2 { font-size: 0.75rem; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+      .f-bar { flex: 1; height: 2px; background: var(--teal-dk); margin: 0 24px; border-radius: 1px; }
+      .f-nav { display: flex; align-items: center; gap: 10px; }
+      .f-count { font-size: 0.72rem; font-weight: 500; color: var(--dim2); min-width: 44px; text-align: center; }
+      .nbtn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 5px 16px; border-radius: 20px; cursor: pointer; font-size: 0.78rem; font-weight: 600; font-family: inherit; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+      .nbtn:hover { border-color: var(--teal); color: var(--teal); }
+      .nbtn.p { background: var(--teal); border-color: var(--teal); color: #fff; }
+      .nbtn.p:hover { background: var(--teal-dk); }
+
+      .eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 16px; }
+      .hero { font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 800; line-height: 1; text-align: center; letter-spacing: -0.03em; }
+      .hero em { font-style: normal; color: var(--gold); }
+      .hero strong { color: var(--teal); }
+      .title { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 700; line-height: 1.1; text-align: center; letter-spacing: -0.02em; }
+      .title em { font-style: normal; color: var(--gold); }
+      .title strong { color: var(--teal); }
+      .subtitle { font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 400; color: var(--dim); line-height: 1.7; text-align: center; }
+      .subtitle strong { color: var(--white); font-weight: 600; }
+
+      .gc { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 28px 40px; backdrop-filter: blur(8px); width: 100%; max-width: 920px; }
+      .gc-sm { max-width: 640px; }
+      .gc-md { max-width: 780px; }
+      .line { width: 40px; height: 2px; background: var(--gold); border-radius: 1px; margin: 14px auto; }
+      .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 960px; }
+      .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; width: 100%; max-width: 1000px; }
+      .g5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; max-width: 1100px; }
+      .oc { background: var(--glass); border: 1px solid var(--border); border-radius: 16px; padding: 22px 18px; text-align: center; transition: transform 0.25s, background 0.25s, border-color 0.25s; }
+      .oc:hover { transform: translateY(-4px); background: var(--glass-b); }
+      .oc .sym { font-size: 2rem; font-weight: 900; margin-bottom: 6px; }
+      .oc .nm { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+      .oc .ds { font-size: 0.79rem; color: var(--dim); line-height: 1.5; }
+
+      .callout { border-left: 2px solid var(--teal); padding: 12px 18px; margin-top: 16px; font-size: 0.88rem; color: var(--dim); background: rgba(0,163,184,0.06); border-radius: 0 8px 8px 0; }
+      .callout strong { color: var(--white); }
+      .callout-gold { border-left: 2px solid var(--gold); background: rgba(200,149,42,0.06); }
+      .callout-warn { border-left: 2px solid var(--false-c); background: rgba(255,92,92,0.06); }
+
+      .code { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; font-family: "SF Mono", "Fira Code", "Courier New", monospace; font-size: clamp(0.72rem, 1.3vw, 0.85rem); white-space: pre; text-align: left; color: #a8d8e4; line-height: 1.65; width: 100%; }
+      .kw { color: #7ec8e3; }
+      .str { color: #a8d8b0; }
+      .op { color: var(--gold-lt); }
+      .cm { color: #4a6a74; }
+
+      .pill { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+      .pt { background: rgba(52,210,122,0.12); color: var(--true-c); border: 1px solid rgba(52,210,122,0.25); }
+      .pf { background: rgba(255,92,92,0.12); color: var(--false-c); border: 1px solid rgba(255,92,92,0.25); }
+      .pa { background: rgba(0,163,184,0.12); color: var(--teal); border: 1px solid rgba(0,163,184,0.25); }
+      .pg { background: rgba(200,149,42,0.12); color: var(--gold-lt); border: 1px solid rgba(200,149,42,0.25); }
+      .pp { background: rgba(180,130,255,0.12); color: var(--purple); border: 1px solid rgba(180,130,255,0.25); }
+      .po { background: rgba(255,140,66,0.12); color: var(--orange); border: 1px solid rgba(255,140,66,0.25); }
+
+      .step { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+      .step:last-child { border: none; }
+      .sn { min-width: 30px; height: 30px; border-radius: 50%; background: rgba(0,163,184,0.15); border: 1px solid rgba(0,163,184,0.3); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; color: var(--teal); flex-shrink: 0; }
+      .sn-gold { background: rgba(200,149,42,0.15); border-color: rgba(200,149,42,0.3); color: var(--gold-lt); }
+
+      .mi { font-family: "Material Symbols Outlined"; font-weight: normal; font-style: normal; font-size: 1.5rem; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-smoothing: antialiased; vertical-align: middle; }
+      .mi-sm { font-size: 1.2rem; }
+      .mi-lg { font-size: 2.4rem; }
+
+      /* Role cards */
+      .role-card { background: var(--glass); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; transition: transform 0.25s, border-color 0.25s; }
+      .role-card:hover { transform: translateY(-4px); }
+      .role-card .role-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+      .role-card .role-name { font-size: 0.8rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+      .role-card .role-desc { font-size: 0.76rem; color: var(--dim); line-height: 1.5; }
+      .role-tl { border-color: rgba(0,163,184,0.35); }
+      .role-tl .role-name { color: var(--teal); }
+      .role-client { border-color: rgba(200,149,42,0.35); }
+      .role-client .role-name { color: var(--gold-lt); }
+      .role-dev { border-color: rgba(52,210,122,0.35); }
+      .role-dev .role-name { color: var(--true-c); }
+      .role-qa { border-color: rgba(255,92,92,0.35); }
+      .role-qa .role-name { color: var(--false-c); }
+      .role-ux { border-color: rgba(180,130,255,0.35); }
+      .role-ux .role-name { color: var(--purple); }
+
+      .timer-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(200,149,42,0.12); border: 1px solid rgba(200,149,42,0.3); border-radius: 30px; padding: 6px 18px; font-size: 0.85rem; font-weight: 700; color: var(--gold-lt); margin-top: 20px; }
+
+      .challenge { background: rgba(0,163,184,0.06); border: 1px solid rgba(0,163,184,0.2); border-radius: 16px; padding: 20px 26px; width: 100%; }
+      .challenge-title { font-size: 1rem; font-weight: 800; color: var(--teal); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+      .challenge p { font-size: 0.88rem; color: var(--dim); line-height: 1.7; }
+      .challenge p strong { color: var(--white); }
+
+      .criteria { list-style: none; display: flex; flex-direction: column; gap: 9px; text-align: left; }
+      .criteria li { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--dim); }
+      .criteria li .ci { min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem; flex-shrink: 0; }
+      .ci-ok { background: rgba(52,210,122,0.15); color: var(--true-c); border: 1px solid rgba(52,210,122,0.3); }
+      .ci-warn { background: rgba(200,149,42,0.15); color: var(--gold-lt); border: 1px solid rgba(200,149,42,0.3); }
+      .ci-no { background: rgba(255,92,92,0.15); color: var(--false-c); border: 1px solid rgba(255,92,92,0.3); }
+
+      .chip-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+      .chip { display: inline-flex; align-items: center; gap: 6px; background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 6px 16px; font-size: 0.82rem; font-weight: 600; color: var(--dim); }
+      .chip .mi { font-size: 1rem; }
+      .chip-t { border-color: rgba(0,163,184,0.3); color: var(--teal); background: rgba(0,163,184,0.06); }
+      .chip-g { border-color: rgba(200,149,42,0.3); color: var(--gold-lt); background: rgba(200,149,42,0.06); }
+      .chip-v { border-color: rgba(52,210,122,0.3); color: var(--true-c); background: rgba(52,210,122,0.06); }
+      .chip-r { border-color: rgba(255,92,92,0.3); color: var(--false-c); background: rgba(255,92,92,0.06); }
+      .chip-p { border-color: rgba(180,130,255,0.3); color: var(--purple); background: rgba(180,130,255,0.06); }
+      .chip-o { border-color: rgba(255,140,66,0.3); color: var(--orange); background: rgba(255,140,66,0.06); }
+
+      /* desafio group cards */
+      .dcard { border-radius: 16px; padding: 20px 18px; text-align: center; border: 1px solid; transition: transform 0.25s; }
+      .dcard:hover { transform: translateY(-3px); }
+      .dcard .dnum { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+      .dcard .dico { font-size: 2.4rem; margin-bottom: 8px; }
+      .dcard .dnm { font-size: 0.92rem; font-weight: 800; margin-bottom: 6px; }
+      .dcard .dds { font-size: 0.77rem; color: var(--dim); line-height: 1.45; }
+      .dc1 { background: rgba(0,163,184,0.05); border-color: rgba(0,163,184,0.28); }
+      .dc1 .dnum, .dc1 .dnm { color: var(--teal); }
+      .dc2 { background: rgba(200,149,42,0.05); border-color: rgba(200,149,42,0.28); }
+      .dc2 .dnum, .dc2 .dnm { color: var(--gold-lt); }
+      .dc3 { background: rgba(52,210,122,0.05); border-color: rgba(52,210,122,0.28); }
+      .dc3 .dnum, .dc3 .dnm { color: var(--true-c); }
+      .dc4 { background: rgba(255,92,92,0.05); border-color: rgba(255,92,92,0.28); }
+      .dc4 .dnum, .dc4 .dnm { color: var(--false-c); }
+      .dc5 { background: rgba(180,130,255,0.05); border-color: rgba(180,130,255,0.28); }
+      .dc5 .dnum, .dc5 .dnm { color: var(--purple); }
+
+      /* score table */
+      .score-table { width: 100%; max-width: 700px; border-collapse: collapse; }
+      .score-table th { background: rgba(0,163,184,0.18); color: var(--teal); padding: 10px 14px; text-align: center; font-weight: 700; font-size: 0.76rem; letter-spacing: 0.8px; text-transform: uppercase; }
+      .score-table td { padding: 9px 14px; text-align: center; border-bottom: 1px solid var(--border); color: var(--dim); font-size: 0.85rem; }
+      .score-table tr:hover td { background: var(--glass); }
+
+      .final-hero { font-size: clamp(3.5rem, 9vw, 7rem); font-weight: 900; line-height: 1; text-align: center; letter-spacing: -0.04em; }
+      .final-hero em { font-style: normal; color: var(--gold); }
+
+      @media (max-width: 640px) {
+        .g2, .g3, .g5 { grid-template-columns: 1fr; }
+        .slide { padding: 20px 16px; }
+        #footer { padding: 0 16px; }
+        .f-bar { margin: 0 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cur-glow"></div>
+    <div id="cur-ring"></div>
+    <div id="cur-dot"></div>
+    <div id="prog"></div>
+
+    <div id="deck">
+
+      <!-- S1: CAPA -->
+      <div class="slide active" id="s1">
+        <div class="eyebrow">Lógica de Programação — Dinâmica em Grupo</div>
+        <span class="mi" style="font-size:5rem;color:var(--gold);margin-bottom:20px">groups</span>
+        <h1 class="hero"><em>Dinâmica</em><br />em <strong>Grupo</strong></h1>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:560px">
+          Simulando um <strong>time de desenvolvimento</strong> real —<br />
+          do briefing ao código funcionando.
+        </p>
+        <div class="chip-row" style="margin-top:28px">
+          <span class="chip chip-t"><span class="mi">hub</span> Variáveis &amp; Tipos</span>
+          <span class="chip chip-g"><span class="mi">device_hub</span> Entrada &amp; Saída</span>
+          <span class="chip chip-v"><span class="mi">alt_route</span> SE / SENÃO</span>
+          <span class="chip chip-r"><span class="mi">alt_route</span> ESCOLHA / CASO</span>
+          <span class="chip chip-p"><span class="mi">calculate</span> Álgebra Booleana</span>
+        </div>
+      </div>
+
+      <!-- S2: OBJETIVO -->
+      <div class="slide" id="s2">
+        <div class="eyebrow">Por que essa dinâmica?</div>
+        <h2 class="title">Programar é <em>trabalho</em> em equipe</h2>
+        <div class="line"></div>
+        <div class="g3" style="max-width:900px;margin-top:8px">
+          <div class="oc">
+            <span class="mi mi-lg" style="color:var(--teal)">emoji_people</span>
+            <div class="nm">Comunicação</div>
+            <div class="ds">Entender o problema do cliente antes de escrever uma linha de código</div>
+          </div>
+          <div class="oc">
+            <span class="mi mi-lg" style="color:var(--gold)">construction</span>
+            <div class="nm">Divisão de papéis</div>
+            <div class="ds">Cada pessoa tem responsabilidades distintas dentro do time</div>
+          </div>
+          <div class="oc">
+            <span class="mi mi-lg" style="color:var(--true-c)">verified</span>
+            <div class="nm">Qualidade</div>
+            <div class="ds">Testar e validar o resultado antes de entregar é parte do processo</div>
+          </div>
+        </div>
+        <div class="callout callout-gold" style="max-width:680px;margin-top:24px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--gold)">lightbulb</span>
+          Vocês vão praticar <strong>todos os conceitos vistos até agora</strong> dentro de um projeto real de equipe.
+        </div>
+      </div>
+
+      <!-- S3: PAPÉIS -->
+      <div class="slide" id="s3">
+        <div class="eyebrow">Organização</div>
+        <h2 class="title">Formação dos <em>Grupos</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:560px;margin-bottom:22px">
+          Grupos de <strong>até 5 pessoas</strong> — se faltar alguém, um papel pode ser acumulado.
+        </p>
+        <div class="g5">
+          <div class="role-card role-tl">
+            <span class="role-icon">👑</span>
+            <div class="role-name">Tech Lead</div>
+            <div class="role-desc">Lidera, coordena decisões e garante o prazo</div>
+          </div>
+          <div class="role-card role-client">
+            <span class="role-icon">🧑‍💼</span>
+            <div class="role-name">Cliente</div>
+            <div class="role-desc">Define o problema, tira dúvidas e valida o resultado final</div>
+          </div>
+          <div class="role-card role-dev">
+            <span class="role-icon">💻</span>
+            <div class="role-name">Dev</div>
+            <div class="role-desc">Escreve o algoritmo em Portugol seguindo o briefing</div>
+          </div>
+          <div class="role-card role-qa">
+            <span class="role-icon">🔍</span>
+            <div class="role-name">QA</div>
+            <div class="role-desc">Testa com entradas variadas e reporta os bugs</div>
+          </div>
+          <div class="role-card role-ux">
+            <span class="role-icon">🎨</span>
+            <div class="role-name">UX Writer</div>
+            <div class="role-desc">Define os textos — mensagens claras e amigáveis</div>
+          </div>
+        </div>
+        <div class="timer-badge">
+          <span class="mi mi-sm">timer</span> 5 min para se organizar e assumir os papéis
+        </div>
+      </div>
+
+      <!-- S4: RESPONSABILIDADES -->
+      <div class="slide" id="s4">
+        <div class="eyebrow">Papéis</div>
+        <h2 class="title">Responsabilidades <em>detalhadas</em></h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:900px">
+          <div class="gc" style="padding:18px 22px">
+            <div class="step">
+              <div class="sn">👑</div>
+              <div>
+                <p style="font-size:0.88rem;color:var(--white);font-weight:700">Tech Lead</p>
+                <p style="font-size:0.8rem;color:var(--dim);margin-top:3px">Organiza o time, divide tarefas, controla o tempo e apresenta a solução no final.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="sn">🧑‍💼</div>
+              <div>
+                <p style="font-size:0.88rem;color:var(--white);font-weight:700">Cliente</p>
+                <p style="font-size:0.8rem;color:var(--dim);margin-top:3px">Lê o desafio, tira dúvidas do grupo e valida se o programa faz o que foi pedido.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="sn">💻</div>
+              <div>
+                <p style="font-size:0.88rem;color:var(--white);font-weight:700">Dev</p>
+                <p style="font-size:0.8rem;color:var(--dim);margin-top:3px">Escreve o algoritmo no Portugol Studio usando as estruturas corretas.</p>
+              </div>
+            </div>
+          </div>
+          <div class="gc" style="padding:18px 22px">
+            <div class="step">
+              <div class="sn">🔍</div>
+              <div>
+                <p style="font-size:0.88rem;color:var(--white);font-weight:700">QA (Tester)</p>
+                <p style="font-size:0.8rem;color:var(--dim);margin-top:3px">Cria lista de testes com entradas variadas e verifica se as saídas estão corretas.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="sn">🎨</div>
+              <div>
+                <p style="font-size:0.88rem;color:var(--white);font-weight:700">UX Writer</p>
+                <p style="font-size:0.8rem;color:var(--dim);margin-top:3px">Define todos os textos de <code style="color:var(--teal)">escreva()</code>: boas-vindas, erros e confirmações.</p>
+              </div>
+            </div>
+            <div class="callout" style="margin-top:10px">
+              <span class="mi mi-sm" style="color:var(--teal)">info</span>
+              Grupos de 3 ou 4 pessoas: TL acumula Dev <strong>ou</strong> UX acumula QA.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S5: FERRAMENTAS -->
+      <div class="slide" id="s5">
+        <div class="eyebrow">Ferramentas disponíveis</div>
+        <h2 class="title">O que vocês podem <em>usar</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:580px;margin-bottom:20px">
+          Somente o que vimos em aula — <strong>sem pesquisar estruturas novas!</strong>
+        </p>
+        <div class="g2" style="max-width:860px">
+          <div class="gc" style="padding:18px 22px">
+            <p style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:12px">Liberado</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Variáveis: <code style="color:var(--gold-lt)">inteiro</code>, <code style="color:var(--gold-lt)">real</code>, <code style="color:var(--gold-lt)">caracter</code>, <code style="color:var(--gold-lt)">logico</code></li>
+              <li><span class="ci ci-ok">✓</span> <code style="color:var(--teal)">leia()</code> e <code style="color:var(--teal)">escreva()</code></li>
+              <li><span class="ci ci-ok">✓</span> Operadores aritméticos e relacionais</li>
+              <li><span class="ci ci-ok">✓</span> Álgebra booleana: <code style="color:var(--gold-lt)">e</code>, <code style="color:var(--gold-lt)">ou</code>, <code style="color:var(--gold-lt)">nao</code></li>
+              <li><span class="ci ci-ok">✓</span> Estrutura <code style="color:var(--teal)">se / senao se / senao</code></li>
+              <li><span class="ci ci-ok">✓</span> Estrutura <code style="color:var(--teal)">escolha / caso / outrocaso</code></li>
+              <li><span class="ci ci-warn">!</span> Aninhamento de condicionais</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:18px 22px">
+            <p style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--false-c);margin-bottom:12px">Proibido</p>
+            <ul class="criteria">
+              <li><span class="ci ci-no">✗</span> <code style="color:var(--false-c)">enquanto</code> — laço de repetição</li>
+              <li><span class="ci ci-no">✗</span> <code style="color:var(--false-c)">para</code> — laço de repetição</li>
+              <li><span class="ci ci-no">✗</span> <code style="color:var(--false-c)">repita / ate</code> — laço de repetição</li>
+              <li><span class="ci ci-no">✗</span> Funções e procedimentos personalizados</li>
+              <li><span class="ci ci-no">✗</span> Vetores e matrizes</li>
+            </ul>
+            <div class="callout callout-warn" style="margin-top:14px">
+              <span class="mi mi-sm" style="color:var(--false-c)">warning</span>
+              Usar qualquer estrutura proibida <strong>desconta 2 pontos</strong> na nota.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S6: VISÃO GERAL DOS 5 DESAFIOS -->
+      <div class="slide" id="s6">
+        <div class="eyebrow">Missão</div>
+        <h2 class="title">Os <em>5 Desafios</em> — um por grupo</h2>
+        <div class="line"></div>
+        <p class="subtitle" style="margin-bottom:20px">Cada grupo recebe um desafio diferente. O <strong>professor sorteia!</strong></p>
+        <div class="g5">
+          <div class="dcard dc1">
+            <div class="dnum">Grupo 1</div>
+            <div class="dico">🍔</div>
+            <div class="dnm">Cardápio Digital</div>
+            <div class="dds">Sistema de pedidos de lanchonete com menu numerado</div>
+            <span class="pill pa" style="margin-top:10px;display:inline-block">escolha/caso</span>
+          </div>
+          <div class="dcard dc2">
+            <div class="dnum">Grupo 2</div>
+            <div class="dico">📋</div>
+            <div class="dnm">Boletim Escolar</div>
+            <div class="dds">Média do aluno, situação e conceito de A a D</div>
+            <span class="pill pg" style="margin-top:10px;display:inline-block">se/senão + escolha</span>
+          </div>
+          <div class="dcard dc3">
+            <div class="dnum">Grupo 3</div>
+            <div class="dico">💪</div>
+            <div class="dnm">IMC Fitness</div>
+            <div class="dds">Calcula IMC e classifica com mensagem motivacional</div>
+            <span class="pill pt" style="margin-top:10px;display:inline-block">se/senão aninhado</span>
+          </div>
+          <div class="dcard dc4">
+            <div class="dnum">Grupo 4</div>
+            <div class="dico">🏧</div>
+            <div class="dnm">Caixa Eletrônico</div>
+            <div class="dds">Consulta, depósito e saque com validação de saldo</div>
+            <span class="pill pf" style="margin-top:10px;display:inline-block">escolha + se/senão</span>
+          </div>
+          <div class="dcard dc5">
+            <div class="dnum">Grupo 5</div>
+            <div class="dico">📐</div>
+            <div class="dnm">Classificador de Triângulo</div>
+            <div class="dds">Valida lados e classifica o tipo do triângulo</div>
+            <span class="pill pp" style="margin-top:10px;display:inline-block">booleano + se/senão</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- S7: DESAFIO 1 — CARDÁPIO -->
+      <div class="slide" id="s7">
+        <div class="eyebrow">Grupo 1 — Detalhamento</div>
+        <h2 class="title" style="font-size:clamp(1.6rem,3.2vw,2.6rem)"><span style="color:var(--teal)">🍔</span> <em>Cardápio</em> Digital</h2>
+        <div class="line"></div>
+        <div class="challenge" style="max-width:920px;border-color:rgba(0,163,184,0.25)">
+          <div class="challenge-title"><span class="mi">description</span> Briefing do Cliente</div>
+          <p>Minha lanchonete precisa de um sistema simples. O atendente digita o <strong>número do pedido (1 a 5)</strong> e o programa mostra o <strong>nome do item</strong>, o <strong>preço</strong> e uma <strong>mensagem de confirmação</strong>. Número inválido exibe uma mensagem de erro amigável.</p>
+        </div>
+        <div class="g2" style="max-width:920px;margin-top:14px">
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Itens do cardápio</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">1</span> X-Burguer — R$ 18,00</li>
+              <li><span class="ci ci-ok">2</span> X-Frango — R$ 16,00</li>
+              <li><span class="ci ci-ok">3</span> Batata Frita — R$ 12,00</li>
+              <li><span class="ci ci-ok">4</span> Refrigerante — R$ 7,00</li>
+              <li><span class="ci ci-ok">5</span> Suco Natural — R$ 9,00</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Critérios de aceite</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Cada número exibe nome e preço corretos</li>
+              <li><span class="ci ci-ok">✓</span> Número inválido → mensagem de erro</li>
+              <li><span class="ci ci-ok">✓</span> Textos definidos pelo UX Writer</li>
+              <li><span class="ci ci-warn">!</span> Obrigatório: <code style="color:var(--teal)">escolha/caso</code></li>
+              <li><span class="ci ci-ok">✓</span> MD do projeto entregue com testes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S8: DESAFIO 2 — BOLETIM -->
+      <div class="slide" id="s8">
+        <div class="eyebrow">Grupo 2 — Detalhamento</div>
+        <h2 class="title" style="font-size:clamp(1.6rem,3.2vw,2.6rem)"><span style="color:var(--gold-lt)">📋</span> <em>Boletim</em> Escolar</h2>
+        <div class="line"></div>
+        <div class="challenge" style="max-width:920px;border-color:rgba(200,149,42,0.25);background:rgba(200,149,42,0.04)">
+          <div class="challenge-title" style="color:var(--gold-lt)"><span class="mi">description</span> Briefing do Cliente</div>
+          <p>Sou coordenador da escola. Quero um programa que receba o <strong>nome do aluno</strong> e sua <strong>média final (0 a 10)</strong>, exiba a <strong>situação</strong> (aprovado, recuperação ou reprovado) e o <strong>conceito</strong> de A até D.</p>
+        </div>
+        <div class="g2" style="max-width:920px;margin-top:14px">
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold-lt);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Regras de negócio</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">A</span> Média ≥ 9.0 — Aprovado / Conceito A</li>
+              <li><span class="ci ci-ok">B</span> Média ≥ 7.0 — Aprovado / Conceito B</li>
+              <li><span class="ci ci-ok">C</span> Média ≥ 5.0 — Aprovado / Conceito C</li>
+              <li><span class="ci ci-warn">D</span> Média ≥ 3.0 — Recuperação / Conceito D</li>
+              <li><span class="ci ci-no">✗</span> Média &lt; 3.0 — Reprovado</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Critérios de aceite</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Nome do aluno aparece na saída</li>
+              <li><span class="ci ci-ok">✓</span> Situação e conceito corretos por faixa</li>
+              <li><span class="ci ci-ok">✓</span> Testar com: 9.5 / 7.0 / 5.0 / 3.0 / 1.0</li>
+              <li><span class="ci ci-warn">!</span> Combinar <code style="color:var(--teal)">se/senão</code> com <code style="color:var(--teal)">escolha/caso</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S9: DESAFIO 3 — IMC -->
+      <div class="slide" id="s9">
+        <div class="eyebrow">Grupo 3 — Detalhamento</div>
+        <h2 class="title" style="font-size:clamp(1.6rem,3.2vw,2.6rem)"><span style="color:var(--true-c)">💪</span> <em>IMC</em> Fitness</h2>
+        <div class="line"></div>
+        <div class="challenge" style="max-width:920px;border-color:rgba(52,210,122,0.25);background:rgba(52,210,122,0.04)">
+          <div class="challenge-title" style="color:var(--true-c)"><span class="mi">description</span> Briefing do Cliente</div>
+          <p>Sou personal trainer. Preciso de um app que receba o <strong>nome</strong>, <strong>peso (kg)</strong> e <strong>altura (m)</strong>, calcule o <strong>IMC</strong> com a fórmula <code style="color:var(--teal)">peso / (altura * altura)</code>, exiba a <strong>classificação</strong> e uma <strong>mensagem motivacional</strong> diferente para cada faixa.</p>
+        </div>
+        <div class="g2" style="max-width:920px;margin-top:14px">
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--true-c);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Tabela de classificação</p>
+            <ul class="criteria">
+              <li><span class="ci ci-warn">↓</span> IMC &lt; 18.5 — Abaixo do peso</li>
+              <li><span class="ci ci-ok">✓</span> IMC 18.5 – 24.9 — Peso normal</li>
+              <li><span class="ci ci-warn">!</span> IMC 25.0 – 29.9 — Sobrepeso</li>
+              <li><span class="ci ci-no">↑</span> IMC ≥ 30.0 — Obesidade</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Critérios de aceite</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Nome aparece na saudação inicial</li>
+              <li><span class="ci ci-ok">✓</span> IMC exibido com 2 casas decimais</li>
+              <li><span class="ci ci-ok">✓</span> Classificação e mensagem por faixa (UX)</li>
+              <li><span class="ci ci-warn">!</span> Usar <code style="color:var(--teal)">se/senão aninhado</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S10: DESAFIO 4 — CAIXA ELETRÔNICO -->
+      <div class="slide" id="s10">
+        <div class="eyebrow">Grupo 4 — Detalhamento</div>
+        <h2 class="title" style="font-size:clamp(1.6rem,3.2vw,2.6rem)"><span style="color:var(--false-c)">🏧</span> <em>Caixa</em> Eletrônico</h2>
+        <div class="line"></div>
+        <div class="challenge" style="max-width:920px;border-color:rgba(255,92,92,0.25);background:rgba(255,92,92,0.04)">
+          <div class="challenge-title" style="color:var(--false-c)"><span class="mi">description</span> Briefing do Cliente</div>
+          <p>Sou gerente de banco. Preciso de um sistema onde o cliente informa o <strong>nome</strong> e o <strong>saldo atual</strong>, depois escolhe uma operação: <strong>1-Consultar</strong>, <strong>2-Depositar</strong> ou <strong>3-Sacar</strong>. O sistema executa a operação e exibe o novo saldo.</p>
+        </div>
+        <div class="g2" style="max-width:920px;margin-top:14px">
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--false-c);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Regras de negócio</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">1</span> Consultar → exibe saldo atual</li>
+              <li><span class="ci ci-ok">2</span> Depositar → pede valor, soma ao saldo</li>
+              <li><span class="ci ci-warn">3</span> Sacar → pede valor, valida se há saldo suficiente</li>
+              <li><span class="ci ci-no">✗</span> Saque com saldo insuficiente → mensagem de erro</li>
+              <li><span class="ci ci-no">✗</span> Opção inválida → mensagem amigável</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Critérios de aceite</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Nome do cliente na saudação</li>
+              <li><span class="ci ci-ok">✓</span> Saldo atualizado exibido após operação</li>
+              <li><span class="ci ci-ok">✓</span> Saque inválido não altera o saldo</li>
+              <li><span class="ci ci-warn">!</span> <code style="color:var(--teal)">escolha</code> para opção + <code style="color:var(--teal)">se/senão</code> para validação</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S11: DESAFIO 5 — TRIÂNGULO -->
+      <div class="slide" id="s11">
+        <div class="eyebrow">Grupo 5 — Detalhamento</div>
+        <h2 class="title" style="font-size:clamp(1.6rem,3.2vw,2.6rem)"><span style="color:var(--purple)">📐</span> Classificador de <em>Triângulo</em></h2>
+        <div class="line"></div>
+        <div class="challenge" style="max-width:920px;border-color:rgba(180,130,255,0.25);background:rgba(180,130,255,0.04)">
+          <div class="challenge-title" style="color:var(--purple)"><span class="mi">description</span> Briefing do Cliente</div>
+          <p>Sou professor de geometria. Preciso de um programa que receba os <strong>3 lados</strong> de um triângulo, verifique se eles <strong>formam um triângulo válido</strong> e, se sim, classifique se é <strong>Equilátero, Isósceles ou Escaleno</strong>.</p>
+        </div>
+        <div class="g2" style="max-width:920px;margin-top:14px">
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Regras matemáticas</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Válido se: <code style="color:var(--teal)">a &lt; b+c</code> <strong>e</strong> <code style="color:var(--teal)">b &lt; a+c</code> <strong>e</strong> <code style="color:var(--teal)">c &lt; a+b</code></li>
+              <li><span class="ci ci-ok">E</span> Equilátero: <code style="color:var(--gold-lt)">a == b</code> <strong>e</strong> <code style="color:var(--gold-lt)">b == c</code></li>
+              <li><span class="ci ci-warn">I</span> Isósceles: apenas 2 lados iguais</li>
+              <li><span class="ci ci-no">S</span> Escaleno: todos os lados diferentes</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:16px 20px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Critérios de aceite</p>
+            <ul class="criteria">
+              <li><span class="ci ci-ok">✓</span> Lados inválidos → mensagem de erro clara</li>
+              <li><span class="ci ci-ok">✓</span> Classificação correta para cada tipo</li>
+              <li><span class="ci ci-ok">✓</span> Testar: (3,3,3) / (3,3,5) / (3,4,5) / (1,2,10)</li>
+              <li><span class="ci ci-warn">!</span> Usar <code style="color:var(--teal)">e</code> / <code style="color:var(--teal)">ou</code> obrigatório na validação</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- S12: CRONOGRAMA -->
+      <div class="slide" id="s12">
+        <div class="eyebrow">Execução</div>
+        <h2 class="title"><em>Cronograma</em> da Dinâmica</h2>
+        <div class="line"></div>
+        <div class="gc gc-md" style="margin-top:8px">
+          <div class="step">
+            <div class="sn sn-gold">1</div>
+            <div style="flex:1">
+              <p style="font-size:0.88rem;color:var(--white);font-weight:700">Formação e papéis</p>
+              <p style="font-size:0.8rem;color:var(--dim);margin-top:2px">Grupos se organizam e cada pessoa assume seu papel</p>
+            </div>
+            <div class="timer-badge" style="margin-top:0;font-size:0.76rem;padding:4px 12px">5 min</div>
+          </div>
+          <div class="step">
+            <div class="sn sn-gold">2</div>
+            <div style="flex:1">
+              <p style="font-size:0.88rem;color:var(--white);font-weight:700">Briefing &amp; Planejamento</p>
+              <p style="font-size:0.8rem;color:var(--dim);margin-top:2px">Cliente lê o desafio, TL distribui tarefas, UX define os textos</p>
+            </div>
+            <div class="timer-badge" style="margin-top:0;font-size:0.76rem;padding:4px 12px">10 min</div>
+          </div>
+          <div class="step">
+            <div class="sn sn-gold">3</div>
+            <div style="flex:1">
+              <p style="font-size:0.88rem;color:var(--white);font-weight:700">Desenvolvimento</p>
+              <p style="font-size:0.8rem;color:var(--dim);margin-top:2px">Dev codifica, QA prepara casos de teste, todos colaboram</p>
+            </div>
+            <div class="timer-badge" style="margin-top:0;font-size:0.76rem;padding:4px 12px">25 min</div>
+          </div>
+          <div class="step">
+            <div class="sn sn-gold">4</div>
+            <div style="flex:1">
+              <p style="font-size:0.88rem;color:var(--white);font-weight:700">Testes &amp; Ajustes</p>
+              <p style="font-size:0.8rem;color:var(--dim);margin-top:2px">QA executa os casos de teste, Dev corrige os problemas</p>
+            </div>
+            <div class="timer-badge" style="margin-top:0;font-size:0.76rem;padding:4px 12px">10 min</div>
+          </div>
+          <div class="step">
+            <div class="sn sn-gold">5</div>
+            <div style="flex:1">
+              <p style="font-size:0.88rem;color:var(--white);font-weight:700">Apresentação</p>
+              <p style="font-size:0.8rem;color:var(--dim);margin-top:2px">TL apresenta a solução e explica as decisões do grupo</p>
+            </div>
+            <div class="timer-badge" style="margin-top:0;font-size:0.76rem;padding:4px 12px">5 min / grupo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S13: DICAS DEV -->
+      <div class="slide" id="s13">
+        <div class="eyebrow">Para o Dev</div>
+        <h2 class="title">Dicas de <em>Código</em></h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:960px;align-items:start">
+          <div>
+            <p style="font-size:0.72rem;font-weight:700;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Estrutura base em Portugol</p>
+            <div class="code"><span class="kw">programa</span> {
+  <span class="kw">funcao</span> inicio() {
+    <span class="cm">// 1. Declare TODAS as variáveis primeiro</span>
+    <span class="kw">inteiro</span> opcao
+    <span class="kw">real</span> saldo, valor
+
+    <span class="cm">// 2. Leia as entradas</span>
+    escreva(<span class="str">"Saldo atual: R$ "</span>)
+    leia(saldo)
+    escreva(<span class="str">"Escolha (1-3): "</span>)
+    leia(opcao)
+
+    <span class="cm">// 3. Tome a decisão</span>
+    <span class="kw">escolha</span>(opcao) {
+      <span class="kw">caso</span> 1:
+        escreva(<span class="str">"Saldo: R$ "</span>, saldo)
+      <span class="kw">caso</span> 3:
+        <span class="kw">se</span>(valor <span class="op">&lt;=</span> saldo) {
+          saldo <span class="op">=</span> saldo <span class="op">-</span> valor
+        }
+      <span class="kw">outrocaso</span>:
+        escreva(<span class="str">"Opção inválida"</span>)
+    }
+  }
+}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="callout">
+              <span class="mi mi-sm" style="color:var(--teal)">lightbulb</span>
+              Declare <strong>todas as variáveis antes</strong> do primeiro <code>leia()</code>.
+            </div>
+            <div class="callout">
+              <span class="mi mi-sm" style="color:var(--teal)">lightbulb</span>
+              Use <code style="color:var(--gold-lt)">real</code> para valores com vírgula (preço, IMC, saldo).
+            </div>
+            <div class="callout callout-gold">
+              <span class="mi mi-sm" style="color:var(--gold)">warning</span>
+              <code>escolha</code> só aceita <strong>inteiro ou caracter</strong> na expressão — não use <code>real</code>.
+            </div>
+            <div class="callout callout-warn">
+              <span class="mi mi-sm" style="color:var(--false-c)">bug_report</span>
+              Sempre teste o <strong>caso limite</strong>: o que acontece com entrada inválida?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S14: DICAS QA -->
+      <div class="slide" id="s14">
+        <div class="eyebrow">Para o QA</div>
+        <h2 class="title">Como montar seus <em>Testes</em></h2>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:600px;margin-bottom:20px">
+          Crie a tabela de testes <strong>antes mesmo do código ficar pronto</strong> — é trabalho em paralelo!
+        </p>
+        <div class="gc gc-md">
+          <table class="score-table" style="max-width:100%">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entrada</th>
+                <th>Saída esperada</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>CT01</td><td>Valor válido (caso feliz)</td><td>Resposta correta esperada</td><td><span class="pill pa">— a testar</span></td></tr>
+              <tr><td>CT02</td><td>Outro valor válido</td><td>Resposta correta esperada</td><td><span class="pill pa">— a testar</span></td></tr>
+              <tr><td>CT03</td><td>Valor limite (borda)</td><td>Resposta do limite</td><td><span class="pill pa">— a testar</span></td></tr>
+              <tr><td>CT04</td><td>Valor inválido</td><td>Mensagem de erro amigável</td><td><span class="pill pa">— a testar</span></td></tr>
+              <tr><td>CT05</td><td>Caso extremo / negativo</td><td>Tratamento correto</td><td><span class="pill pa">— a testar</span></td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top:14px">
+            <span class="mi mi-sm" style="color:var(--teal)">info</span>
+            Após rodar: preencha cada linha com <strong style="color:var(--true-c)">OK</strong> ou <strong style="color:var(--false-c)">FALHA</strong> + o que saiu errado.
+          </div>
+        </div>
+      </div>
+
+      <!-- S15: DICAS UX -->
+      <div class="slide" id="s15">
+        <div class="eyebrow">Para o UX Writer</div>
+        <h2 class="title">Textos que <em>fazem diferença</em></h2>
+        <div class="line"></div>
+        <div class="g2" style="max-width:860px">
+          <div class="gc" style="padding:18px 22px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--false-c);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Textos ruins</p>
+            <ul class="criteria" style="gap:8px">
+              <li><span class="ci ci-no">✗</span> <code>"Digite opcao:"</code></li>
+              <li><span class="ci ci-no">✗</span> <code>"Erro."</code></li>
+              <li><span class="ci ci-no">✗</span> <code>"ok"</code></li>
+              <li><span class="ci ci-no">✗</span> <code>"resultado = 25"</code></li>
+              <li><span class="ci ci-no">✗</span> Sem saudação ao iniciar</li>
+            </ul>
+          </div>
+          <div class="gc" style="padding:18px 22px">
+            <p style="font-size:0.72rem;font-weight:700;color:var(--true-c);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Textos bons</p>
+            <ul class="criteria" style="gap:8px">
+              <li><span class="ci ci-ok">✓</span> <code>"Bem-vindo, [nome]!"</code></li>
+              <li><span class="ci ci-ok">✓</span> <code>"Escolha um item (1 a 5): "</code></li>
+              <li><span class="ci ci-ok">✓</span> <code>"Opção inválida. Tente entre 1 e 5."</code></li>
+              <li><span class="ci ci-ok">✓</span> <code>"Pedido confirmado! Bom apetite!"</code></li>
+              <li><span class="ci ci-ok">✓</span> <code>"Seu IMC é 24.5 — Peso normal!"</code></li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout callout-gold" style="max-width:680px;margin-top:16px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--gold)">chat</span>
+          Entregue <strong>todos os textos prontos ao Dev</strong> antes de ele começar a codificar.
+        </div>
+      </div>
+
+      <!-- S16: AVALIAÇÃO -->
+      <div class="slide" id="s16">
+        <div class="eyebrow">Avaliação</div>
+        <h2 class="title">Critérios de <em>Pontuação</em></h2>
+        <div class="line"></div>
+        <div class="gc gc-md" style="margin-top:8px">
+          <table class="score-table">
+            <thead>
+              <tr><th>Critério</th><th>Pts</th><th>Responsável</th></tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left">Programa roda sem erros de sintaxe</td><td style="color:var(--true-c);font-weight:700">+3</td><td>Dev</td></tr>
+              <tr><td style="text-align:left">Lógica cobre todos os casos do briefing</td><td style="color:var(--true-c);font-weight:700">+3</td><td>Dev + TL</td></tr>
+              <tr><td style="text-align:left">Textos claros e amigáveis</td><td style="color:var(--true-c);font-weight:700">+2</td><td>UX Writer</td></tr>
+              <tr><td style="text-align:left">Casos de teste documentados</td><td style="color:var(--true-c);font-weight:700">+2</td><td>QA</td></tr>
+              <tr><td style="text-align:left">Apresentação clara pelo Tech Lead</td><td style="color:var(--true-c);font-weight:700">+2</td><td>TL</td></tr>
+              <tr><td style="text-align:left">Uso de estrutura proibida (penalidade)</td><td style="color:var(--false-c);font-weight:700">–2</td><td>Dev</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout" style="max-width:680px;margin-top:16px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--teal)">emoji_events</span>
+          Pontuação máxima: <strong>12 pontos</strong> — qualidade acima de quantidade!
+        </div>
+      </div>
+
+      <!-- S17: GO! -->
+      <div class="slide" id="s17">
+        <div class="eyebrow">Lógica de Programação — Dinâmica em Grupo</div>
+        <span class="mi" style="font-size:5rem;color:var(--true-c);margin-bottom:20px">rocket_launch</span>
+        <h1 class="final-hero">Bora <em>codar!</em></h1>
+        <div class="line"></div>
+        <p class="subtitle" style="max-width:500px;margin-bottom:26px">
+          Comuniquem, dividam as tarefas e <strong>testem antes de apresentar</strong>.
+        </p>
+        <div class="chip-row">
+          <span class="chip chip-t"><span class="mi">timer</span> 5 min — papéis</span>
+          <span class="chip chip-g"><span class="mi">description</span> 10 min — briefing</span>
+          <span class="chip chip-v"><span class="mi">code</span> 25 min — dev</span>
+          <span class="chip chip-r"><span class="mi">bug_report</span> 10 min — QA</span>
+          <span class="chip chip-p"><span class="mi">present_to_all</span> 5 min — apresentação</span>
+        </div>
+        <div class="callout callout-gold" style="max-width:560px;margin-top:28px;text-align:center">
+          <span class="mi mi-sm" style="color:var(--gold)">emoji_events</span>
+          Boa sorte a todos os grupos! 🚀
+        </div>
+      </div>
+
+    </div><!-- /deck -->
+
+    <div id="footer">
+      <div class="f-brand">
+        <div class="f-cic">CES<span>URG</span></div>
+        <div class="f-sep"></div>
+        <div class="f-name">
+          <div class="l1">Lógica de Programação</div>
+          <div class="l2">Dinâmica em Grupo</div>
+        </div>
+      </div>
+      <div class="f-bar"></div>
+      <div class="f-nav">
+        <button class="nbtn" onclick="toggleLight()" title="Alternar tema">☀</button>
+        <button class="nbtn" id="btnPrev" onclick="go(-1)">← Anterior</button>
+        <span class="f-count" id="cnt">1 / 17</span>
+        <button class="nbtn p" id="btnNext" onclick="go(1)">Próximo →</button>
+      </div>
+    </div>
+
+    <script>
+      let cur = 0;
+      const slides = document.querySelectorAll('.slide');
+      const N = slides.length;
+      const prog = document.getElementById('prog');
+      const cnt = document.getElementById('cnt');
+
+      function updateProg() {
+        prog.style.width = ((cur + 1) / N * 100) + '%';
+        cnt.textContent = (cur + 1) + ' / ' + N;
+        document.getElementById('btnPrev').disabled = cur === 0;
+        document.getElementById('btnNext').disabled = cur === N - 1;
+      }
+
+      function go(dir) {
+        const next = cur + dir;
+        if (next < 0 || next >= N) return;
+        const exitClass = dir > 0 ? 'anim-exit-fwd' : 'anim-exit-bwd';
+        const enterClass = dir > 0 ? 'anim-enter-fwd' : 'anim-enter-bwd';
+        const outEl = slides[cur];
+        const inEl = slides[next];
+        outEl.classList.add(exitClass);
+        outEl.addEventListener('animationend', () => {
+          outEl.classList.remove('active', exitClass);
+        }, { once: true });
+        inEl.style.opacity = '0';
+        inEl.classList.add('active', enterClass);
+        inEl.addEventListener('animationend', () => {
+          inEl.classList.remove(enterClass);
+          inEl.style.opacity = '';
+        }, { once: true });
+        document.body.classList.add('cur-nav');
+        setTimeout(() => document.body.classList.remove('cur-nav'), 600);
+        cur = next;
+        updateProg();
+      }
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(1); }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
+      });
+
+      const dot = document.getElementById('cur-dot');
+      const ring = document.getElementById('cur-ring');
+      const glow = document.getElementById('cur-glow');
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+        glow.style.left = mx + 'px'; glow.style.top = my + 'px';
+      });
+      (function animRing() {
+        rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animRing);
+      })();
+      document.addEventListener('mousedown', () => document.body.classList.add('cur-click'));
+      document.addEventListener('mouseup', () => document.body.classList.remove('cur-click'));
+      document.querySelectorAll('button, [onclick]').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cur-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cur-hover'));
+      });
+
+      function toggleLight() { document.body.classList.toggle('light-mode'); }
+
+      updateProg();
+    </script>
+  </body>
+</html>
