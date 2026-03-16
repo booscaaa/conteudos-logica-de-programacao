@@ -31,7 +31,7 @@
 ### Checklist de entrega
 - [ ] Dev usou `escolha(opcao)` para as 3 operações
 - [ ] Dev usou `se(valor <= saldo)` dentro do caso 3 para validar saque
-- [ ] Saldo inválido não altera o saldo (está correto no código)
+- [ ] Saldo não é alterado quando o saque é negado
 - [ ] UX Writer criou texto para saque negado
 - [ ] QA testou saque com saldo suficiente e insuficiente
 - [ ] O grupo consegue explicar por que usou as duas estruturas juntas
@@ -75,66 +75,22 @@
 ### Responsabilidades
 - Combinar `escolha/caso` para a navegação de operações com `se/senão` para validação do saque.
 
-### Estrutura esperada do programa
-
-```portugol
-programa {
-  funcao inicio() {
-    // 1. Variáveis
-    cadeia nome
-    real saldo, valor
-    inteiro opcao
-
-    // 2. Entrada inicial (textos do UX Writer)
-    escreva("...")
-    leia(nome)
-    escreva("...")
-    leia(saldo)
-
-    // 3. Menu de operações
-    escreva("...")  // Exibir menu
-    escreva("...")  // 1 - Consultar Saldo
-    escreva("...")  // 2 - Depositar
-    escreva("...")  // 3 - Sacar
-    escreva("...")  // Pedir escolha
-    leia(opcao)
-
-    // 4. Executar operação
-    escolha(opcao) {
-
-      caso 1:
-        escreva("...")  // Exibir saldo atual
-
-      caso 2:
-        escreva("...")  // Pedir valor do depósito
-        leia(valor)
-        saldo = saldo + valor
-        escreva("...")  // Confirmar depósito + novo saldo
-
-      caso 3:
-        escreva("...")  // Pedir valor do saque
-        leia(valor)
-        se (valor <= saldo) {
-          saldo = saldo - valor
-          escreva("...")  // Confirmar saque + novo saldo
-        } senao {
-          escreva("...")  // Saldo insuficiente — saldo não muda
-        }
-
-      outrocaso:
-        escreva("...")  // Opção inválida
-
-    }
-  }
-}
-```
+### Fluxo esperado do programa
+1. Declarar variáveis: `cadeia nome`, `real saldo`, `real valor`, `inteiro opcao`
+2. Solicitar e ler nome e saldo inicial
+3. Exibir o menu de operações (textos do UX Writer)
+4. Ler a opção escolhida
+5. Usar `escolha(opcao)` com:
+   - `caso 1`: exibir saldo atual
+   - `caso 2`: ler valor, calcular `saldo = saldo + valor`, exibir novo saldo
+   - `caso 3`: ler valor, usar `se (valor <= saldo)` para validar — se ok, calcular `saldo = saldo - valor` e exibir; senão, exibir mensagem de saldo insuficiente
+   - `outrocaso`: exibir mensagem de opção inválida
 
 ### Dicas técnicas
 - `opcao` deve ser `inteiro` (o `escolha` precisa de inteiro ou caracter).
 - `saldo` e `valor` devem ser `real` — valores financeiros têm centavos.
-- No caso 3: `valor <= saldo` — use `<=` para permitir saque do valor exato do saldo.
+- No caso 3: use `valor <= saldo` — o `<=` permite sacar exatamente o valor total do saldo.
 - A operação `saldo = saldo + valor` acontece **dentro** do `caso 2` — fora dele, o saldo não muda.
-- Nos casos 1, 2 e 3 você pode pedir `leia(valor)` **dentro** do caso — não precisa declarar fora para funcionar, mas é boa prática declarar no início.
 
 ---
 
@@ -163,7 +119,6 @@ programa {
 - Saldo é alterado mesmo quando o saque é negado (falta o `se/senão`).
 - Saque com valor **igual** ao saldo é negado incorretamente (deveria usar `<=` não `<`).
 - O saldo atualizado não é exibido após depósito ou saque.
-- Variável `valor` lida fora do `escolha` deixa lixo de memória no caso 1.
 
 ---
 
@@ -202,13 +157,9 @@ programa {
 
 ## Estruturas que devem ser usadas
 
-```
-escolha / caso / outrocaso   ← OBRIGATÓRIO (para navegar entre as 3 operações)
-se / senao                   ← OBRIGATÓRIO (para validar o saque)
-```
+- `escolha / caso / outrocaso` ← OBRIGATÓRIO (para navegar entre as 3 operações)
+- `se / senao` ← OBRIGATÓRIO (para validar o saque)
 
 ## Estruturas proibidas
 
-```
-enquanto / para / repita   ← PENALIDADE -2 pontos
-```
+- `enquanto / para / repita` ← PENALIDADE -2 pontos

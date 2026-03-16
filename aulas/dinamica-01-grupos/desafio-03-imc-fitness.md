@@ -76,50 +76,22 @@ Calcule manualmente para conferir:
 - Escrever o algoritmo usando `se / senao se / senao` aninhado.
 - Calcular o IMC corretamente com a fórmula fornecida.
 
-### Estrutura esperada do programa
-
-```portugol
-programa {
-  funcao inicio() {
-    // 1. Variáveis
-    cadeia nome
-    real peso, altura, imc
-
-    // 2. Entrada (textos do UX Writer)
-    escreva("...")
-    leia(nome)
-    escreva("...")
-    leia(peso)
-    escreva("...")
-    leia(altura)
-
-    // 3. Cálculo
-    imc = peso / (altura * altura)
-
-    // 4. Exibir IMC calculado
-    escreva("Seu IMC é: ", imc)
-
-    // 5. Classificação com se/senão aninhado
-    se (imc < 18.5) {
-      escreva("...")  // Abaixo do peso — texto do UX Writer
-    } senao se (imc < 25.0) {
-      escreva("...")  // Peso normal
-    } senao se (imc < 30.0) {
-      escreva("...")  // Sobrepeso
-    } senao {
-      escreva("...")  // Obesidade
-    }
-  }
-}
-```
+### Fluxo esperado do programa
+1. Declarar variáveis: `cadeia nome`, `real peso`, `real altura`, `real imc`
+2. Exibir saudação e solicitar nome, peso e altura
+3. Calcular: `imc = peso / (altura * altura)`
+4. Exibir o IMC calculado
+5. Usar `se / senao se / senao` para classificar:
+   - Se IMC < 18.5 → Abaixo do peso (+ mensagem do UX Writer)
+   - Senão se IMC < 25.0 → Peso normal
+   - Senão se IMC < 30.0 → Sobrepeso
+   - Senão → Obesidade
 
 ### Dicas técnicas
 - Use `real` para **peso, altura e imc** — todos têm casas decimais.
-- A fórmula é `peso / (altura * altura)` — os parênteses são obrigatórios!
-  - `peso / altura * altura` daria resultado errado.
+- A fórmula é `peso / (altura * altura)` — os parênteses são obrigatórios! Sem eles o resultado é errado.
 - A ordem dos `senao se` importa: teste do menor IMC para o maior.
 - Não é necessário usar `escolha/caso` neste desafio — `se/senão` cobre tudo.
-- Para exibir com 2 casas decimais no Portugol Studio, o `escreva` já formata automaticamente para `real`.
 
 ### Exemplo de cálculo manual para verificar
 - Peso 70 kg, Altura 1.75 m → IMC = 70 / (1.75 × 1.75) = 70 / 3.0625 ≈ **22.86** → Peso normal ✅
@@ -189,13 +161,9 @@ programa {
 
 ## Estrutura que deve ser usada
 
-```
-se / senao se / senao   ← OBRIGATÓRIO (para comparar faixas de IMC)
-```
+- `se / senao se / senao` ← OBRIGATÓRIO (para comparar faixas de IMC)
 
 ## Estruturas proibidas
 
-```
-escolha / caso          ← Não funciona com real nas faixas
-enquanto / para / repita  ← PENALIDADE -2 pontos
-```
+- `escolha / caso` ← não funciona com `real` nas faixas
+- `enquanto / para / repita` ← PENALIDADE -2 pontos
