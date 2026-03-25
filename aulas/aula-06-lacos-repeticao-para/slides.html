@@ -140,6 +140,11 @@
       padding: 0 36px; z-index: 500;
     }
     .f-brand  { display: flex; align-items: center; gap: 10px; }
+    .f-cic    { font-size: 1.25rem; font-weight: 900; color: var(--teal); letter-spacing: -.5px; }
+    .f-cic span { color: var(--gold); }
+    .f-name   { line-height: 1.2; }
+    .f-name .l1 { font-size: .58rem; font-weight: 600; color: var(--dim2); letter-spacing: 1.5px; text-transform: uppercase; }
+    .f-name .l2 { font-size: .75rem; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
     .f-sep    { width: 1px; height: 24px; background: var(--border); }
     .f-bar    { flex: 1; height: 2px; background: var(--teal-dk); margin: 0 24px; border-radius: 1px; }
     .f-nav    { display: flex; align-items: center; gap: 10px; }
@@ -303,8 +308,51 @@
       </p>
     </div>
 
-    <!-- ===== SLIDE 2: CONTEXTO ===== -->
+    <!-- ===== SLIDE 2: MOTIVAÇÃO REAL ===== -->
     <div class="slide" id="s2">
+      <div class="eyebrow">Por que aprender laços?</div>
+      <h2 class="title">Laços estão em <em>todo lugar</em></h2>
+      <div class="line"></div>
+      <div class="g3" style="margin-top:16px;max-width:1000px">
+        <div class="oc" style="border-top:2px solid var(--teal);text-align:left">
+          <span class="mi mi-lg" style="color:var(--teal)">school</span>
+          <div class="nm" style="margin-top:8px">Boletim escolar</div>
+          <div class="ds">Calcular a média de <strong style="color:var(--white)">30 alunos</strong> da turma — um laço processa cada nota automaticamente.</div>
+        </div>
+        <div class="oc" style="border-top:2px solid var(--gold);text-align:left">
+          <span class="mi mi-lg" style="color:var(--gold-lt)">shopping_cart</span>
+          <div class="nm" style="margin-top:8px">Carrinho de compras</div>
+          <div class="ds">Somar o preço de <strong style="color:var(--white)">cada produto</strong> no carrinho para calcular o total da compra.</div>
+        </div>
+        <div class="oc" style="border-top:2px solid var(--purple);text-align:left">
+          <span class="mi mi-lg" style="color:var(--purple)">mail</span>
+          <div class="nm" style="margin-top:8px">Envio de e-mails</div>
+          <div class="ds">Enviar uma mensagem para <strong style="color:var(--white)">cada usuário</strong> cadastrado em uma lista.</div>
+        </div>
+        <div class="oc" style="border-top:2px solid var(--true-c);text-align:left">
+          <span class="mi mi-lg" style="color:var(--true-c)">payments</span>
+          <div class="nm" style="margin-top:8px">Folha de pagamento</div>
+          <div class="ds">Calcular o salário de <strong style="color:var(--white)">todos os funcionários</strong> de uma empresa com as mesmas regras.</div>
+        </div>
+        <div class="oc" style="border-top:2px solid var(--false-c);text-align:left">
+          <span class="mi mi-lg" style="color:var(--false-c)">dynamic_feed</span>
+          <div class="nm" style="margin-top:8px">Feed de redes sociais</div>
+          <div class="ds">Exibir <strong style="color:var(--white)">cada postagem</strong> de um feed, da mais recente à mais antiga.</div>
+        </div>
+        <div class="oc" style="border-top:2px solid var(--dim2);text-align:left">
+          <span class="mi mi-lg" style="color:var(--dim2)">pin</span>
+          <div class="nm" style="margin-top:8px">Verificar senha</div>
+          <div class="ds">Testar <strong style="color:var(--white)">cada dígito</strong> de um PIN ou verificar tentativas de login.</div>
+        </div>
+      </div>
+      <div class="callout callout-gold" style="max-width:700px;margin-top:14px;text-align:center">
+        <span class="mi mi-sm" style="color:var(--gold)">lightbulb</span>
+        &nbsp;Sempre que você precisar fazer <strong>a mesma operação repetida para vários elementos</strong>, um laço é a solução.
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 3: CONTEXTO ===== -->
+    <div class="slide" id="s3">
       <div class="eyebrow">Contexto</div>
       <h2 class="title">Por que usar <em>laços</em>?</h2>
       <div class="line"></div>
@@ -322,11 +370,11 @@
         </div>
         <div class="oc" style="border-top:2px solid var(--true-c);text-align:left;padding:20px 22px">
           <span class="mi mi-lg" style="color:var(--true-c);margin-bottom:10px">check_circle</span>
-          <div class="nm" style="color:var(--true-c);margin-bottom:8px">Com laço — 3 linhas</div>
+          <div class="nm" style="color:var(--true-c);margin-bottom:8px">Com laço — 4 linhas</div>
           <div style="font-family:monospace;font-size:.74rem;line-height:1.9;color:rgba(52,210,122,0.8)">
-            <span style="color:#7ec8e3">para</span> i <span style="color:#7ec8e3">de</span> 1 <span style="color:#7ec8e3">ate</span> 100 <span style="color:#7ec8e3">faca</span><br>
-            &nbsp;&nbsp;escreva(i)<br>
-            <span style="color:#7ec8e3">fimpara</span>
+            <span style="color:#7ec8e3">para</span>(<span style="color:#7ec8e3">inteiro</span> i = 1; i &lt;= 100; i++) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;escreva(i)<br>
+            }
           </div>
         </div>
       </div>
@@ -335,8 +383,8 @@
       </div>
     </div>
 
-    <!-- ===== SLIDE 3: CONCEITO ===== -->
-    <div class="slide" id="s3">
+    <!-- ===== SLIDE 4: CONCEITO ===== -->
+    <div class="slide" id="s4">
       <div class="eyebrow">Conceito Base</div>
       <h2 class="title">O que é o comando <strong>para</strong>?</h2>
       <div class="line"></div>
@@ -360,56 +408,55 @@
       </div>
     </div>
 
-    <!-- ===== SLIDE 4: ANATOMIA ===== -->
-    <div class="slide" id="s4">
+    <!-- ===== SLIDE 5: ANATOMIA ===== -->
+    <div class="slide" id="s5">
       <div class="eyebrow">Estrutura</div>
       <h2 class="title">Anatomia do <strong>para</strong></h2>
       <div class="line"></div>
       <div class="gc gc-md" style="margin-bottom:18px;padding:18px 28px">
         <div style="font-family:monospace;font-size:clamp(.85rem,1.8vw,1.1rem);text-align:center;padding:10px 0;line-height:2">
-          <span class="kw">para</span>
-          <span style="color:var(--gold-lt)"> i </span>
-          <span class="kw">de</span>
-          <span style="color:var(--true-c)"> 1 </span>
-          <span class="kw">ate</span>
-          <span style="color:var(--false-c)"> 10 </span>
-          <span class="kw">passo</span>
-          <span style="color:var(--purple)"> 1 </span>
-          <span class="kw">faca</span><br>
+          <span class="kw">para</span>(<span class="kw">inteiro</span>
+          <span style="color:var(--gold-lt)">i</span>
+          =
+          <span style="color:var(--true-c)">1</span>;
+          <span style="color:var(--gold-lt)">i</span>
+          &lt;=
+          <span style="color:var(--false-c)">10</span>;
+          <span style="color:var(--gold-lt)">i</span><span style="color:var(--purple)">++</span>) {<br>
           <span style="color:var(--dim2)">&nbsp;&nbsp;&nbsp;&nbsp;// bloco de código repetido aqui</span><br>
-          <span class="kw">fimpara</span>
+          }
         </div>
       </div>
       <div class="g2" style="max-width:760px">
         <div class="oc" style="border-top:2px solid var(--gold-lt);text-align:left;padding:18px 20px">
           <div class="nm" style="color:var(--gold-lt)">🔢 Variável — <code style="font-size:.85em">i</code></div>
-          <div class="ds">O <strong style="color:var(--white)">contador</strong> do laço. Começa com o valor inicial e vai sendo atualizado a cada volta.</div>
+          <div class="ds">O <strong style="color:var(--white)">contador</strong> do laço, declarado DENTRO do <code>para</code>. Vai sendo atualizado a cada volta.</div>
         </div>
         <div class="oc" style="border-top:2px solid var(--true-c);text-align:left;padding:18px 20px">
-          <div class="nm" style="color:var(--true-c)">▶ de 1 — Início</div>
+          <div class="nm" style="color:var(--true-c)">▶ = 1 — Início</div>
           <div class="ds">O <strong style="color:var(--white)">valor inicial</strong> do contador. É aqui que o laço começa a contar.</div>
         </div>
         <div class="oc" style="border-top:2px solid var(--false-c);text-align:left;padding:18px 20px">
-          <div class="nm" style="color:var(--false-c)">⏹ ate 10 — Fim</div>
-          <div class="ds">O <strong style="color:var(--white)">valor limite</strong>. O laço repete enquanto o contador não ultrapassar este número.</div>
+          <div class="nm" style="color:var(--false-c)">⏹ i &lt;= 10 — Condição</div>
+          <div class="ds">Enquanto <strong style="color:var(--white)">verdadeira</strong>, o laço continua. Quando falsa, o laço encerra.</div>
         </div>
         <div class="oc" style="border-top:2px solid var(--purple);text-align:left;padding:18px 20px">
-          <div class="nm" style="color:var(--purple)">⚡ passo 1 — Incremento</div>
-          <div class="ds">Quanto o contador <strong style="color:var(--white)">avança</strong> a cada repetição. Se omitido, o padrão é <strong style="color:var(--white)">+1</strong>.</div>
+          <div class="nm" style="color:var(--purple)">⚡ i++ — Incremento</div>
+          <div class="ds">Executa ao <strong style="color:var(--white)">final de cada iteração</strong>. Atualiza o contador antes de testar a condição novamente.</div>
         </div>
       </div>
     </div>
 
-    <!-- ===== SLIDE 5: DEBUGGER 1 — Contar de 1 a 5 ===== -->
-    <div class="slide" id="s5">
+    <!-- ===== SLIDE 6: DEBUGGER 1 — Contar de 1 a 5 ===== -->
+    <div class="slide" id="s6">
       <div class="eyebrow">Exemplo Passo a Passo</div>
       <h2 class="title">Contando de <strong>1 até 5</strong></h2>
       <div class="line"></div>
       <div class="dbg" id="dbg-0" style="max-width:820px"></div>
     </div>
 
-    <!-- ===== SLIDE 6: VARIAÇÕES DO PASSO ===== -->
-    <div class="slide" id="s6">
+    <!-- ===== SLIDE 7: VARIAÇÕES DO PASSO ===== -->
+    <div class="slide" id="s7">
       <div class="eyebrow">Variações</div>
       <h2 class="title">Personalizando o <em>passo</em></h2>
       <div class="line"></div>
@@ -424,58 +471,57 @@
           </thead>
           <tbody>
             <tr>
-              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para i de 1 ate 5 faca</td>
+              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para(inteiro i = 1; i &lt;= 5; i++)</td>
               <td class="tv">1, 2, 3, 4, 5</td>
               <td>Conta de 1 em 1 (padrão)</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para i de 0 ate 10 passo 2 faca</td>
+              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para(inteiro i = 0; i &lt;= 10; i = i + 2)</td>
               <td style="color:var(--gold-lt);font-weight:700">0, 2, 4, 6, 8, 10</td>
               <td>Conta de 2 em 2 (números pares)</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para i de 5 ate 1 passo -1 faca</td>
+              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para(inteiro i = 5; i &gt;= 1; i--)</td>
               <td style="color:var(--purple);font-weight:700">5, 4, 3, 2, 1</td>
               <td>Contagem regressiva!</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para i de 1 ate 9 passo 3 faca</td>
+              <td style="font-family:monospace;color:var(--teal);font-size:.78rem;text-align:left;padding-left:18px">para(inteiro i = 1; i &lt;= 9; i = i + 3)</td>
               <td style="color:var(--false-c);font-weight:700">1, 4, 7</td>
               <td>Pula de 3 em 3</td>
             </tr>
           </tbody>
         </table>
         <div class="callout" style="margin-top:14px;border-radius:0 0 12px 12px">
-          ⚠️ Com <strong>passo negativo</strong>, o início deve ser <strong>maior</strong> que o fim, senão o laço não executa nenhuma vez!
+          ⚠️ Com <strong>condição decrescente</strong> (<code>i &gt;= 1</code>) e <strong>i--</strong>, a ordem é invertida.
         </div>
       </div>
     </div>
 
-    <!-- ===== SLIDE 7: DEBUGGER 2 — Tabuada do 5 ===== -->
-    <div class="slide" id="s7">
+    <!-- ===== SLIDE 8: DEBUGGER 2 — Tabuada do 5 ===== -->
+    <div class="slide" id="s8">
       <div class="eyebrow">Exemplo Prático</div>
       <h2 class="title">Tabuada do <em>5</em> com o para</h2>
       <div class="line"></div>
       <div class="dbg" id="dbg-1" style="max-width:820px"></div>
     </div>
 
-    <!-- ===== SLIDE 8: ACUMULADOR ===== -->
-    <div class="slide" id="s8">
+    <!-- ===== SLIDE 9: ACUMULADOR ===== -->
+    <div class="slide" id="s9">
       <div class="eyebrow">Aplicação Real</div>
       <h2 class="title">O <em>acumulador</em>: somando com laços</h2>
       <div class="line"></div>
       <div style="display:flex;gap:20px;width:100%;max-width:880px;align-items:flex-start">
         <div style="flex:1.2">
-          <div class="code"><span class="kw">algoritmo</span> <span class="str">"SomaTotal"</span>
-<span class="kw">var</span>
-  i, soma: <span class="kw">inteiro</span>
-<span class="kw">inicio</span>
-  soma <span class="op">&lt;-</span> <span class="str">0</span>      <span class="cm">// inicia em zero!</span>
-  <span class="kw">para</span> i <span class="kw">de</span> <span class="str">1</span> <span class="kw">ate</span> <span class="str">5</span> <span class="kw">faca</span>
-    soma <span class="op">&lt;-</span> soma <span class="op">+</span> i  <span class="cm">// acumula</span>
-  <span class="kw">fimpara</span>
-  <span class="kw">escreva</span>(<span class="str">"Total: "</span>, soma)
-<span class="kw">fim_algoritmo</span></div>
+          <div class="code"><span class="kw">programa</span> {
+  <span class="kw">funcao</span> inicio() {
+    <span class="kw">inteiro</span> soma <span class="op">=</span> <span class="str">0</span>      <span class="cm">// inicia em zero!</span>
+    <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span class="str">1</span>; i <span class="op">&lt;=</span> <span class="str">5</span>; i++) {
+      soma <span class="op">=</span> soma <span class="op">+</span> i     <span class="cm">// acumula</span>
+    }
+    <span class="kw">escreva</span>(<span class="str">"Total: "</span>, soma)
+  }
+}</div>
           <div class="callout callout-gold" style="margin-top:12px;font-size:.82rem">
             🎯 Sempre inicialize o acumulador com <strong>0</strong> antes do laço, senão o valor começa com lixo de memória!
           </div>
@@ -498,16 +544,32 @@
       </div>
     </div>
 
-    <!-- ===== SLIDE 9: INTERATIVO — SIMULADOR ===== -->
-    <div class="slide" id="s9">
+    <!-- ===== SLIDE 10: DEBUGGER 3 — Média de 5 notas ===== -->
+    <div class="slide" id="s10">
+      <div class="eyebrow">Exemplo Prático</div>
+      <h2 class="title">Média de <em>5 notas</em> com laço</h2>
+      <div class="line"></div>
+      <div class="dbg" id="dbg-2" style="max-width:820px"></div>
+    </div>
+
+    <!-- ===== SLIDE 11: DEBUGGER 4 — Soma de pares ===== -->
+    <div class="slide" id="s11">
+      <div class="eyebrow">Exemplo Prático</div>
+      <h2 class="title">Somando <em>números pares</em></h2>
+      <div class="line"></div>
+      <div class="dbg" id="dbg-3" style="max-width:820px"></div>
+    </div>
+
+    <!-- ===== SLIDE 12: INTERATIVO — SIMULADOR ===== -->
+    <div class="slide" id="s12">
       <div class="eyebrow">Interativo</div>
       <h2 class="title">Veja o laço <em>em ação</em>!</h2>
       <div class="line"></div>
       <div class="loop-sim">
         <div class="loop-header">
-          <span class="kw">para</span> i <span class="kw">de</span> <span style="color:var(--true-c)">1</span> <span class="kw">ate</span> <span style="color:var(--false-c)">6</span> <span class="kw">faca</span><br>
+          <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span style="color:var(--true-c)">1</span>; i &lt;= <span style="color:var(--false-c)">6</span>; i++) {<br>
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// escreva(i)</span><br>
-          <span class="kw">fimpara</span>
+          }
         </div>
         <div style="font-size:.68rem;color:var(--dim2);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Iterações:</div>
         <div class="loop-boxes" id="sim-boxes"></div>
@@ -520,8 +582,8 @@
       </div>
     </div>
 
-    <!-- ===== SLIDE 10: QUIZ ===== -->
-    <div class="slide" id="s10">
+    <!-- ===== SLIDE 13: QUIZ ===== -->
+    <div class="slide" id="s13">
       <div class="eyebrow">Prática</div>
       <h2 class="title">Teste de <em>Conhecimento</em></h2>
       <div class="line"></div>
@@ -530,9 +592,9 @@
           Quantas vezes o <code style="background:rgba(0,163,184,0.12);color:var(--teal);padding:2px 7px;border-radius:4px">escreva(i)</code> vai executar no código abaixo?
         </p>
         <div style="font-family:monospace;font-size:.85rem;background:rgba(0,0,0,0.4);padding:12px 18px;border-radius:8px;margin-bottom:18px;color:#a8d8e4;border:1px solid var(--border);line-height:1.9">
-          <span class="kw">para</span> i <span class="kw">de</span> <span style="color:var(--true-c)">2</span> <span class="kw">ate</span> <span style="color:var(--false-c)">8</span> <span class="kw">passo</span> <span style="color:var(--purple)">2</span> <span class="kw">faca</span><br>
-          &nbsp;&nbsp;<span class="cm">escreva(i)</span><br>
-          <span class="kw">fimpara</span>
+          <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span style="color:var(--true-c)">2</span>; i &lt;= <span style="color:var(--false-c)">8</span>; i = i + <span style="color:var(--purple)">2</span>) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">escreva(i)</span><br>
+          }
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <button class="qopt" onclick="qz(this,false)">a) 3 vezes &nbsp;<span style="color:var(--dim2);font-size:.82em">(i = 2, 4, 6)</span></button>
@@ -544,8 +606,32 @@
       </div>
     </div>
 
-    <!-- ===== SLIDE 11: REVISÃO ===== -->
-    <div class="slide" id="s11">
+    <!-- ===== SLIDE 14: QUIZ 2 ===== -->
+    <div class="slide" id="s14">
+      <div class="eyebrow">Prática</div>
+      <h2 class="title">Qual é a <em>saída</em> deste código?</h2>
+      <div class="line"></div>
+      <div class="gc gc-sm" style="text-align:left">
+        <p style="font-size:1rem;font-weight:600;color:var(--white);margin-bottom:10px;line-height:1.6">
+          O que o código abaixo imprime na tela?
+        </p>
+        <div style="font-family:monospace;font-size:.85rem;background:rgba(0,0,0,0.4);padding:12px 18px;border-radius:8px;margin-bottom:18px;color:#a8d8e4;border:1px solid var(--border);line-height:1.9">
+          <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span style="color:var(--true-c)">5</span>; i <span class="op">&gt;=</span> <span style="color:var(--false-c)">1</span>; i--) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">escreva</span>(i, <span class="str">" "</span>)<br>
+          }
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="qopt" onclick="qz2(this,false)">a) 1 2 3 4 5 &nbsp;<span style="color:var(--dim2);font-size:.82em">(ordem crescente)</span></button>
+          <button class="qopt" onclick="qz2(this,true)">b) 5 4 3 2 1 &nbsp;<span style="color:var(--dim2);font-size:.82em">(contagem regressiva)</span></button>
+          <button class="qopt" onclick="qz2(this,false)">c) Nada — o laço não executa &nbsp;<span style="color:var(--dim2);font-size:.82em">(condição falsa de início)</span></button>
+          <button class="qopt" onclick="qz2(this,false)">d) Loop infinito &nbsp;<span style="color:var(--dim2);font-size:.82em">(i-- nunca termina)</span></button>
+        </div>
+        <div id="qfb2" style="margin-top:16px;font-size:.88rem;min-height:24px"></div>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 15: REVISÃO ===== -->
+    <div class="slide" id="s15">
       <div class="eyebrow">Revisão</div>
       <h2 class="title">O que você <em>aprendeu</em> hoje</h2>
       <div class="line"></div>
@@ -558,7 +644,7 @@
         <div class="oc">
           <span class="mi mi-lg" style="color:var(--gold-lt)">tune</span>
           <div class="nm" style="margin-top:8px">3 partes essenciais</div>
-          <div class="ds"><strong style="color:var(--white)">início</strong>, <strong style="color:var(--white)">fim</strong> e <strong style="color:var(--white)">passo</strong> controlam completamente o laço.</div>
+          <div class="ds"><strong style="color:var(--white)">inicialização</strong>, <strong style="color:var(--white)">condição</strong> e <strong style="color:var(--white)">incremento</strong> controlam completamente o laço.</div>
         </div>
         <div class="oc">
           <span class="mi mi-lg" style="color:var(--purple)">functions</span>
@@ -577,37 +663,22 @@
         </div>
         <div class="oc">
           <span class="mi mi-lg" style="color:var(--dim)">code</span>
-          <div class="nm" style="margin-top:8px">fimpara</div>
-          <div class="ds">Sempre feche o laço com <strong style="color:var(--white)">fimpara</strong>. Sem ele, o código não compila!</div>
+          <div class="nm" style="margin-top:8px">{ } — Bloco</div>
+          <div class="ds">O bloco do laço é delimitado por <strong style="color:var(--white)">chaves { }</strong>. Tudo dentro delas repete a cada iteração.</div>
         </div>
       </div>
     </div>
 
-    <!-- ===== SLIDE 12: FECHAMENTO ===== -->
-    <div class="slide" id="s12">
-      <div class="eyebrow">Parabéns!</div>
-      <h1 class="final-hero">Você domina<br>o <em>para</em>!</h1>
+    <!-- ===== SLIDE 16: FECHAMENTO ===== -->
+    <div class="slide" id="s16">
+      <div class="eyebrow">Atividade</div>
+      <h1 class="final-hero">Lista de<br><em>Exercícios</em></h1>
       <div class="line"></div>
-      <div class="callout callout-gold" style="max-width:620px;text-align:center;margin-top:20px;font-size:.9rem">
-        🎯 <strong>Próximos passos:</strong> Crie um algoritmo que calcula a média de 5 notas usando o <strong>para</strong>. Depois, explore os laços <strong>enquanto</strong> e <strong>repita</strong>!
-      </div>
-      <div class="g3" style="margin-top:22px;max-width:700px">
-        <div class="oc" style="padding:16px 14px">
-          <span class="mi" style="color:var(--teal);font-size:1.8rem">assignment</span>
-          <div class="nm" style="margin-top:6px;font-size:.85rem">Exercício</div>
-          <div class="ds" style="font-size:.75rem">Calcule a média de 5 notas digitadas pelo usuário</div>
-        </div>
-        <div class="oc" style="padding:16px 14px">
-          <span class="mi" style="color:var(--gold-lt);font-size:1.8rem">explore</span>
-          <div class="nm" style="margin-top:6px;font-size:.85rem">Próximo tema</div>
-          <div class="ds" style="font-size:.75rem">Laço enquanto...faca — quando não sabemos quantas vezes repetir</div>
-        </div>
-        <div class="oc" style="padding:16px 14px">
-          <span class="mi" style="color:var(--dim);font-size:1.8rem">psychology</span>
-          <div class="nm" style="margin-top:6px;font-size:.85rem">Desafio</div>
-          <div class="ds" style="font-size:.75rem">Faça a tabuada de qualquer número digitado pelo usuário</div>
-        </div>
-      </div>
+      <p class="subtitle" style="margin-top:16px;font-size:1rem;max-width:540px">
+        Acesse a lista de exercícios desta aula no
+        <strong style="color:var(--teal)">Google Classroom</strong>
+      </p>
+      <span class="mi" style="font-size:5rem;color:var(--gold);margin-top:24px">assignment</span>
     </div>
 
   </div><!-- fim #deck -->
@@ -615,7 +686,12 @@
   <!-- FOOTER -->
   <div id="footer">
     <div class="f-brand">
-      <span style="font-size:.82rem;font-weight:800;letter-spacing:1.5px;color:var(--teal)">CESURG</span>
+      <div class="f-cic">CES<span>URG</span></div>
+      <div class="f-sep"></div>
+      <div class="f-name">
+        <div class="l1">Lógica de Programação</div>
+        <div class="l2">Aula 06 · Laços de Repetição</div>
+      </div>
       <div class="f-sep"></div>
       <button class="nbtn" onclick="toggleTheme()" title="Alternar Tema">
         <span class="mi mi-sm" id="theme-icon">dark_mode</span>
@@ -626,7 +702,7 @@
       <button class="nbtn" id="btn-prev" onclick="go(-1)">
         <span class="mi mi-sm">chevron_left</span> Anterior
       </button>
-      <span class="f-count" id="cnt">1 / 12</span>
+      <span class="f-count" id="cnt">1 / 16</span>
       <button class="nbtn p" id="btn-next" onclick="go(1)">
         Próximo <span class="mi mi-sm">chevron_right</span>
       </button>
@@ -637,7 +713,7 @@
     // =========================================
     // ESTADO GLOBAL
     // =========================================
-    const N = 12;
+    const N = 16;
     let cur = 1, busy = false;
 
     // =========================================
@@ -718,11 +794,19 @@
     // QUIZ
     // =========================================
     function qz(btn, ok) {
-      document.querySelectorAll('.qopt').forEach(o => o.disabled = true);
+      document.querySelectorAll('#s13 .qopt').forEach(o => o.disabled = true);
       btn.classList.add(ok ? 'ok' : 'no');
       document.getElementById('qfb').innerHTML = ok
         ? '<span style="color:var(--true-c)">✓ Correto! Com passo 2, i assume os valores 2, 4, 6, 8 — são exatamente <strong>4 iterações</strong>.</span>'
         : '<span style="color:var(--false-c)">✗ Não exatamente. Com passo 2 e de 2 ate 8, temos: i=2, i=4, i=6, i=8 → <strong>4 vezes</strong>. Resposta: b)</span>';
+    }
+
+    function qz2(btn, ok) {
+      document.querySelectorAll('#s14 .qopt').forEach(o => o.disabled = true);
+      btn.classList.add(ok ? 'ok' : 'no');
+      document.getElementById('qfb2').innerHTML = ok
+        ? '<span style="color:var(--true-c)">✓ Correto! i começa em 5, a condição é i >= 1, e i-- decrementa. Resultado: 5 4 3 2 1.</span>'
+        : '<span style="color:var(--false-c)">✗ Atenção! A condição é i >= 1 com i-- — isso é uma contagem regressiva. i começa em 5 e vai até 1.</span>';
     }
 
     // =========================================
@@ -733,48 +817,98 @@
       {
         cur: 0,
         lines: [
-          `<span class="kw">algoritmo</span> <span class="str">"ContarAte5"</span>`,
-          `<span class="kw">var</span>`,
-          `  i: <span class="kw">inteiro</span>`,
-          `<span class="kw">inicio</span>`,
-          `  <span class="kw">para</span> i <span class="kw">de</span> <span class="str">1</span> <span class="kw">ate</span> <span class="str">5</span> <span class="kw">faca</span>`,
-          `    <span class="kw">escreva</span>(i)`,
-          `  <span class="kw">fimpara</span>`,
-          `<span class="kw">fim_algoritmo</span>`,
+          `<span class="kw">programa</span> {`,
+          `  <span class="kw">funcao</span> inicio() {`,
+          `    <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span class="str">1</span>; i <span class="op">&lt;=</span> <span class="str">5</span>; i++) {`,
+          `      <span class="kw">escreva</span>(i)`,
+          `    }`,
+          `  }`,
+          `}`,
         ],
         steps: [
-          { line: 0, exp: `Declaramos o nome do algoritmo: <strong>"ContarAte5"</strong>. Todo algoritmo começa com essa linha.` },
-          { line: 2, exp: `Declaramos a variável <em>i</em> do tipo <strong>inteiro</strong>. Ela será nosso contador — começa sem valor definido.` },
-          { line: 4, exp: `Início do laço! <em>i recebe 1</em>. Testamos a condição: <strong>1 ≤ 5?</strong> Sim → entramos no bloco do laço.` },
-          { line: 5, exp: `Executamos <strong>escreva(i)</strong> → mostra <em>1</em> na tela. Ao voltar para o <em>para</em>, i recebe i+1, então <strong>i = 2</strong>.` },
-          { line: 4, exp: `Testamos de novo: <strong>2 ≤ 5?</strong> Sim → executamos o bloco mais uma vez.` },
-          { line: 5, exp: `<strong>escreva(i)</strong> → mostra <em>2</em>. Depois i = 3. Esse ciclo repete para i = 3, 4 e 5 também.` },
-          { line: 6, exp: `Após exibir o 5, i torna-se <strong>6</strong>. Testamos: 6 ≤ 5? <strong>NÃO</strong> → o laço encerra aqui. Saída total: 1 2 3 4 5.` },
-          { line: 7, exp: `Fim do algoritmo. O <em>para</em> executou o bloco <strong>5 vezes</strong> automaticamente — sem precisar repetir o código!` },
+          { line: 0, exp: `A estrutura <strong>programa { }</strong> envolve todo o código no Portugol Studio. Dentro dela ficam as funções.` },
+          { line: 2, exp: `Início do laço! <strong>inteiro i = 1</strong> declara e inicia o contador. Condição: <em>i &lt;= 5?</em> → <strong>1 ≤ 5?</strong> Sim → entra no bloco.` },
+          { line: 3, exp: `Executamos <strong>escreva(i)</strong> → mostra <em>1</em> na tela. Após o bloco, <em>i++</em> executa: <strong>i = 2</strong>.` },
+          { line: 2, exp: `Verificamos a condição de novo: <strong>2 ≤ 5?</strong> Sim → executamos o bloco mais uma vez.` },
+          { line: 3, exp: `<strong>escreva(i)</strong> → mostra <em>2</em>. Depois i++, i = 3. Esse ciclo repete para i = 3, 4 e 5 também.` },
+          { line: 4, exp: `Após exibir o 5, i++ faz <strong>i = 6</strong>. Condição: 6 ≤ 5? <strong>NÃO</strong> → o laço encerra aqui. Saída total: 1 2 3 4 5.` },
+          { line: 6, exp: `Fim do programa. O <em>para</em> executou o bloco <strong>5 vezes</strong> automaticamente — sem precisar repetir o código!` },
         ],
       },
       // ---- DBG 1: Tabuada do 5 ----
       {
         cur: 0,
         lines: [
-          `<span class="kw">algoritmo</span> <span class="str">"Tabuada5"</span>`,
-          `<span class="kw">var</span>`,
-          `  i: <span class="kw">inteiro</span>`,
-          `<span class="kw">inicio</span>`,
-          `  <span class="kw">para</span> i <span class="kw">de</span> <span class="str">1</span> <span class="kw">ate</span> <span class="str">10</span> <span class="kw">faca</span>`,
-          `    <span class="kw">escreva</span>(<span class="str">5</span>, <span class="str">" x "</span>, i, <span class="str">" = "</span>, <span class="str">5</span> <span class="op">*</span> i)`,
-          `  <span class="kw">fimpara</span>`,
-          `<span class="kw">fim_algoritmo</span>`,
+          `<span class="kw">programa</span> {`,
+          `  <span class="kw">funcao</span> inicio() {`,
+          `    <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span class="str">1</span>; i <span class="op">&lt;=</span> <span class="str">10</span>; i++) {`,
+          `      <span class="kw">escreva</span>(<span class="str">5</span>, <span class="str">" x "</span>, i, <span class="str">" = "</span>, <span class="str">5</span> <span class="op">*</span> i)`,
+          `    }`,
+          `  }`,
+          `}`,
         ],
         steps: [
-          { line: 0, exp: `Algoritmo para imprimir a <strong>tabuada do 5</strong> completa (de 1 a 10).` },
-          { line: 2, exp: `A variável <em>i</em> representa o <strong>fator</strong> da tabuada. Vai de 1 a 10, um por vez.` },
-          { line: 4, exp: `i começa em <strong>1</strong>. Condição: 1 ≤ 10? Sim → entra no laço.` },
-          { line: 5, exp: `Calcula e exibe: <strong>5 × 1 = 5</strong> → mostra <em>"5 x 1 = 5"</em>. Depois i vira 2.` },
-          { line: 4, exp: `Condição: <strong>2 ≤ 10?</strong> Sim → nova iteração.` },
-          { line: 5, exp: `<strong>5 × 2 = 10</strong> → mostra <em>"5 x 2 = 10"</em>. O laço continua para i = 3, 4, ... 10 automaticamente.` },
-          { line: 6, exp: `Quando i chega a <strong>11</strong>: 11 ≤ 10? <strong>NÃO</strong> → laço encerrado. Os 10 resultados da tabuada foram gerados!` },
-          { line: 7, exp: `Fim! Com apenas <strong>3 linhas dentro do laço</strong>, geramos a tabuada completa do 5 sem repetir código.` },
+          { line: 0, exp: `Programa Portugol Studio para imprimir a <strong>tabuada do 5</strong> completa (de 1 a 10).` },
+          { line: 2, exp: `<strong>inteiro i = 1</strong> inicia o contador. Condição: <em>i &lt;= 10?</em> → <strong>1 ≤ 10?</strong> Sim → entra no laço.` },
+          { line: 3, exp: `Calcula e exibe: <strong>5 × 1 = 5</strong> → mostra <em>"5 x 1 = 5"</em>. Depois i++, i = 2.` },
+          { line: 2, exp: `Condição: <strong>2 ≤ 10?</strong> Sim → nova iteração.` },
+          { line: 3, exp: `<strong>5 × 2 = 10</strong> → mostra <em>"5 x 2 = 10"</em>. O laço continua para i = 3, 4, ... 10 automaticamente.` },
+          { line: 4, exp: `Quando i++ faz <strong>i = 11</strong>: 11 ≤ 10? <strong>NÃO</strong> → laço encerrado. Os 10 resultados da tabuada foram gerados!` },
+          { line: 6, exp: `Fim! Com apenas <strong>3 linhas dentro do laço</strong>, geramos a tabuada completa do 5 sem repetir código.` },
+        ],
+      },
+      // ---- DBG 2: Média de 5 notas ----
+      {
+        cur: 0,
+        lines: [
+          `<span class="kw">programa</span> {`,
+          `  <span class="kw">funcao</span> inicio() {`,
+          `    <span class="kw">real</span> soma <span class="op">=</span> <span class="str">0</span>`,
+          `    <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span class="str">1</span>; i <span class="op">&lt;=</span> <span class="str">5</span>; i++) {`,
+          `      <span class="kw">real</span> nota`,
+          `      <span class="kw">escreva</span>(<span class="str">"Nota "</span>, i, <span class="str">": "</span>)`,
+          `      <span class="kw">leia</span>(nota)`,
+          `      soma <span class="op">=</span> soma <span class="op">+</span> nota`,
+          `    }`,
+          `    <span class="kw">real</span> media <span class="op">=</span> soma <span class="op">/</span> <span class="str">5</span>`,
+          `    <span class="kw">escreva</span>(<span class="str">"Media: "</span>, media)`,
+          `  }`,
+          `}`,
+        ],
+        steps: [
+          { line: 2, exp: `<strong>soma = 0</strong>: acumulador inicializado. Vai guardar a soma de todas as notas digitadas.` },
+          { line: 3, exp: `O laço vai de <strong>1 a 5</strong> — uma iteração para cada nota. i é nosso contador de nota.` },
+          { line: 4, exp: `<strong>real nota</strong> é declarada dentro do laço. A cada iteração recebe um valor diferente do usuário.` },
+          { line: 5, exp: `Exibimos qual nota estamos pedindo: <em>"Nota 1: "</em>, <em>"Nota 2: "</em> etc. — usando <em>i</em> para personalizar.` },
+          { line: 6, exp: `<strong>leia(nota)</strong>: o programa pausa e aguarda o usuário digitar a nota. O valor fica armazenado em <em>nota</em>.` },
+          { line: 7, exp: `<strong>soma = soma + nota</strong>: acumulamos. Se o usuário digitou 8, então soma passa de 0 para 8.` },
+          { line: 3, exp: `i++ → i = 2. <strong>2 ≤ 5?</strong> Sim. O bloco repete para a 2ª, 3ª, 4ª e 5ª notas automaticamente.` },
+          { line: 9, exp: `Após as 5 notas: <strong>media = soma / 5</strong>. Se as notas foram 8,7,9,6,10 → soma=40 → media=8.0.` },
+          { line: 10, exp: `Exibimos o resultado. Um laço com <strong>8 linhas</strong> calculou a média de qualquer número de notas!` },
+        ],
+      },
+      // ---- DBG 3: Soma de pares ----
+      {
+        cur: 0,
+        lines: [
+          `<span class="kw">programa</span> {`,
+          `  <span class="kw">funcao</span> inicio() {`,
+          `    <span class="kw">inteiro</span> soma <span class="op">=</span> <span class="str">0</span>`,
+          `    <span class="kw">para</span>(<span class="kw">inteiro</span> i <span class="op">=</span> <span class="str">2</span>; i <span class="op">&lt;=</span> <span class="str">10</span>; i <span class="op">=</span> i <span class="op">+</span> <span class="str">2</span>) {`,
+          `      soma <span class="op">=</span> soma <span class="op">+</span> i`,
+          `    }`,
+          `    <span class="kw">escreva</span>(<span class="str">"Soma dos pares: "</span>, soma)`,
+          `  }`,
+          `}`,
+        ],
+        steps: [
+          { line: 2, exp: `<strong>soma = 0</strong>: acumulador para guardar a soma dos números pares.` },
+          { line: 3, exp: `i começa em <strong>2</strong> (primeiro par), vai até <strong>10</strong>, e a cada iteração <em>i = i + 2</em> — pula de 2 em 2!` },
+          { line: 4, exp: `<strong>i = 2</strong>: soma = 0 + 2 = <em>2</em>. Após o bloco: i = 2 + 2 = 4.` },
+          { line: 3, exp: `<strong>4 ≤ 10?</strong> Sim → nova iteração.` },
+          { line: 4, exp: `<strong>i = 4</strong>: soma = 2 + 4 = <em>6</em>. Continua: i=6 (soma=12), i=8 (soma=20), i=10 (soma=30).` },
+          { line: 5, exp: `i = 10 + 2 = <strong>12</strong>. Condição: 12 ≤ 10? <strong>NÃO</strong> → laço encerrado. Pares visitados: 2, 4, 6, 8, 10.` },
+          { line: 6, exp: `Resultado: 2 + 4 + 6 + 8 + 10 = <strong>30</strong>. O incremento <em>i = i + 2</em> garantiu que só pares foram somados!` },
         ],
       },
     ];
@@ -819,7 +953,7 @@
       renderDbg(id);
     }
 
-    [0, 1].forEach(renderDbg);
+    [0, 1, 2, 3].forEach(renderDbg);
 
     // =========================================
     // LOOP SIMULATOR (Slide 9)
