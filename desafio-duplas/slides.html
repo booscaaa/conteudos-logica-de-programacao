@@ -518,9 +518,9 @@
         </div>
 
         <!-- RANKING DISPLAY (direita — TV) -->
-        <div id="rank-tv" style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px">
+        <div id="rank-tv" style="flex:1;display:flex;flex-direction:column;gap:12px;overflow:hidden">
           <!-- mini-timer no topo -->
-          <div id="rank-timer-bar" style="display:flex;align-items:center;gap:14px;background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:10px 22px;width:100%;justify-content:center">
+          <div id="rank-timer-bar" style="display:flex;align-items:center;gap:14px;background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:10px 22px;width:100%;justify-content:center;flex-shrink:0">
             <span class="mi" style="color:var(--teal);font-size:1.6rem">timer</span>
             <div id="rank-timer-val" style="font-family:'SF Mono','Fira Code',monospace;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--teal);letter-spacing:.02em;font-variant-numeric:tabular-nums">--:--:--</div>
             <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;max-width:180px">
@@ -528,9 +528,8 @@
             </div>
             <span id="rank-timer-end" style="font-size:.72rem;color:var(--dim2);letter-spacing:1px;white-space:nowrap">término 22:15</span>
           </div>
-          <div class="eyebrow" style="margin-bottom:0">Ranking ao Vivo</div>
-          <h2 class="title" style="font-size:clamp(1.4rem,3vw,2.2rem)">Top 2 — <em>Banco CESURG</em></h2>
-          <div id="rank-output" style="width:100%"></div>
+          <!-- Ranking geral grande -->
+          <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px" id="rank-output"></div>
         </div>
 
       </div>
@@ -995,8 +994,8 @@
           return (b.timePts || 0) - (a.timePts || 0);
         });
       const top2 = sorted.slice(0, 2);
-      renderRankOutput(top2);
-      renderFullRanking(sorted);
+      renderRankOutput(sorted);   // ranking geral completo na coluna direita
+      renderFullRanking(sorted);  // ranking compacto na aba de pontuação
       window._rankTop2 = top2;
     }
 
@@ -1025,44 +1024,48 @@
       el.innerHTML = html;
     }
 
-    function renderRankOutput(top2) {
+    const FULL_RANK_STYLES = [
+      { medal:'🥇', color:'#f5c842',  cls:'gold'   },
+      { medal:'🥈', color:'#c8d6df',  cls:'silver' },
+      { medal:'🥉', color:'#d4956a',  cls:''       },
+      { medal:'4º', color:'var(--dim)', cls:''      },
+      { medal:'5º', color:'var(--dim)', cls:''      },
+      { medal:'6º', color:'var(--dim)', cls:''      },
+    ];
+
+    function renderRankOutput(sorted) {
       const out = document.getElementById('rank-output');
-      if (!top2 || top2.length === 0) {
-        out.innerHTML = '<p style="color:var(--dim2);font-size:.85rem;text-align:center;margin-top:20px">Cadastre as equipes e adicione pontos</p>';
+      if (!sorted || sorted.length === 0) {
+        out.innerHTML = '<p style="color:var(--dim2);font-size:.85rem;text-align:center;margin-top:40px">Cadastre as equipes e adicione pontos</p>';
         return;
       }
-      const styles = [
-        { cls:'gold',   medal:'🥇', color:'#f5c842' },
-        { cls:'silver', medal:'🥈', color:'#c8d6df' },
-      ];
-      let html = '<div style="display:flex;flex-direction:column;gap:12px;width:100%">';
-      top2.forEach((t, rank) => {
-        const st = styles[rank] || styles[1];
-        const name     = escHtml(t.name || t.label);
-        const students = escHtml(t.students || '');
-        const base     = t.pts || 0;
-        const bonus    = t.timePts || 0;
-        const total    = base + bonus;
-        const log      = t.scoringLog || [];
-        // Último evento de pontuação
-        const lastEvt  = log.length > 0 ? log[log.length - 1] : null;
+      let html = '';
+      sorted.forEach((t, rank) => {
+        const st      = FULL_RANK_STYLES[rank] || FULL_RANK_STYLES[5];
+        const isTop2  = rank < 2;
+        const name    = escHtml(t.name || t.label);
+        const students= escHtml(t.students || '');
+        const base    = t.pts || 0;
+        const bonus   = t.timePts || 0;
+        const total   = base + bonus;
+        const log     = t.scoringLog || [];
+        const lastEvt = log.length > 0 ? log[log.length - 1] : null;
         html += `
-          <div class="tv-rank-card ${st.cls}">
-            <div class="tv-medal">${st.medal}</div>
+          <div class="tv-rank-card ${st.cls}" style="${!isTop2 ? 'padding:14px 22px;' : ''}">
+            <div style="font-size:${isTop2 ? '2.8rem' : '1.6rem'};flex-shrink:0;min-width:${isTop2 ? '52px' : '36px'};text-align:center">${st.medal}</div>
             <div class="tv-info">
-              <div class="tv-team" style="color:${st.color}">${name}</div>
-              ${students ? `<div class="tv-students">${students}</div>` : ''}
-              ${lastEvt ? `<div style="font-size:.72rem;color:var(--dim2);margin-top:4px">último ponto: <strong style="color:var(--true-c)">+${lastEvt.pts}</strong> às ${lastEvt.timeStr}</div>` : ''}
+              <div class="tv-team" style="color:${st.color};font-size:${isTop2 ? 'clamp(1.2rem,2.5vw,1.8rem)' : 'clamp(0.95rem,1.8vw,1.2rem)'}">${name}</div>
+              ${students ? `<div class="tv-students" style="font-size:${isTop2 ? '.82rem' : '.72rem'}">${students}</div>` : ''}
+              ${lastEvt ? `<div style="font-size:.68rem;color:var(--dim2);margin-top:3px">último: <strong style="color:var(--true-c)">+${lastEvt.pts}</strong> às ${lastEvt.timeStr}</div>` : ''}
             </div>
             <div style="text-align:center;flex-shrink:0">
-              <div class="tv-pts" style="color:${st.color}">${total}</div>
+              <div class="tv-pts" style="color:${st.color};font-size:${isTop2 ? 'clamp(2rem,4vw,3rem)' : 'clamp(1.3rem,2.5vw,1.8rem)'}">${total}</div>
               <div class="tv-pts-label">total</div>
-              ${bonus > 0 ? `<div style="font-size:.65rem;color:var(--true-c);margin-top:2px">${base} + ⏱${bonus}</div>` : ''}
+              ${bonus > 0 ? `<div style="font-size:.62rem;color:var(--true-c);margin-top:1px">${base}+⏱${bonus}</div>` : ''}
             </div>
           </div>
         `;
       });
-      html += '</div>';
       out.innerHTML = html;
     }
 
