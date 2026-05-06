@@ -105,14 +105,14 @@ Os quatro tipos obrigatórios são:
 
 O jogo deve demonstrar **todos** os conceitos vistos no semestre:
 
-- [ ] **Aula 02 — Variáveis e Tipos:** cadeia, inteiro, real, logico com nomes significativos
-- [ ] **Aula 03 — Condicionais:** se / senao / senao se com lógica correta
-- [ ] **Aula 04 — Álgebra Booleana:** operadores `e`, `ou`, `nao` nas validações
-- [ ] **Aula 05 — Escolha/Caso:** menus e decisões com escolha/caso
-- [ ] **Aula 06 — Laço para:** percorrer vetores, matrizes e sequências fixas
-- [ ] **Aula 07 — Laço enquanto:** loop principal, validação de entrada, contagens
-- [ ] **Aula 08 — Vetores:** inventário (vetor) e mapa (vetor)
-- [ ] **Aula 09 — Funções:** modularização completa do jogo
+- **Aula 02 — Variáveis e Tipos:** cadeia, inteiro, real, logico com nomes significativos
+- **Aula 03 — Condicionais:** se / senao / senao se com lógica correta
+- **Aula 04 — Álgebra Booleana:** operadores `e`, `ou`, `nao` nas validações
+- **Aula 05 — Escolha/Caso:** menus e decisões com escolha/caso
+- **Aula 06 — Laço para:** percorrer vetores, matrizes e sequências fixas
+- **Aula 07 — Laço enquanto:** loop principal, validação de entrada, contagens
+- **Aula 08 — Vetores:** inventário (vetor) e mapa (vetor)
+- **Aula 09 — Funções:** modularização completa do jogo
 
 ---
 
